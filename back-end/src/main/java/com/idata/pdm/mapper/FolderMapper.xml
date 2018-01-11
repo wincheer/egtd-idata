@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.idata.pdm.dao.FolderMapper">
+
+	<resultMap id="BaseResultMap" type="com.idata.pdm.entity.Folder">
+		<id column="folder_id" jdbcType="INTEGER" property="folderId" />
+		<result column="parent_folder_id" jdbcType="INTEGER" property="parentFolderId" />
+		<result column="project_id" jdbcType="INTEGER" property="projectId" />
+		<result column="folder_name" jdbcType="VARCHAR" property="folderName" />
+	</resultMap>
+
+	<select id="selectFolder" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select * from folder
+		where folder_id = #{folderId,jdbcType=INTEGER}
+	</select>
+
+	<delete id="deleteFolder" parameterType="java.lang.Integer">
+		delete from folder
+		where folder_id = #{folderId,jdbcType=INTEGER}
+	</delete>
+
+	<insert id="insertFolder" useGeneratedKeys="true" keyProperty="folderId" parameterType="com.idata.pdm.entity.Folder">
+		insert into folder
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="parentFolderId != null">parent_folder_id,</if>
+			<if test="projectId != null">project_id,</if>
+			<if test="folderName != null">folder_name,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="parentFolderId != null">#{parentFolderId,jdbcType=INTEGER},</if>
+			<if test="projectId != null">#{projectId,jdbcType=INTEGER},</if>
+			<if test="folderName != null">#{folderName,jdbcType=VARCHAR},</if>
+		</trim>
+	</insert>
+	
+	<update id="updateFolder" parameterType="com.idata.pdm.entity.Folder">
+		update folder
+		<set>
+			<if test="parentFolderId != null">parent_folder_id = #{parentFolderId,jdbcType=INTEGER},</if>
+			<if test="projectId != null">project_id = #{projectId,jdbcType=INTEGER},</if>
+			<if test="folderName != null">folder_name = #{folderName,jdbcType=VARCHAR},</if>
+		</set>
+		where folder_id = #{folderId,jdbcType=INTEGER}
+	</update>
+	
+	<select id="selectFolderList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select * from folder
+		where project_id = #{projectId,jdbcType=INTEGER}
+	</select>
+</mapper>

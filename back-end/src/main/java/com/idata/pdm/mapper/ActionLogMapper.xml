@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.idata.pdm.dao.ActionLogMapper">
+  <resultMap id="BaseResultMap" type="com.idata.pdm.entity.ActionLog">
+    <id column="log_id" jdbcType="INTEGER" property="logId" />
+    <result column="actor" jdbcType="VARCHAR" property="actor" />
+    <result column="action_date" jdbcType="TIMESTAMP" property="actionDate" />
+    <result column="ip_address" jdbcType="VARCHAR" property="ipAddress" />
+    <result column="action" jdbcType="VARCHAR" property="action" />
+    <result column="action_object" jdbcType="VARCHAR" property="actionObject" />
+  </resultMap>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select * from action_log
+    where log_id = #{logId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from action_log
+    where log_id = #{logId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insertSelective" parameterType="com.idata.pdm.entity.ActionLog">
+    insert into action_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="logId != null">log_id,</if>
+      <if test="actor != null">actor,</if>
+      <if test="actionDate != null">action_date,</if>
+      <if test="ipAddress != null">ip_address,</if>
+      <if test="action != null">action,</if>
+      <if test="actionObject != null">action_object,</if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="logId != null">#{logId,jdbcType=INTEGER},</if>
+      <if test="actor != null">#{actor,jdbcType=VARCHAR},</if>
+      <if test="actionDate != null">#{actionDate,jdbcType=TIMESTAMP},</if>
+      <if test="ipAddress != null">#{ipAddress,jdbcType=VARCHAR},</if>
+      <if test="action != null">#{action,jdbcType=VARCHAR},</if>
+      <if test="actionObject != null">#{actionObject,jdbcType=VARCHAR},</if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.idata.pdm.entity.ActionLog">
+    update action_log
+    <set>
+      <if test="actor != null">actor = #{actor,jdbcType=VARCHAR},</if>
+      <if test="actionDate != null">action_date = #{actionDate,jdbcType=TIMESTAMP},</if>
+      <if test="ipAddress != null">ip_address = #{ipAddress,jdbcType=VARCHAR},</if>
+      <if test="action != null">action = #{action,jdbcType=VARCHAR},</if>
+      <if test="actionObject != null">action_object = #{actionObject,jdbcType=VARCHAR},</if>
+    </set>
+    where log_id = #{logId,jdbcType=INTEGER}
+  </update>
+  <select id="totalLogs" parameterType="java.util.Map" resultType="java.lang.Integer">
+  	select count(*) from action_log
+  	where 1 = 1
+  	<trim prefix=" and (" suffix=")" suffixOverrides="and">
+      <if test="actor != null">actor = #{actor,jdbcType=VARCHAR} and</if>
+      <if test="actionDate != null">action_date = #{actionDate,jdbcType=TIMESTAMP} and</if>
+      <if test="ipAddress != null">ip_address = #{ipAddress,jdbcType=VARCHAR} and</if>
+      <if test="action != null">action = #{action,jdbcType=VARCHAR} and</if>
+      <if test="actionObject != null">action_object = #{actionObject,jdbcType=VARCHAR} and</if>
+    </trim>
+  </select>
+  <select id="selectLogPageList" parameterType="java.util.Map" resultMap="BaseResultMap">
+  	select * from action_log
+  	where 1 = 1
+  	<trim prefix=" and (" suffix=")" suffixOverrides="and">
+      <if test="actor != null">actor = #{actor,jdbcType=VARCHAR} and</if>
+      <if test="actionDate != null">action_date = #{actionDate,jdbcType=TIMESTAMP} and</if>
+      <if test="ipAddress != null">ip_address = #{ipAddress,jdbcType=VARCHAR} and</if>
+      <if test="action != null">action = #{action,jdbcType=VARCHAR} and</if>
+      <if test="actionObject != null">action_object = #{actionObject,jdbcType=VARCHAR} and</if>
+    </trim>
+    limit #{start},#{pageSize}
+  </select>
+</mapper>

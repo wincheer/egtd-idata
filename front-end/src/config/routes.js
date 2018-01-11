@@ -1,0 +1,45 @@
+import Login from '@/view/Login.vue'
+import Home from '@/view/Home.vue'
+import Project from '@/view/Project.vue'
+import Calendar from '@/view/Calendar.vue'
+
+let routes = [
+    {
+        path: '/login',
+        component: Login,
+        hidden: true
+    },
+    {
+        path: '/',
+        component: Home,
+        name: '我的工作台',
+        iconCls: 'el-icon-location',
+        children: [
+            { path: '/todo', component: Calendar, name: '待办事项列表' ,iconCls:'el-icon-time'},
+            { path: '/todo2', component: Calendar, name: '工作日历' ,iconCls:'el-icon-date'}
+        ]
+    },
+    {
+        path: '/',
+        component: Home,
+        name: '项目',
+        iconCls: 'el-icon-view',
+        children: [
+            { path: '/project', component: Project, name: '项目总览' ,iconCls: 'el-icon-service',},
+            { path: '/hello42', component: Project, name: '项目详情' ,iconCls:'el-icon-time'}
+        ]
+    },
+    {
+        path: '/',
+        component: Home,
+        name: '配置',
+        iconCls: 'el-icon-setting',
+        children: [
+            { path: '/hello31', component: Project, name: '资源管理',iconCls:'el-icon-goods' },
+            { path: '/hello32', component: Project, name: '项目模板定义' ,iconCls:'el-icon-document'},
+            { path: '/hello33', component: Project, name: '系统参数' ,iconCls:'el-icon-document'}
+        ]
+    }
+];
+
+export default routes;

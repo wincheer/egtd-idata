@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.idata.pdm.dao.TemplateFolderMapper">
+	<resultMap id="BaseResultMap" type="com.idata.pdm.entity.TemplateFolder">
+		<id column="template_folder_id" jdbcType="INTEGER" property="templateFolderId" />
+		<result column="template_id" jdbcType="INTEGER" property="templateId" />
+		<result column="template_folder_name" jdbcType="VARCHAR" property="templateFolderName" />
+		<result column="template_folder_desc" jdbcType="VARCHAR" property="templateFolderDesc" />
+		<result column="parent_template_folder_id" jdbcType="INTEGER" property="parentTemplateFolderId" />
+	</resultMap>
+	
+	<select id="selectTemplateFolder" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select * from template_folder
+		where template_folder_id = #{templateFolderId,jdbcType=INTEGER}
+	</select>
+	
+	<delete id="deleteTemplateFolder" parameterType="java.lang.Integer">
+		delete from template_folder
+		where template_folder_id = #{templateFolderId,jdbcType=INTEGER}
+	</delete>
+
+	<insert id="insertTemplateFolder" parameterType="com.idata.pdm.entity.TemplateFolder">
+		insert into template_folder
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="templateId != null">template_id,</if>
+			<if test="templateFolderName != null">template_folder_name,</if>
+			<if test="templateFolderDesc != null">template_folder_desc,</if>
+			<if test="parentTemplateFolderId != null">parent_template_folder_id,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="templateId != null">#{templateId,jdbcType=INTEGER},</if>
+			<if test="templateFolderName != null">#{templateFolderName,jdbcType=VARCHAR},</if>
+			<if test="templateFolderDesc != null">#{templateFolderDesc,jdbcType=VARCHAR},</if>
+			<if test="parentTemplateFolderId != null">#{parentTemplateFolderId,jdbcType=VARCHAR},</if>
+		</trim>
+	</insert>
+	
+	<update id="updateTemplateFolder" parameterType="com.idata.pdm.entity.TemplateFolder">
+		update template_folder
+		<set>
+			<if test="templateId != null">template_id = #{templateId,jdbcType=INTEGER},</if>
+			<if test="templateFolderName != null">template_folder_name = #{templateFolderName,jdbcType=VARCHAR},</if>
+			<if test="templateFolderDesc != null">template_folder_desc = #{templateFolderDesc,jdbcType=VARCHAR},</if>
+			<if test="parentTemplateFolderId != null">parent_template_folder_id = #{parentTemplateFolderId,jdbcType=VARCHAR},</if>
+		</set>
+		where template_folder_id = #{templateFolderId,jdbcType=INTEGER}
+	</update>
+	
+	<select id="selectTemplateFolderList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select * from template_folder
+		where template_id = #{templateId,jdbcType=INTEGER}
+	</select>
+
+</mapper>
