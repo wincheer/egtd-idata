@@ -17,16 +17,14 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
     if (to.path == '/login') {
-        store.commit('removeLoginUser');
         sessionStorage.removeItem('loginUser');
+        store.commit('removeLoginUser');
     }
     let loginUser = JSON.parse(sessionStorage.getItem('loginUser'));
-    store.commit('setLoginUser',loginUser);
-    //let loginUser = store.state.loginUser;
     if (!loginUser && to.path != '/login') {
-        next({ path: '/login' });
+        next({ path: '/login' })
     } else {
-        next();
+        next()
     }
 })
 
