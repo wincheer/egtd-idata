@@ -10,25 +10,10 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2018-01-11 17:11:59
+Date: 2018-01-11 17:59:06
 */
 
 SET FOREIGN_KEY_CHECKS=0;
-
--- ----------------------------
--- Table structure for admin
--- ----------------------------
-DROP TABLE IF EXISTS `admin`;
-CREATE TABLE `admin` (
-  `root_name` varchar(255) DEFAULT NULL,
-  `login_name` varchar(255) DEFAULT NULL,
-  `password` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of admin
--- ----------------------------
-INSERT INTO `admin` VALUES ('超级用户', 'root', 'root');
 
 -- ----------------------------
 -- Table structure for department
@@ -44,6 +29,26 @@ CREATE TABLE `department` (
 
 -- ----------------------------
 -- Records of department
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for department_employe
+-- ----------------------------
+DROP TABLE IF EXISTS `department_employe`;
+CREATE TABLE `department_employe` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `dep_id` int(11) DEFAULT NULL,
+  `emp_name` varchar(255) DEFAULT NULL,
+  `emp_gender` varchar(255) DEFAULT NULL,
+  `emp_mobile` varchar(255) DEFAULT NULL,
+  `emp_email` varchar(255) DEFAULT NULL,
+  `emp_title` varchar(255) DEFAULT NULL,
+  `emp_grade` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of department_employe
 -- ----------------------------
 
 -- ----------------------------
@@ -91,26 +96,6 @@ CREATE TABLE `ducument_file` (
 
 -- ----------------------------
 -- Records of ducument_file
--- ----------------------------
-
--- ----------------------------
--- Table structure for employee
--- ----------------------------
-DROP TABLE IF EXISTS `employee`;
-CREATE TABLE `employee` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `dep_id` int(11) DEFAULT NULL,
-  `emp_name` varchar(255) DEFAULT NULL,
-  `emp_gender` varchar(255) DEFAULT NULL,
-  `emp_mobile` varchar(255) DEFAULT NULL,
-  `emp_email` varchar(255) DEFAULT NULL,
-  `emp_title` varchar(255) DEFAULT NULL,
-  `emp_grade` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of employee
 -- ----------------------------
 
 -- ----------------------------
@@ -169,8 +154,8 @@ CREATE TABLE `project` (
   `project_name` varchar(255) DEFAULT NULL,
   `project_desc` varchar(255) DEFAULT NULL,
   `category` varchar(255) DEFAULT NULL,
-  `is_key` varchar(255) DEFAULT NULL,
-  `is_forzen` varchar(255) DEFAULT NULL,
+  `is_key` int(11) DEFAULT NULL,
+  `is_forzen` int(11) DEFAULT NULL,
   `create_date` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `start_date` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `end_date` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
@@ -223,7 +208,7 @@ CREATE TABLE `project_group` (
 DROP TABLE IF EXISTS `project_staff`;
 CREATE TABLE `project_staff` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `is_vendor` varchar(255) DEFAULT NULL,
+  `is_vendor` int(11) DEFAULT NULL,
   `group_id` int(11) DEFAULT NULL,
   `emp_id` int(11) DEFAULT NULL,
   `staff_name` varchar(255) DEFAULT NULL,
@@ -231,11 +216,12 @@ CREATE TABLE `project_staff` (
   `staff_mobile` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of project_staff
 -- ----------------------------
+INSERT INTO `project_staff` VALUES ('1', '0', '0', '0', '超级用户', 'root@system', '000', '000');
 
 -- ----------------------------
 -- Table structure for project_stage
@@ -246,8 +232,8 @@ CREATE TABLE `project_stage` (
   `stage_name` varchar(255) DEFAULT NULL,
   `start_date` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `end_date` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  `has_supervisor` varchar(255) DEFAULT NULL,
-  `is_approval` varchar(255) DEFAULT NULL,
+  `has_supervisor` int(11) DEFAULT NULL,
+  `is_approval` int(11) DEFAULT NULL,
   `progress` int(11) DEFAULT NULL,
   `actor_staff_id` int(11) DEFAULT NULL,
   `modify_date` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
@@ -285,14 +271,14 @@ CREATE TABLE `project_task` (
   `task_desc` varchar(255) DEFAULT NULL,
   `from_date` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `end_date` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  `priority` varchar(255) DEFAULT NULL,
-  `progress` int(255) DEFAULT NULL,
-  `state` varchar(255) DEFAULT NULL,
+  `priority` int(11) DEFAULT NULL,
+  `progress` int(11) DEFAULT NULL,
+  `state` int(11) DEFAULT NULL COMMENT '未开始0，进行中1，已完成待检查2，完成3',
   `assign_staff_id` int(11) DEFAULT NULL,
   `actor_staff_id` int(255) DEFAULT NULL,
   `plan_workload` int(11) DEFAULT NULL,
   `real_workload` int(11) DEFAULT NULL,
-  `is_delay` varchar(255) DEFAULT NULL,
+  `is_delay` int(11) DEFAULT NULL,
   `delay_reason` varchar(255) DEFAULT NULL,
   `parent_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -326,7 +312,7 @@ CREATE TABLE `task_link` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `from_task` varchar(255) DEFAULT NULL,
   `to_task` varchar(255) DEFAULT NULL,
-  `status` varchar(255) DEFAULT NULL,
+  `status` int(11) DEFAULT NULL COMMENT '开始开始1，开始结束2，结束开始3，结束结束4',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
