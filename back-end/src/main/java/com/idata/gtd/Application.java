@@ -8,15 +8,15 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;
 
 @SpringBootApplication
 @MapperScan(basePackages="com.idata.gtd.dao")
-public class PdmApplication extends SpringBootServletInitializer
+public class Application extends SpringBootServletInitializer
 {
 	@Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(PdmApplication.class);
+        return application.sources(Application.class);
     }
 	
 	public static void main(String[] args)
 	{
-		SpringApplication.run(PdmApplication.class, args);
+		SpringApplication.run(Application.class, args);
 	}
 }
