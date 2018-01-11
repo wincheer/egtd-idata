@@ -8,19 +8,19 @@
 	<context id="context">
 		<!-- 数据库链接URL、用户名、密码 -->
 		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
-			connectionURL="jdbc:mysql://localhost:3306/pdm_idata" userId="root"
+			connectionURL="jdbc:mysql://localhost:3306/gtd_idata" userId="root"
 			password="root" />
 		<!-- 生成模型的包名和位置 -->
-		<javaModelGenerator targetPackage="com.idata.pdm.entity"
-			targetProject="pdm_idata/src/main/java" />
+		<javaModelGenerator targetPackage="com.idata.gtd.entity"
+			targetProject="egtd/src/main/java" />
 		<!-- 生成的映射文件报名和位置 -->
-		<sqlMapGenerator targetPackage="com.idata.pdm.mapper"
-			targetProject="pdm_idata/src/main/java" />
-		<javaClientGenerator targetPackage="com.idata.pdm.dao"
-			targetProject="pdm_idata/src/main/java" type="XMLMAPPER"/>
+		<sqlMapGenerator targetPackage="com.idata.gtd.mapper"
+			targetProject="egtd/src/main/java" />
+		<javaClientGenerator targetPackage="com.idata.gtd.dao"
+			targetProject="egtd/src/main/java" type="XMLMAPPER"/>
 			
 		<!-- 要生成的那些表(更改tableName 和domainObjectName 就可以了) -->
-		<table schema="pdm_idata" tableName="%" enableCountByExample="false"
+		<table schema="gtd_idata" tableName="%" enableCountByExample="false"
 			enableUpdateByExample="false" enableDeleteByExample="false"
 			enableSelectByExample="false" selectByExampleQueryId="false" />
 	</context>

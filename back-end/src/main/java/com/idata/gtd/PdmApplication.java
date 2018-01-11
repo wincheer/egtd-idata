@@ -1,4 +1,4 @@
-package com.idata.pdm;
+package com.idata.gtd;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -7,7 +7,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 
 @SpringBootApplication
-@MapperScan(basePackages="com.idata.pdm.dao")
+@MapperScan(basePackages="com.idata.gtd.dao")
 public class PdmApplication extends SpringBootServletInitializer
 {
 	@Override

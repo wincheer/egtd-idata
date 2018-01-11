@@ -3,14 +3,14 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.ywq.demo</groupId>
-	<artifactId>pdm</artifactId>
+	<groupId>com.idata.egtd</groupId>
+	<artifactId>egtd</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<packaging>war</packaging>
 
-	<name>PDM</name>
-	<description>Project Document Manager</description>
+	<name>EGTD</name>
+	<description>Enterprise Get Things Done</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

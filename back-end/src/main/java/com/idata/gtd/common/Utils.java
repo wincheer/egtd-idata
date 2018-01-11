@@ -1,4 +1,4 @@
-package com.idata.pdm.common;
+package com.idata.gtd.common;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

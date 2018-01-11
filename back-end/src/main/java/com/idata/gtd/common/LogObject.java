@@ -1,4 +1,4 @@
-package com.idata.pdm.common;
+package com.idata.gtd.common;
 
 
 /**
