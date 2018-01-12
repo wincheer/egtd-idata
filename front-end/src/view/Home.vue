@@ -79,7 +79,7 @@ export default {
       var _this = this;
       this.$confirm("确认退出吗?", "提示", {})
         .then(() => {
-          sessionStorage.removeItem("user");
+          sessionStorage.removeItem("loginUser");
           this.$router.push("/login");
         })
         .catch(() => {});
@@ -192,7 +192,7 @@ export default {
       .content-wrapper {
         width: 100%;
         height: 100%;
-        background-color: #ffd;
+        background-color: #fff;
         box-sizing: border-box;
       }
     }

@@ -21,9 +21,11 @@ router.beforeEach((to, from, next) => {
         store.commit('removeLoginUser');
     }
     let loginUser = JSON.parse(sessionStorage.getItem('loginUser'));
+   
     if (!loginUser && to.path != '/login') {
         next({ path: '/login' })
     } else {
+        store.commit("setLoginUser", loginUser);
         next()
     }
 })

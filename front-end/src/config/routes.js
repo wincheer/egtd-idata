@@ -1,7 +1,9 @@
 import Login from '@/view/Login.vue'
 import Home from '@/view/Home.vue'
-import Project from '@/view/Project.vue'
-import Calendar from '@/view/Calendar.vue'
+import Project from '@/view/project/Project.vue'
+import Calendar from '@/view/gtd/Calendar.vue'
+import ParamConfig from '@/view/setup/ParamConfig.vue'
+import Foo from '@/view/Foo.vue'
 
 let routes = [
     {
@@ -37,7 +39,7 @@ let routes = [
         children: [
             { path: '/hello31', component: Project, name: '资源管理',iconCls:'el-icon-goods' },
             { path: '/hello32', component: Project, name: '项目模板定义' ,iconCls:'el-icon-document'},
-            { path: '/hello33', component: Project, name: '系统参数' ,iconCls:'el-icon-document'}
+            { path: '/param-config', component: ParamConfig, name: '系统参数' ,iconCls:'el-icon-document'}
         ]
     }
 ];
