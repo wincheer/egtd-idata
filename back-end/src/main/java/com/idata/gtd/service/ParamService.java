@@ -21,6 +21,7 @@ public class ParamService {
 
 	@Autowired
 	private ParamKeyMapper paramKeyDao;
+	@Autowired
 	private ParamValueMapper paramValueDao;
 
 	public List<ParamKey> selectParamKeyList() {
@@ -50,7 +51,23 @@ public class ParamService {
 
 	public List<ParamValue> selectParamValueList(Integer paramKeyId) {
 
-		return paramValueDao.selectParamValueList(paramKeyId);
+		List<ParamValue> paramValueList = paramValueDao.selectParamValueList(paramKeyId);
+		return paramValueList;
+	}
+
+	public int insertParamValue(ParamValue paramValue) {
+		
+		return paramValueDao.insertParamValue(paramValue);
+	}
+
+	public int updateParamValue(ParamValue paramValue) {
+		
+		return paramValueDao.updateParamValue(paramValue);
+	}
+
+	public int delParamValue(Integer id) {
+		
+		return paramValueDao.deleteParamValueByPK(id);
 	}
 
 }

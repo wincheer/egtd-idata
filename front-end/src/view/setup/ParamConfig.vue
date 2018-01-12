@@ -8,22 +8,28 @@
           <el-table-column prop="dataType" label="数据类型"></el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <el-button size="mini">编辑</el-button>
-              <el-button type="danger" size="mini">删除</el-button>
+              <el-button size="mini" @click="onEditParamKey(scope.row)">编辑</el-button>
+              <el-button type="danger" @click="onDelParamKey(scope.row)" size="mini">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
-        <el-button @click="dlgParamAddVis=true">增加参数</el-button>
+        <el-button @click="dlgParamKeyEditVis=true" style="margin-top: 20px;">增加参数</el-button>
       </el-col>
       <el-col :span="12">
         <el-table :data="paramValueList" style="width:90%">
           <el-table-column prop="paramValue" label="参数值"></el-table-column>
-          <el-table-column label="操作"></el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button size="mini" @click="onEditParamValue(scope.row)">编辑</el-button>
+              <el-button type="danger" @click="onDelParamValue(scope.row)" size="mini">删除</el-button>
+            </template>
+          </el-table-column>
         </el-table>
-        <el-button>增加参数值</el-button>
+        <el-button @click="dlgParamValueEditVis=true" style="margin-top: 20px;">增加参数值</el-button>
       </el-col>
     </el-row>
-    <el-dialog :title="paramKeyObj.id==''?'增加参数':'编辑参数'" :visible.sync="dlgParamAddVis" width="30%">
+
+    <el-dialog :title="paramKeyObj.id==''?'增加参数':'编辑参数'" :visible.sync="dlgParamKeyEditVis" width="30%">
       <el-form :model="paramKeyObj" :rules="paramKeyObjRules" ref="paramKeyForm" label-width="80px">
         <el-form-item label="参数代码" prop="paramKey">
           <el-input type="text" v-model="paramKeyObj.paramKey"></el-input>
@@ -36,7 +42,19 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="updateParamKey" :loading="logining">保存</el-button>
-          <el-button @click="dlgParamAddVis = false">取消</el-button>
+          <el-button @click="dlgParamKeyEditVis = false">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
+    <el-dialog :title="paramValueObj.id==''?'增加参数值':'编辑参数值'" :visible.sync="dlgParamValueEditVis" width="30%">
+      <el-form :model="paramValueObj" :rules="paramValueObjRules" ref="paramValueForm" label-width="80px">
+        <el-form-item label="参数值" prop="paramValue">
+          <el-input type="text" v-model="paramValueObj.paramValue"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="updateParamValue" :loading="logining">保存</el-button>
+          <el-button @click="dlgParamValueEditVis = false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -58,7 +76,8 @@ export default {
       logining: false,
       paramKeyList: [],
       paramValueList: [],
-      dlgParamAddVis: false,
+      dlgParamKeyEditVis: false,
+      dlgParamValueEditVis: false,
       paramKeyObj: {
         id: "",
         paramKey: "",
@@ -70,28 +89,36 @@ export default {
         paramKeyName: [{ required: true, message: "请输入参数名称", trigger: "blur" }],
         dataType: [{ required: true, message: "请输入参数的数据类型", trigger: "blur" }]
       },
-      paramValueObj: {}
+      paramValueObj: {
+        id: "",
+        paramId: "",
+        paramValue: ""
+      },
+      paramValueObjRules: {
+        paramValue: [{ required: true, message: "请输入参数值", trigger: "blur" }]
+      }
     };
   },
   methods: {
-    selectParamKeyList(){
+    selectParamKeyList() {
       var _this = this;
-      SELECT_PARAM_KEY_LIST().then(res =>{
-        if(!Array.isArray(res))
-         _this.$message({message: "获取参数列表失败，请联系系统管理员。",type: "error"});
-         else{
-           _this.paramKeyList = res;
-         }
+      SELECT_PARAM_KEY_LIST().then(res => {
+        if (!Array.isArray(res))
+          _this.$message({ message: "获取参数列表失败，请联系系统管理员。", type: "error" });
+        else {
+          _this.paramKeyList = res;
+        }
       });
     },
-    selectParamValueList(paramKeyID){
+    selectParamValueList(paramKeyID) {
       var _this = this;
-      SELECT_PARAM_VALUE_LIST({id:paramKeyID}).then(res =>{
-        if(!Array.isArray(res))
-         _this.$message({message: "获取参数列表失败，请联系系统管理员。",type: "error"});
-         else{
-           _this.paramValueList = res;
-         }
+      SELECT_PARAM_VALUE_LIST({ id: paramKeyID }).then(res => {
+        if (!Array.isArray(res))
+          _this.$message({ message: "获取参数列表失败，请联系系统管理员。", type: "error" });
+        else {
+          _this.paramValueList = res;
+          _this.paramValueObj.paramId = paramKeyID;
+        }
       });
     },
     updateParamKey() {
@@ -102,17 +129,65 @@ export default {
           UPDATE_PARAM_KEY(_this.paramKeyObj).then(data => {
             _this.logining = false;
             if (data == "") {
-              _this.$message({message: "更新参数失败，请联系系统管理员。",type: "error"});
+              _this.$message({ message: "更新参数失败，请联系系统管理员。", type: "error" });
             } else {
               _this.selectParamKeyList();
-              _this.dlgParamAddVis = false;
+              _this.dlgParamKeyEditVis = false;
             }
           });
         }
       });
     },
-    onSelectParamKey(newRow,oldRow){
-      this.selectParamValueList(newRow.id);
+    updateParamValue() {
+      var _this = this;
+      this.$refs.paramValueForm.validate(valid => {
+        if (valid) {
+          _this.logining = true;
+          UPDATE_PARAM_VALUE(_this.paramValueObj).then(data => {
+            _this.logining = false;
+            if (data == "") {
+              _this.$message({ message: "更新参数值失败，请联系系统管理员。", type: "error" });
+            } else {
+              _this.selectParamValueList(_this.paramValueObj.paramId);
+              _this.dlgParamValueEditVis = false;
+            }
+          });
+        }
+      });
+    },
+    onSelectParamKey(newRow, oldRow) {
+      if (newRow != null) this.selectParamValueList(newRow.id);
+    },
+    onEditParamKey(paramKey) {
+      Object.assign(this.paramKeyObj, paramKey);
+      this.dlgParamKeyEditVis = true;
+    },
+    onEditParamValue(paramValue) {
+      Object.assign(this.paramValueObj, paramValue);
+      this.dlgParamValueEditVis = true;
+    },
+    onDelParamKey(paramKey) {
+      var _this = this;
+      _this.$confirm("确认删除该记录吗?", "提示", {
+        type: "warning"
+      }).then(() => {
+        DEL_PARAM_KEY({ id: paramKey.id }).then(res => {
+          _this.$message({message: "删除成功",type: "success"});
+          _this.selectParamKeyList();
+          _this.paramValueList = [];
+        });
+      });
+    },
+    onDelParamValue(paramValue) {
+      var _this = this;
+      _this.$confirm("确认删除该记录吗?", "提示", {
+        type: "warning"
+      }).then(() => {
+        DEL_PARAM_VALUE({ id: paramValue.id }).then(res => {
+          _this.$message({message: "删除成功",type: "success"});
+          this.selectParamValueList(paramValue.paramId);
+        });
+      });
     }
   },
   mounted() {
@@ -123,6 +198,6 @@ export default {
 
 <style>
 .el-button {
-  margin-top: 20px;
+  /* margin-top: 20px; */
 }
 </style>

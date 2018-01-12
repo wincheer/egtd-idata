@@ -46,5 +46,20 @@ public class ParamAction {
 
 		return paramService.selectParamValueList(paramKey.getId());
 	};
+	
+	@RequestMapping(value = "/updateParamValue", method = RequestMethod.POST)
+	public int updateParamValue(@RequestBody ParamValue paramValue) {
+
+		if (paramValue.getId() == null)
+			return paramService.insertParamValue(paramValue);
+		else
+			return paramService.updateParamValue(paramValue);
+	};
+
+	@RequestMapping(value = "/delParamValue", method = RequestMethod.POST)
+	public int delParamValue(@RequestBody ParamValue paramKey) {
+
+		return paramService.delParamValue(paramKey.getId());
+	};
 
 }
