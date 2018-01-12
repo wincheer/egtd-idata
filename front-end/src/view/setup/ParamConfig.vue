@@ -2,7 +2,7 @@
   <section>
     <el-row :gutter="20">
       <el-col :span="12">
-        <el-table :data="paramKeyList" style="width:90%" highlight-current-row  @current-change="onSelectParamKey">
+        <el-table :data="paramKeyList" ref="paramKeyList" style="width:90%" highlight-current-row  @current-change="onSelectParamKey">
           <el-table-column prop="paramKey" label="参数代码"></el-table-column>
           <el-table-column prop="paramKeyName" label="参数名字"></el-table-column>
           <el-table-column prop="dataType" label="数据类型"></el-table-column>
@@ -25,7 +25,7 @@
             </template>
           </el-table-column>
         </el-table>
-        <el-button @click="dlgParamValueEditVis=true" style="margin-top: 20px;">增加参数值</el-button>
+        <el-button @click="dlgParamValueEditVis=true" :disabled="paramValueObj.paramId==''" style="margin-top: 20px;">增加参数值</el-button>
       </el-col>
     </el-row>
 
