@@ -13,7 +13,7 @@
             </template>
           </el-table-column>
         </el-table>
-        <el-button @click="dlgParamKeyEditVis=true" style="margin-top: 20px;">增加参数</el-button>
+        <el-button type="primary" @click="dlgParamKeyEditVis=true" icon="el-icon-circle-plus" style="margin-top: 20px;">增加参数</el-button>
       </el-col>
       <el-col :span="12">
         <el-table :data="paramValueList" style="width:90%">
@@ -25,7 +25,7 @@
             </template>
           </el-table-column>
         </el-table>
-        <el-button @click="dlgParamValueEditVis=true" :disabled="paramValueObj.paramId==''" style="margin-top: 20px;">增加参数值</el-button>
+        <el-button type="primary" @click="dlgParamValueEditVis=true" :disabled="paramValueObj.paramId==''" style="margin-top: 20px;">增加参数值</el-button>
       </el-col>
     </el-row>
     <!--参数编辑对话框-->
