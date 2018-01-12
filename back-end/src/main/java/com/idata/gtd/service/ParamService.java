@@ -32,9 +32,12 @@ public class ParamService {
 		return paramKeyList;
 	}
 
-	public int delParamKey(Integer id) {
+	public int delParamKey(Integer paramKeyId) {
 
-		return paramKeyDao.deleteParamKeyByPK(id);
+		paramKeyDao.deleteParamKeyByPK(paramKeyId);
+		paramValueDao.deleteParamValues(paramKeyId);
+		
+		return 0;
 	}
 
 	public int insertParamKey(ParamKey paramKey) {

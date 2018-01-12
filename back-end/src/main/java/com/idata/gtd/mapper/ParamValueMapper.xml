@@ -47,5 +47,10 @@
 		from param_value
 		where param_id = #{paramKeyId,jdbcType=INTEGER}
 	</select>
+	
+	<delete id="deleteParamValues" parameterType="java.lang.Integer">
+		delete from param_value
+		where param_id = #{paramKeyId,jdbcType=INTEGER}
+	</delete>
 
 </mapper>

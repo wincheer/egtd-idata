@@ -14,5 +14,7 @@ public interface ParamValueMapper {
 
 	int updateParamValue(ParamValue record);
 
-	List<ParamValue> selectParamValueList(Integer paramKeyId); 
+	List<ParamValue> selectParamValueList(Integer paramKeyId);
+
+	void deleteParamValues(Integer paramKeyId); 
 }
