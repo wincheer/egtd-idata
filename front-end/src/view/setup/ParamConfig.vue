@@ -1,21 +1,32 @@
 <template>
   <section>
-    <el-row :gutter="20">
-      <el-col :span="12">
-        <el-table :data="paramKeyList" ref="paramKeyList" style="width:90%" highlight-current-row  @current-change="onSelectParamKey">
-          <el-table-column prop="paramKey" label="参数代码"></el-table-column>
-          <el-table-column prop="paramKeyName" label="参数名字"></el-table-column>
-          <el-table-column prop="dataType" label="数据类型"></el-table-column>
-          <el-table-column label="操作">
-            <template slot-scope="scope">
-              <el-button size="mini" @click="onEditParamKey(scope.row)">编辑</el-button>
-              <el-button type="danger" @click="onDelParamKey(scope.row)" size="mini">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-        <el-button type="primary" @click="dlgParamKeyEditVis=true" icon="el-icon-circle-plus" style="margin-top: 20px;">增加参数</el-button>
+    <el-row>
+      <el-col :span="13">
+        <el-card style="margin-top: 20px;">
+          <div slot="header" class="clearfix">
+            <span>参数</span>
+            <el-button @click="dlgParamKeyEditVis=true" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加参数</el-button>
+          </div>
+          <el-table :data="paramKeyList" ref="paramKeyList" style="width:90%" highlight-current-row  @current-change="onSelectParamKey">
+            <el-table-column prop="paramKey" label="参数代码"></el-table-column>
+            <el-table-column prop="paramKeyName" label="参数名字"></el-table-column>
+            <el-table-column prop="dataType" label="数据类型"></el-table-column>
+            <el-table-column label="操作">
+              <template slot-scope="scope">
+                <el-button size="mini" @click="onEditParamKey(scope.row)">编辑</el-button>
+                <el-button type="danger" @click="onDelParamKey(scope.row)" size="mini">删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <!-- <el-button type="primary" @click="dlgParamKeyEditVis=true" icon="el-icon-circle-plus" style="margin-top: 20px;">增加参数</el-button> -->
+        </el-card>
       </el-col>
-      <el-col :span="12">
+      <el-col :span="13">
+        <el-card  style="margin-top: 20px;">
+          <div slot="header" class="clearfix">
+            <span>参数值</span>
+            <el-button @click="dlgParamValueEditVis=true" :disabled="paramValueObj.paramId==''" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加参数值</el-button>
+          </div>
         <el-table :data="paramValueList" style="width:90%">
           <el-table-column prop="paramValue" label="参数值"></el-table-column>
           <el-table-column label="操作">
@@ -25,7 +36,8 @@
             </template>
           </el-table-column>
         </el-table>
-        <el-button type="primary" @click="dlgParamValueEditVis=true" :disabled="paramValueObj.paramId==''" style="margin-top: 20px;">增加参数值</el-button>
+        <!-- <el-button type="primary" @click="dlgParamValueEditVis=true" :disabled="paramValueObj.paramId==''" style="margin-top: 20px;">增加参数值</el-button> -->
+      </el-card>
       </el-col>
     </el-row>
     <!--参数编辑对话框-->
