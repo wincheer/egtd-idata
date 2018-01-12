@@ -28,7 +28,7 @@
         <el-button @click="dlgParamValueEditVis=true" :disabled="paramValueObj.paramId==''" style="margin-top: 20px;">增加参数值</el-button>
       </el-col>
     </el-row>
-
+    <!--参数编辑对话框-->
     <el-dialog :title="paramKeyObj.id==''?'增加参数':'编辑参数'" :visible.sync="dlgParamKeyEditVis" width="30%">
       <el-form :model="paramKeyObj" :rules="paramKeyObjRules" ref="paramKeyForm" label-width="80px">
         <el-form-item label="参数代码" prop="paramKey">
@@ -38,7 +38,11 @@
           <el-input type="text" placeholder="参数的中文名称" v-model="paramKeyObj.paramKeyName"></el-input>
         </el-form-item>
         <el-form-item label="数据类型" prop="dataType">
-          <el-input v-model="paramKeyObj.dataType"></el-input>
+          <el-select v-model="paramKeyObj.dataType" placeholder="请选择">
+            <el-option label="字符串" value="String" />
+            <el-option label="整数" value="Integer" />
+            <el-option label="布尔型" value="Boolean" />
+          </el-select>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="updateParamKey" :loading="logining">保存</el-button>
@@ -46,7 +50,7 @@
         </el-form-item>
       </el-form>
     </el-dialog>
-
+    <!--参数值编辑对话框-->
     <el-dialog :title="paramValueObj.id==''?'增加参数值':'编辑参数值'" :visible.sync="dlgParamValueEditVis" width="30%">
       <el-form :model="paramValueObj" :rules="paramValueObjRules" ref="paramValueForm" label-width="80px">
         <el-form-item label="参数值" prop="paramValue">
@@ -82,12 +86,12 @@ export default {
         id: "",
         paramKey: "",
         paramKeyName: "",
-        dataType: ""
+        dataType: "String"
       },
       paramKeyObjRules: {
         paramKey: [{ required: true, message: "请输入参数代码", trigger: "blur" }],
         paramKeyName: [{ required: true, message: "请输入参数名称", trigger: "blur" }],
-        dataType: [{ required: true, message: "请输入参数的数据类型", trigger: "blur" }]
+        dataType: [{ required: true, message: "请选择参数的数据类型", trigger: "change" }]
       },
       paramValueObj: {
         id: "",
