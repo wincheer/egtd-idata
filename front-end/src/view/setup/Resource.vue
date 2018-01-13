@@ -10,7 +10,7 @@
                 <span>组织结构</span>
                 <el-button @click="openAddDep" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加机构</el-button>
               </div>
-              <el-tree :data="depTreeList" :props="defaultProps" @node-click="onNodeClick" :render-content="renderContent" highlight-current :expand-on-click-node="false"></el-tree>
+              <el-tree :data="depTreeList" :props="defaultProps" @node-click="onNodeClick" :render-content="renderContent" highlight-current :expand-on-click-node="false" default-expand-all></el-tree>
             </el-card>
           </el-col>
           <el-col :span="12">
@@ -88,7 +88,7 @@
 </template>
 
 <script>
-import { SELECT_DEP_TREE_LIST, UPDATE_DEP } from "@/config/api";
+import { SELECT_DEP_TREE_LIST, UPDATE_DEP, DELETE_DEP } from "@/config/api";
 export default {
   data() {
     return {
@@ -134,9 +134,9 @@ export default {
       this.$refs.depForm.validate(valid => {
         if (valid) {
           //todo 检查parentId是否等于自身的id
-          if(this.depObj.id == this.depObj.parentId){
+          if (_this.depObj.id == _this.depObj.parentId) {
             _this.$message({ message: "不能将自身设置为上级机构。", type: "error" });
-            return
+            return;
           }
           _this.logining = true;
           UPDATE_DEP(_this.depObj).then(data => {
@@ -167,21 +167,32 @@ export default {
       this.builderParentIdSeq(node);
       this.dlgDepEditVis = true;
     },
-    builderParentIdSeq(node){
+    builderParentIdSeq(node) {
       this.parentIds = [];
-      if(node.level != 1){
+      if (node.level != 1) {
         this.parentIds.unshift(node.data.parentId); //push末尾添加,unshift开头添加
         this.unshiftParentId(node.parent);
       }
     },
-    unshiftParentId(pnode){
-      if(pnode.level != 1){
+    unshiftParentId(pnode) {
+      if (pnode.level != 1) {
         this.parentIds.unshift(pnode.data.parentId);
         this.unshiftParentId(pnode.parent);
       }
     },
     delDep(node, data) {
-      this.$message("删除：" + node.label);
+      var _this = this;
+      _this
+        .$confirm("确认删除该记录吗?", "提示", {
+          type: "warning"
+        })
+        .then(() => {
+          DELETE_DEP({ id: data.id }).then(res => {
+            _this.$message({ message: "删除成功", type: "success" });
+            _this.selectDepTreeList();
+            _this.depEmpList = [];
+          });
+        });
     },
     onNodeClick(data) {
       //this.$message(data.label);

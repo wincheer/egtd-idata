@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.idata.gtd.common.TreeNode;
 import com.idata.gtd.common.Utils;
 import com.idata.gtd.entity.Department;
+import com.idata.gtd.entity.ParamValue;
 import com.idata.gtd.service.DepartmentService;
 
 /**
@@ -49,6 +50,12 @@ public class DepartmentAction {
 			return depService.insertDepartment(dep);
 		else
 			return depService.updateDepartment(dep);
+	};
+	
+	@RequestMapping(value = "/deleteDep", method = RequestMethod.POST)
+	public int deleteDep(@RequestBody Department dep) {
+
+		return depService.deleteDepartment(dep.getId());
 	};
 
 }

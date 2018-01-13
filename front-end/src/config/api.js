@@ -15,3 +15,4 @@ export const DEL_PARAM_VALUE = (params) => { return axios.post(`${base}/delParam
 // 资源管理
 export const SELECT_DEP_TREE_LIST = () => { return axios.post(`${base}/selectDepTreeList`).then(res => res.data); };
 export const UPDATE_DEP = (params) => { return axios.post(`${base}/updateDep`, params).then(res => res.data); };
+export const DELETE_DEP = (params) => { return axios.post(`${base}/deleteDep`, params).then(res => res.data); };

@@ -42,4 +42,9 @@ public class DepartmentService {
 		return depDao.updateDepartment(dep);
 	}
 
+	public int deleteDepartment(Integer id) {
+
+		return depDao.deleteDepartmentByPK(id);
+	}
+
 }
