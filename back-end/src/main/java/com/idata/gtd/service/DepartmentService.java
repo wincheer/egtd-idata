@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.idata.gtd.dao.DepartmentEmployeeMapper;
 import com.idata.gtd.dao.DepartmentMapper;
 import com.idata.gtd.entity.Department;
 
@@ -25,6 +26,8 @@ public class DepartmentService {
 
 	@Autowired
 	private DepartmentMapper depDao;
+	@Autowired
+	private DepartmentEmployeeMapper depEmpDao;
 	
 	public List<Department> selectDepartmentList() {
 		
@@ -44,7 +47,11 @@ public class DepartmentService {
 
 	public int deleteDepartment(Integer id) {
 
-		return depDao.deleteDepartmentByPK(id);
+		depDao.deleteDepartmentByPK(id);
+		//同时删除当前机构下的员工
+		depEmpDao.deleteDepartmentEmployees(id);
+		
+		return 0;
 	}
 
 }

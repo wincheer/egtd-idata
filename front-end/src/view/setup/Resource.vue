@@ -4,7 +4,7 @@
       <el-tab-pane name="first">
         <span slot="label"><i class="el-icon-service"></i>业主组织结构</span>
         <el-row :gutter="20">
-          <el-col :span="12">
+          <el-col :span="8">
             <el-card>
               <div slot="header" class="clearfix">
                 <span>组织结构</span>
@@ -13,7 +13,7 @@
               <el-tree :data="depTreeList" :props="defaultProps" @node-click="onNodeClick" :render-content="renderContent" highlight-current :expand-on-click-node="false" default-expand-all></el-tree>
             </el-card>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="16">
             <el-card>
               <div slot="header" class="clearfix">
                 <span>机构员工</span>
@@ -21,6 +21,7 @@
               </div>
               <el-table>
                 <el-table-column label="姓名"></el-table-column>
+                <el-table-column label="性别"></el-table-column>
                 <el-table-column label="电话"></el-table-column>
                 <el-table-column label="邮箱"></el-table-column>
                 <el-table-column label="职位"></el-table-column>
@@ -182,11 +183,13 @@ export default {
     },
     delDep(node, data) {
       var _this = this;
-      _this
-        .$confirm("确认删除该记录吗?", "提示", {
+      if(node.childNodes.length != 0){
+        _this.$message({ message: "当前机构包含下级机构，不允许删除。", type: "warning" });
+        return;
+      }
+      _this.$confirm("确认删除该记录吗?", "提示", {
           type: "warning"
-        })
-        .then(() => {
+        }).then(() => {
           DELETE_DEP({ id: data.id }).then(res => {
             _this.$message({ message: "删除成功", type: "success" });
             _this.selectDepTreeList();
@@ -195,6 +198,7 @@ export default {
         });
     },
     onNodeClick(data) {
+      // TODO 查询当前机构的员工
       //this.$message(data.label);
     },
     onParentChange(value) {

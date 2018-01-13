@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.idata.gtd.common.TreeNode;
 import com.idata.gtd.common.Utils;
 import com.idata.gtd.entity.Department;
-import com.idata.gtd.entity.ParamValue;
 import com.idata.gtd.service.DepartmentService;
 
 /**
