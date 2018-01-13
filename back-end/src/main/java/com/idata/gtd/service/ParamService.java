@@ -13,6 +13,12 @@ import com.idata.gtd.dao.ParamValueMapper;
 import com.idata.gtd.entity.ParamKey;
 import com.idata.gtd.entity.ParamValue;
 
+/**
+ * <b>版权信息 :</b> 2018，广州智数信息科技有限公司<br/>
+ * <b>功能描述 :</b> 系统参数配置UI访问restful接口<br/>
+ * <b>版本历史 :</b> <br/>
+ * 杨文清 | 2018年1月13日 上午11:46:54 | 创建
+ */
 @Service
 @Transactional
 public class ParamService {

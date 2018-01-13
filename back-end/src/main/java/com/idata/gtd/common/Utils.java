@@ -10,11 +10,12 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+
 /**
- * <b>版权信息 :</b> 2017，广州智数技术有限公司<br/>
- * <b>功能描述 :</b> 辅助类<br/>
+ * <b>版权信息 :</b> 2018，广州智数信息科技有限公司<br/>
+ * <b>功能描述 :</b> 辅助类，其中行记录转换为树节点比较重要<br/>
  * <b>版本历史 :</b> <br/>
- * 杨文清 | 2017年10月23日 下午7:29:37 | 创建
+ * 杨文清 | 2018年1月13日 上午11:41:48 | 创建
  */
 public class Utils {
 	private static Logger log = Logger.getLogger(Utils.class);
@@ -87,19 +88,19 @@ public class Utils {
 	
 	/************************* 下面的方法用来将模板目录表记录构建为树  ***************************/
 
-	public static List<TreeNode> builderTree(List<TreeNode> folderList) {
+	public static List<TreeNode> builderTree(List<TreeNode> nodeList) {
 
 		// 生成树
 		List<TreeNode> treeNodeList = new ArrayList<TreeNode>();
 		// 生成树 -- 添加根节点
-		for (TreeNode node : folderList) {
+		for (TreeNode node : nodeList) {
 			if (node.getParentId() == 0) {
 				treeNodeList.add(node);
 			}
 		}
 		// 生成树 -- 递归填充子节点
 		for (TreeNode node : treeNodeList) {
-			node.setChildren(getChildList(node.getId(), folderList));
+			node.setChildren(getChildList(node.getId(), nodeList));
 		}
 
 		return treeNodeList;

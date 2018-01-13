@@ -1,32 +1,222 @@
 <template>
-  <el-tabs type="card" v-model="activeName" @tab-click="handleClick" style="margin-top: 20px;">
-    <el-tab-pane name="first">
-       <span slot="label"><i class="el-icon-service"></i> 业主组织结构</span>
-      用户管理
-    </el-tab-pane>
-    <el-tab-pane name="second">
-      <span slot="label"><i class="el-icon-menu"></i> 供应商资源管理</span>
-      配置管理
-    </el-tab-pane>
-  </el-tabs>
+  <section>
+    <el-tabs type="border-card" v-model="activeName" style="margin-top: 20px;">
+      <el-tab-pane name="first">
+        <span slot="label"><i class="el-icon-service"></i>业主组织结构</span>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-card>
+              <div slot="header" class="clearfix">
+                <span>组织结构</span>
+                <el-button @click="openAddDep" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加机构</el-button>
+              </div>
+              <el-tree :data="depTreeList" :props="defaultProps" @node-click="onNodeClick" :render-content="renderContent" highlight-current :expand-on-click-node="false"></el-tree>
+            </el-card>
+          </el-col>
+          <el-col :span="12">
+            <el-card>
+              <div slot="header" class="clearfix">
+                <span>机构员工</span>
+                <el-button @click="dlgDepEmpEditVis=true" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加机构员工</el-button>
+              </div>
+              <el-table>
+                <el-table-column label="姓名"></el-table-column>
+                <el-table-column label="电话"></el-table-column>
+                <el-table-column label="邮箱"></el-table-column>
+                <el-table-column label="职位"></el-table-column>
+                <el-table-column label="职务"></el-table-column>
+              </el-table>
+            </el-card>
+          </el-col>
+        </el-row>
+      </el-tab-pane>
+      <el-tab-pane name="second">
+        <span slot="label"><i class="el-icon-menu"></i> 供应商资源管理</span>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-card>
+              <div slot="header" class="clearfix">
+                <span>供应商</span>
+                <el-button @click="dlgVendorEditVis=true" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加供应商</el-button>
+              </div>
+              <el-table>
+                <el-table-column label="简称"></el-table-column>
+                <el-table-column label="全称"></el-table-column>
+                <el-table-column label="资质"></el-table-column>
+                <el-table-column label="联系人"></el-table-column>
+                <el-table-column label="联系电话"></el-table-column>
+              </el-table>
+            </el-card>
+          </el-col>
+          <el-col :span="12">
+            <el-card>
+              <div slot="header" class="clearfix">
+                <span>供应商员工</span>
+                <el-button @click="dlgVendorEmpEditVis=true" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加供应商员工</el-button>
+              </div>
+              <el-table>
+                <el-table-column label="姓名"></el-table-column>
+                <el-table-column label="电话"></el-table-column>
+                <el-table-column label="邮箱"></el-table-column>
+                <el-table-column label="职位"></el-table-column>
+                <el-table-column label="职级"></el-table-column>
+              </el-table>
+            </el-card>
+          </el-col>
+        </el-row>
+      </el-tab-pane>
+    </el-tabs>
+    <el-dialog :title="depObj.id==''?'增加机构':'编辑机构'" :visible.sync="dlgDepEditVis" width="30%">
+      <el-form :model="depObj" :rules="depObjRules" ref="depForm" label-width="80px">
+        <el-form-item label="上级机构" prop="parentId">
+          <el-cascader :options="depTreeList" :props="{value:'id'}" v-model="parentIds" @change="onParentChange" change-on-select style="width:100%">
+        </el-cascader>
+        </el-form-item>
+        <el-form-item label="机构名称" prop="depName">
+          <el-input type="text" v-model="depObj.depName"></el-input>
+        </el-form-item>
+        <el-form-item label="机构描述" prop="depDesc">
+          <el-input type="text" v-model="depObj.depDesc"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="updateDep" :loading="logining">保存</el-button>
+          <el-button @click="dlgDepEditVis = false">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+  </section>
 </template>
 
 <script>
-export default { 
-    props:{},
-    data() {
-      return{
-        activeName: 'second'
-      }
-    }, 
-    methods: {
-      handleClick(tab, event) {
-        console.log(tab, event);
+import { SELECT_DEP_TREE_LIST, UPDATE_DEP } from "@/config/api";
+export default {
+  data() {
+    return {
+      logining: false,
+      activeName: "first",
+      depTreeList: [],
+      depEmpList: [],
+      vendorList: [],
+      vendorEmpList: [],
+      dlgDepEditVis: false,
+      dlgDepEmpEditVis: false,
+      dlgVendorEditVis: false,
+      dlgVendorEmpEditVis: false,
+      defaultProps: {
+        children: "children",
+        label: "label"
+      },
+      depObj: {
+        id: null,
+        depName: "",
+        depDesc: "",
+        parentId: null
+      },
+      depObjRules: {
+        label: [{ required: true, message: "请输入参数代码", trigger: "blur" }]
+      },
+      parentIds: []
+    };
+  },
+  methods: {
+    selectDepTreeList() {
+      var _this = this;
+      SELECT_DEP_TREE_LIST().then(res => {
+        if (!Array.isArray(res))
+          _this.$message({ message: "获取组织结构失败，请联系系统管理员。", type: "error" });
+        else {
+          _this.depTreeList = res;
+        }
+      });
+    },
+    updateDep() {
+      var _this = this;
+      this.$refs.depForm.validate(valid => {
+        if (valid) {
+          //todo 检查parentId是否等于自身的id
+          _this.logining = true;
+          UPDATE_DEP(_this.depObj).then(data => {
+            _this.logining = false;
+            if (data == "") {
+              _this.$message({ message: "更新部门，请联系系统管理员。", type: "error" });
+            } else {
+              _this.selectDepTreeList();
+              _this.dlgDepEditVis = false;
+            }
+          });
+        }
+      });
+    },
+    openAddDep() {
+      this.depObj.id = "";
+      this.depObj.depName = "";
+      this.depObj.depDesc = "";
+      this.depObj.parentId = "";
+      this.parentIds = [];
+      this.dlgDepEditVis = true;
+    },
+    openEditDep(node, data) {
+      this.depObj.id = data.id;
+      this.depObj.depName = data.label;
+      this.depObj.depDesc = data.desc;
+      this.depObj.parentId = data.parentId;
+      this.builderParentIdSeq(node);
+      this.dlgDepEditVis = true;
+    },
+    builderParentIdSeq(node){
+      this.parentIds = [];
+      if(node.level != 1){
+        this.parentIds.unshift(node.data.parentId); //push末尾添加,unshift开头添加
+        this.unshiftParentId(node.parent);
       }
     },
-    watch:{},
-    computed:{},
-    mounted() {}
+    unshiftParentId(pnode){
+      if(pnode.level != 1){
+        this.parentIds.unshift(pnode.data.parentId);
+        this.unshiftParentId(pnode.parent);
+      }
+    },
+    delDep(node, data) {
+      this.$message("删除：" + node.label);
+    },
+    onNodeClick(data) {
+      //this.$message(data.label);
+    },
+    onParentChange(value) {
+      if (value.length != 0) this.depObj.parentId = value[value.length - 1];
+      else this.depObj.parentId = 0;
+    },
+    renderContent(h, { node, data, store }) {
+      return (
+        <span style="flex: 1; display: flex; align-items: center; justify-content: space-between; font-size: 14px; padding-right: 8px;">
+          <span>
+            <span>{node.label}</span>
+          </span>
+          <span>
+            <el-button
+              style="font-size: 12px;"
+              type="text"
+              on-click={() => this.openEditDep(node, data)}
+            >
+              编辑
+            </el-button>
+            <el-button
+              style="font-size: 12px;"
+              type="text"
+              on-click={() => this.delDep(node, data)}
+            >
+              删除
+            </el-button>
+          </span>
+        </span>
+      );
+    }
+  },
+  watch: {},
+  computed: {},
+  mounted() {
+    this.selectDepTreeList();
+  }
 };
 </script>
 
