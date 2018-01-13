@@ -3,6 +3,8 @@ import Home from '@/view/Home.vue'
 import Project from '@/view/project/Project.vue'
 import Calendar from '@/view/gtd/Calendar.vue'
 import ParamConfig from '@/view/setup/ParamConfig.vue'
+import Resource from '@/view/setup/Resource.vue'
+
 import Foo from '@/view/Foo.vue'
 import DOING from '@/view/Doing.vue'
 
@@ -28,7 +30,7 @@ let routes = [
         name: '项目',
         iconCls: 'el-icon-view',
         children: [
-            { path: '/project', component: DOING, name: '项目总览' ,iconCls: 'el-icon-service',},
+            { path: '/project', component: DOING, name: '项目总览' ,iconCls: 'el-icon-search',},
             { path: '/hello42', component: Project, name: '项目详情' ,iconCls:'el-icon-tickets'}
         ]
     },
@@ -38,7 +40,7 @@ let routes = [
         name: '系统配置',
         iconCls: 'el-icon-setting',
         children: [
-            { path: '/hello31', component: DOING, name: '资源管理',iconCls:'el-icon-goods' },
+            { path: '/resource', component: Resource, name: '资源管理',iconCls:'el-icon-goods' },
             { path: '/hello32', component: DOING, name: '项目模板定义' ,iconCls:'el-icon-star-on'},
             { path: '/param-config', component: ParamConfig, name: '系统参数' ,iconCls:'el-icon-edit-outline'}
         ]
