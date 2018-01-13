@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.idata.gtd.dao.DepartmentEmployeeMapper;
 import com.idata.gtd.dao.DepartmentMapper;
 import com.idata.gtd.entity.Department;
+import com.idata.gtd.entity.DepartmentEmployee;
 
 /**
  * <b>版权信息 :</b> 2018，广州智数信息科技有限公司<br/>
@@ -52,6 +53,26 @@ public class DepartmentService {
 		depEmpDao.deleteDepartmentEmployees(id);
 		
 		return 0;
+	}
+	
+	public List<DepartmentEmployee> selectDepartmentEmployeeList(Integer depId){
+		
+		return depEmpDao.selectDepartmentEmployeeList(depId);
+	}
+
+	public int insertDepartmentEmployee(DepartmentEmployee depEmp) {
+
+		return depEmpDao.insertDepartmentEmployee(depEmp);
+	}
+
+	public int updateDepartmentEmployee(DepartmentEmployee depEmp) {
+
+		return depEmpDao.updateDepartmentEmployee(depEmp);
+	}
+
+	public int deleteDepartmentEmployee(Integer id) {
+
+		return depEmpDao.deleteDepartmentEmployeeByPK(id);
 	}
 
 }

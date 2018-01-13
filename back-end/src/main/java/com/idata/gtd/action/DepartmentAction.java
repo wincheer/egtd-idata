@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.idata.gtd.common.TreeNode;
 import com.idata.gtd.common.Utils;
 import com.idata.gtd.entity.Department;
+import com.idata.gtd.entity.DepartmentEmployee;
 import com.idata.gtd.service.DepartmentService;
 
 /**
@@ -55,6 +56,27 @@ public class DepartmentAction {
 	public int deleteDep(@RequestBody Department dep) {
 
 		return depService.deleteDepartment(dep.getId());
+	};
+	
+	@RequestMapping(value = "/selectDepEmpList", method = RequestMethod.POST)
+	public List<DepartmentEmployee> selectDepEmpList(@RequestBody Department dep) {
+
+		return depService.selectDepartmentEmployeeList(dep.getId());
+	}
+	
+	@RequestMapping(value = "/updateDepEmp", method = RequestMethod.POST)
+	public int updateDepEmp(@RequestBody DepartmentEmployee depEmp) {
+
+		if (depEmp.getId() == null)
+			return depService.insertDepartmentEmployee(depEmp);
+		else
+			return depService.updateDepartmentEmployee(depEmp);
+	};
+	
+	@RequestMapping(value = "/deleteDepEmp", method = RequestMethod.POST)
+	public int deleteDepEmp(@RequestBody DepartmentEmployee depEmp) {
+
+		return depService.deleteDepartmentEmployee(depEmp.getId());
 	};
 
 }

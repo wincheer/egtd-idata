@@ -1,5 +1,7 @@
 package com.idata.gtd.dao;
 
+import java.util.List;
+
 import com.idata.gtd.entity.DepartmentEmployee;
 
 /**
@@ -19,4 +21,6 @@ public interface DepartmentEmployeeMapper {
     int updateDepartmentEmployee(DepartmentEmployee record);
 
     int deleteDepartmentEmployees(Integer depId);
+    
+    List<DepartmentEmployee> selectDepartmentEmployeeList(Integer depId);
 }

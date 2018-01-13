@@ -19,13 +19,13 @@
                 <span>机构员工</span>
                 <el-button @click="dlgDepEmpEditVis=true" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加机构员工</el-button>
               </div>
-              <el-table>
-                <el-table-column label="姓名"></el-table-column>
-                <el-table-column label="性别"></el-table-column>
-                <el-table-column label="电话"></el-table-column>
-                <el-table-column label="邮箱"></el-table-column>
-                <el-table-column label="职位"></el-table-column>
-                <el-table-column label="职务"></el-table-column>
+              <el-table :data="depEmpList">
+                <el-table-column label="姓名" prop="empName"></el-table-column>
+                <el-table-column label="性别" prop="empGender"></el-table-column>
+                <el-table-column label="电话" prop="empMobile"></el-table-column>
+                <el-table-column label="邮箱" prop="empEmail"></el-table-column>
+                <el-table-column label="职位" prop="empGrade"></el-table-column>
+                <el-table-column label="职务" prop="empTitle"></el-table-column>
               </el-table>
             </el-card>
           </el-col>
@@ -89,7 +89,14 @@
 </template>
 
 <script>
-import { SELECT_DEP_TREE_LIST, UPDATE_DEP, DELETE_DEP } from "@/config/api";
+import { 
+  SELECT_DEP_TREE_LIST, 
+  UPDATE_DEP, 
+  DELETE_DEP, 
+  SELECT_DEP_EMP_LIST,
+  UPDATE_DEP_EMP,
+  DELETE_DEP_EMP 
+} from "@/config/api";
 export default {
   data() {
     return {
@@ -114,7 +121,7 @@ export default {
         parentId: null
       },
       depObjRules: {
-        label: [{ required: true, message: "请输入参数代码", trigger: "blur" }]
+        depName: [{ required: true, message: "请输入参数代码", trigger: "blur" }]
       },
       parentIds: []
     };
@@ -125,6 +132,16 @@ export default {
       SELECT_DEP_TREE_LIST().then(res => {
         if (!Array.isArray(res))
           _this.$message({ message: "获取组织结构失败，请联系系统管理员。", type: "error" });
+        else {
+          _this.depTreeList = res;
+        }
+      });
+    },
+    selectDepEmpList(depId){
+      var _this = this;
+      SELECT_DEP_EMP_LIST({ id: depId }).then(res => {
+        if (!Array.isArray(res))
+          _this.$message({ message: "获取结构员工失败，请联系系统管理员。", type: "error" });
         else {
           _this.depTreeList = res;
         }
@@ -198,8 +215,8 @@ export default {
         });
     },
     onNodeClick(data) {
-      // TODO 查询当前机构的员工
-      //this.$message(data.label);
+      // 查询当前机构的员工
+      this.selectDepEmpList(data.id);
     },
     onParentChange(value) {
       if (value.length != 0) {

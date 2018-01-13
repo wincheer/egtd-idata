@@ -47,6 +47,7 @@
       <if test="empGrade != null">#{empGrade,jdbcType=VARCHAR},</if>
     </trim>
   </insert>
+  
   <update id="updateDepartmentEmployee" parameterType="com.idata.gtd.entity.DepartmentEmployee">
     update department_employee
     <set>
@@ -65,5 +66,11 @@
     delete from department_employee
     where dep_id = #{depId,jdbcType=INTEGER}
   </delete>
+  
+  <select id="selectDepartmentEmployeeList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select *
+    from department_employee
+    where dep_id = #{depId,jdbcType=INTEGER}
+  </select>
 
 </mapper>

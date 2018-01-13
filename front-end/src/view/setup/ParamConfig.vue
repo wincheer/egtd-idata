@@ -1,7 +1,7 @@
 <template>
   <section>
     <el-row :gutter="20">
-      <el-col :span="12">
+      <el-col :span="16">
         <el-card style="margin-top: 20px;">
           <div slot="header" class="clearfix">
             <span>参数</span>
@@ -21,7 +21,7 @@
           <!-- <el-button type="primary" @click="dlgParamKeyEditVis=true" icon="el-icon-circle-plus" style="margin-top: 20px;">增加参数</el-button> -->
         </el-card>
       </el-col>
-      <el-col :span="10">
+      <el-col :span="8">
         <el-card  style="margin-top: 20px;">
           <div slot="header" class="clearfix">
             <span>参数值</span>
