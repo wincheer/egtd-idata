@@ -107,7 +107,7 @@ export default {
         label: "label"
       },
       depObj: {
-        id: null,
+        id: 0,
         depName: "",
         depDesc: "",
         parentId: null
@@ -134,6 +134,10 @@ export default {
       this.$refs.depForm.validate(valid => {
         if (valid) {
           //todo 检查parentId是否等于自身的id
+          if(this.depObj.id == this.depObj.parentId){
+            _this.$message({ message: "不能将自身设置为上级机构。", type: "error" });
+            return
+          }
           _this.logining = true;
           UPDATE_DEP(_this.depObj).then(data => {
             _this.logining = false;
@@ -148,10 +152,10 @@ export default {
       });
     },
     openAddDep() {
-      this.depObj.id = "";
+      this.depObj.id = null;
       this.depObj.depName = "";
       this.depObj.depDesc = "";
-      this.depObj.parentId = "";
+      this.depObj.parentId = 0;
       this.parentIds = [];
       this.dlgDepEditVis = true;
     },
@@ -183,8 +187,9 @@ export default {
       //this.$message(data.label);
     },
     onParentChange(value) {
-      if (value.length != 0) this.depObj.parentId = value[value.length - 1];
-      else this.depObj.parentId = 0;
+      if (value.length != 0) {
+        this.depObj.parentId = value[value.length - 1];
+      } else this.depObj.parentId = 0;
     },
     renderContent(h, { node, data, store }) {
       return (
