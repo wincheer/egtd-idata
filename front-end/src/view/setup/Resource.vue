@@ -143,7 +143,7 @@ export default {
         if (!Array.isArray(res))
           _this.$message({ message: "获取结构员工失败，请联系系统管理员。", type: "error" });
         else {
-          _this.depTreeList = res;
+          _this.depEmpList = res;
         }
       });
     },
