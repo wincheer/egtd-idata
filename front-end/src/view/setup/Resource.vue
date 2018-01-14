@@ -17,15 +17,21 @@
             <el-card>
               <div slot="header" class="clearfix">
                 <span>机构员工</span>
-                <el-button @click="dlgDepEmpEditVis=true" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加机构员工</el-button>
+                <el-button @click="openAddDepEmp" :disabled="depEmpObj.depId==''" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加机构员工</el-button>
               </div>
-              <el-table :data="depEmpList">
+              <el-table :data="depEmpList" style="width: 100%">
                 <el-table-column label="姓名" prop="empName"></el-table-column>
                 <el-table-column label="性别" prop="empGender"></el-table-column>
                 <el-table-column label="电话" prop="empMobile"></el-table-column>
                 <el-table-column label="邮箱" prop="empEmail"></el-table-column>
                 <el-table-column label="职位" prop="empGrade"></el-table-column>
                 <el-table-column label="职务" prop="empTitle"></el-table-column>
+                <el-table-column label="操作" width="160">
+                  <template slot-scope="scope">
+                    <el-button size="mini" type="text" @click="openEditDepEmp(scope.row)">编辑</el-button>
+                    <el-button size="mini" type="text" @click="delDepEmp(scope.row)" >删除</el-button>
+                  </template>
+                </el-table-column>
               </el-table>
             </el-card>
           </el-col>
@@ -85,6 +91,32 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+    <el-dialog :title="depEmpObj.id==''?'增加机构员工':'编辑机构员工'" :visible.sync="dlgDepEmpEditVis" width="30%">
+      <el-form :model="depEmpObj" :rules="depEmpObjRules" ref="depEmpForm" label-width="80px">
+        <el-form-item label="姓名" prop="empName">
+          <el-input type="text" v-model="depEmpObj.empName"></el-input>
+        </el-form-item>
+        <el-form-item label="性别" prop="empGender">
+          <el-switch v-model="depEmpObj.empGender" active-text="女" inactive-text="男" active-value="0" inactive-value="1" active-color="#13ce66" inactive-color="#ff4949" />
+        </el-form-item>
+        <el-form-item label="电话" prop="empMobile">
+          <el-input type="text" v-model="depEmpObj.empMobile"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="empEmail">
+          <el-input type="text" v-model="depEmpObj.empEmail"></el-input>
+        </el-form-item>
+        <el-form-item label="职务" prop="empTitle">
+          <el-input type="text" v-model="depEmpObj.empTitle"></el-input>
+        </el-form-item>
+        <el-form-item label="职位" prop="empGrade">
+          <el-input type="text" v-model="depEmpObj.empGrade"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="updateDepEmp" :loading="logining">保存</el-button>
+          <el-button @click="dlgDepEmpEditVis = false">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </section>
 </template>
 
@@ -123,7 +155,21 @@ export default {
       depObjRules: {
         depName: [{ required: true, message: "请输入参数代码", trigger: "blur" }]
       },
-      parentIds: []
+      parentIds: [],
+      depEmpObj: {
+        id: "",
+        depId: "",
+        empName: "",
+        empGender: 1,
+        empMobile: "",
+        empEmail: "",
+        empTitle: "",
+        empGrade: ""
+      },
+      depEmpObjRules: {
+        empName: [{ required: true, message: "请输入员工姓名", trigger: "blur" }],
+        empMobile: [{ required: true, message: "请输入电话号码（用来登陆）", trigger: "blur" }]
+      },
     };
   },
   methods: {
@@ -151,7 +197,7 @@ export default {
       var _this = this;
       this.$refs.depForm.validate(valid => {
         if (valid) {
-          //todo 检查parentId是否等于自身的id
+          // 检查parentId是否等于自身的id
           if (_this.depObj.id == _this.depObj.parentId) {
             _this.$message({ message: "不能将自身设置为上级机构。", type: "error" });
             return;
@@ -160,10 +206,27 @@ export default {
           UPDATE_DEP(_this.depObj).then(data => {
             _this.logining = false;
             if (data == "") {
-              _this.$message({ message: "更新部门，请联系系统管理员。", type: "error" });
+              _this.$message({ message: "更新部门失败，请联系系统管理员。", type: "error" });
             } else {
               _this.selectDepTreeList();
               _this.dlgDepEditVis = false;
+            }
+          });
+        }
+      });
+    },
+    updateDepEmp() {
+      var _this = this;
+      this.$refs.depEmpForm.validate(valid => {
+        if (valid) {
+          _this.logining = true;
+          UPDATE_DEP_EMP(_this.depEmpObj).then(data => {
+            _this.logining = false;
+            if (data == "") {
+              _this.$message({ message: "更新员工失败，请联系系统管理员。", type: "error" });
+            } else {
+              _this.selectDepEmpList(_this.depEmpObj.depId);
+              _this.dlgDepEmpEditVis = false;
             }
           });
         }
@@ -177,6 +240,16 @@ export default {
       this.parentIds = [];
       this.dlgDepEditVis = true;
     },
+    openAddDepEmp() {
+      this.depEmpObj.id = "";
+      this.depEmpObj.empName = "";
+      this.depEmpObj.empGender = 1;
+      this.depEmpObj.empMobile = "";
+      this.depEmpObj.empEmail = "";
+      this.depEmpObj.empTitle = "";
+      this.depEmpObj.empGrade = "";
+      this.dlgDepEmpEditVis = true;
+    },
     openEditDep(node, data) {
       this.depObj.id = data.id;
       this.depObj.depName = data.label;
@@ -184,6 +257,10 @@ export default {
       this.depObj.parentId = data.parentId;
       this.builderParentIdSeq(node);
       this.dlgDepEditVis = true;
+    },
+    openEditDepEmp(row) {
+      Object.assign(this.depEmpObj, row);
+      this.dlgDepEmpEditVis = true;
     },
     builderParentIdSeq(node) {
       this.parentIds = [];
@@ -214,9 +291,21 @@ export default {
           });
         });
     },
+    delDepEmp(row) {
+      var _this = this;
+      _this.$confirm("确认删除该记录吗?", "提示", {
+          type: "warning"
+        }).then(() => {
+          DELETE_DEP_EMP({ id: row.id }).then(res => {
+            _this.$message({ message: "删除成功", type: "success" });
+            _this.selectDepEmpList(row.depId);
+          });
+        });
+    },
     onNodeClick(data) {
       // 查询当前机构的员工
       this.selectDepEmpList(data.id);
+      this.depEmpObj.depId = data.id;
     },
     onParentChange(value) {
       if (value.length != 0) {
