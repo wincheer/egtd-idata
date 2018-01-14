@@ -55,6 +55,22 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+
+    <el-dialog :title="tplStageObj.id==''?'增加项目模板':'编辑项目模板'" :visible.sync="dlgTplStageEditVis" width="30%">
+      <el-form :model="tplStageObj" :rules="tplStageObjRules" ref="tplStageForm" label-width="80px">
+        <el-form-item label="上级阶段" prop="parentId">
+          <el-cascader :options="tplStageTreeList" :props="{value:'id'}" v-model="stageParentIds" @change="onStageParentChange" change-on-select style="width:100%"/>
+        </el-form-item>
+        <el-form-item label="阶段名称" prop="stageName">
+          <el-input type="text" v-model="tplStageObj.stageName"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="updateTplStage" :loading="logining">保存</el-button>
+          <el-button @click="dlgTplStageEditVis = false">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
   </section>
 </template>
 
@@ -98,6 +114,7 @@ export default {
       tplStageObjRules: {
         stageName: [{ required: true, message: "请输入阶段/任务名称", trigger: "blur" }]
       },
+      stageParentIds:[],
       tplGroupObj: {
         id: 0,
         tplId: "",
@@ -106,7 +123,8 @@ export default {
       },
       tplGroupObjRules: {
         groupName: [{ required: true, message: "请输入项目组/小组名称", trigger: "blur" }]
-      }
+      },
+      groupParentIds:[],
     };
   },
   methods: {
@@ -146,11 +164,24 @@ export default {
       this.tplProjectObj.tplCategory = "";
       this.dlgTplProjectEditVis = true;
     },
-    openAddTplStage() {},
+    openAddTplStage() {
+      this.tplStageObj.id = "";
+      this.tplStageObj.stageName = "";
+      this.tplStageObj.parentId = 0;
+      this.dlgTplStageEditVis = true;
+    },
     openAddTplGroup() {},
     openEditTplProject(row) {
       Object.assign(this.tplProjectObj, row);
       this.dlgTplProjectEditVis = true;
+    },
+    openEditTplStage(node, data){
+      this.tplStageObj.id = data.id;
+      this.tplStageObj.stageName = data.label;
+      this.tplStageObj.tplId = parseInt(data.desc);
+      this.tplStageObj.parentId = data.parentId;
+      //this.builderParentIdSeq(node);
+      this.dlgTplStageEditVis = true;
     },
     updateTplProject() {
       var _this = this;
@@ -171,6 +202,29 @@ export default {
         }
       });
     },
+    updateTplStage(){
+      var _this = this;
+      this.$refs.tplStageForm.validate(valid => {
+        if (valid) {
+          // 检查parentId是否等于自身的id
+          if (_this.tplStageObj.id === _this.tplStageObj.parentId) {
+            _this.$message({ message: "不能将自身设置为上级。", type: "error" });
+            return;
+          }
+          _this.logining = true;
+          UPDATE_TPL_STAGE(_this.tplStageObj).then(data => {
+            _this.logining = false;
+            if (data == "") {
+              _this.$message({ message: "更新项目阶段失败，请联系系统管理员。", type: "error" });
+            } else {
+              _this.selectTplStageTreeList(_this.tplStageObj.tplId);
+              _this.dlgTplStageEditVis = false;
+            }
+          });
+        }
+      });
+    },
+    updateTplGroup(){},
     delTplProject(row) {
       var _this = this;
       _this
@@ -190,6 +244,12 @@ export default {
       this.selectTplStageTreeList(data.id);
       this.selectTplGroupTreeList(data.id);
     },
+    onStageParentChange(value){
+      if (value.length != 0) {
+        this.tplStageObj.parentId = value[value.length - 1];
+      } else this.tplStageObj.parentId = 0;
+    },
+    onGroupParentChange(){},
     renderContentStage(h, { node, data, store }) {
       return (
         <span style="flex: 1; display: flex; align-items: center; justify-content: space-between; font-size: 14px; padding-right: 8px;">
