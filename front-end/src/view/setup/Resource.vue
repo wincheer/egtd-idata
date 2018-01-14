@@ -44,14 +44,14 @@
             <el-card>
               <div slot="header" class="clearfix">
                 <span>供应商</span>
-                <el-button @click="dlgVendorEditVis=true" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加供应商</el-button>
+                <el-button @click="openAddVendor" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加供应商</el-button>
               </div>
-              <el-table>
-                <el-table-column label="简称"></el-table-column>
-                <el-table-column label="全称"></el-table-column>
-                <el-table-column label="资质"></el-table-column>
-                <el-table-column label="联系人"></el-table-column>
-                <el-table-column label="联系电话"></el-table-column>
+              <el-table :data="vendorList">
+                <el-table-column label="名称" prop="empName"></el-table-column>
+                <el-table-column label="全称" prop="empName"></el-table-column>
+                <el-table-column label="资质" prop="empName"></el-table-column>
+                <el-table-column label="联系人" prop="empName"></el-table-column>
+                <el-table-column label="联系电话" prop="empName"></el-table-column>
               </el-table>
             </el-card>
           </el-col>
@@ -73,6 +73,7 @@
         </el-row>
       </el-tab-pane>
     </el-tabs>
+    <!--编辑窗口-->
     <el-dialog :title="depObj.id==''?'增加机构':'编辑机构'" :visible.sync="dlgDepEditVis" width="30%">
       <el-form :model="depObj" :rules="depObjRules" ref="depForm" label-width="80px">
         <el-form-item label="上级机构" prop="parentId">
@@ -114,6 +115,26 @@
         <el-form-item>
           <el-button type="primary" @click="updateDepEmp" :loading="logining">保存</el-button>
           <el-button @click="dlgDepEmpEditVis = false">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+    <el-dialog :title="vendorObj.id==''?'增加机构':'编辑机构'" :visible.sync="dlgVendorEditVis" width="30%">
+      <el-form :model="vendorObj" :rules="vendorObjRules" ref="vendorForm" label-width="80px">
+        <el-form-item label="名称" prop="vendorName">
+          <el-input type="text" v-model="vendorObj.vendorName" placeholder="供应商公司名称"></el-input>
+        </el-form-item>
+        <el-form-item label="全称" prop="vendorFullName">
+          <el-input type="text" v-model="vendorObj.vendorFullName"></el-input>
+        </el-form-item>
+        <el-form-item label="联系人" prop="contactName">
+          <el-input type="text" v-model="vendorObj.contactName" placeholder="联系人姓名"></el-input>
+        </el-form-item>
+        <el-form-item label="联系电话" prop="contactMobile">
+          <el-input type="text" v-model="vendorObj.contactMobile" placeholder="电话号码(手机)"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="updateDep" :loading="logining">保存</el-button>
+          <el-button @click="dlgVendorEditVis = false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -168,7 +189,23 @@ export default {
       },
       depEmpObjRules: {
         empName: [{ required: true, message: "请输入员工姓名", trigger: "blur" }],
-        empMobile: [{ required: true, message: "请输入电话号码（用来登陆）", trigger: "blur" }]
+        empMobile: [
+          { required: true, message: "请输入电话号码（用来登陆）", trigger: "blur" },
+          { min: 11, max: 11, message: '电话号码长度为11个字符', trigger: 'blur' }
+        ],
+        empEmail:[{ type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur,change' }]
+      },
+      vendorObj: {
+        id: "",
+        vendorName: "",
+        vendorFullName: "",
+        contactName: "",
+        contactMobile:""
+      },
+      vendorObjRules: {
+        vendorName: [{ required: true, message: "请输入供应商名称", trigger: "blur" }],
+        contactName: [{ required: true, message: "请输入联系人姓名", trigger: "blur" },{ min: 8, max: 11, message: '电话号码长度为8-11个字符', trigger: 'blur' }],
+        contactMobile: [{ required: true, message: "请输入联系电话(手机)", trigger: "blur" }]
       },
     };
   },
@@ -249,6 +286,14 @@ export default {
       this.depEmpObj.empTitle = "";
       this.depEmpObj.empGrade = "";
       this.dlgDepEmpEditVis = true;
+    },
+    openAddVendor() {
+      this.vendorObj.id = "";
+      this.vendorObj.vendorName = "";
+      this.vendorObj.vendorFullName = "";
+      this.vendorObj.contactName = "";
+      this.vendorObj.contactMobile = "";
+      this.dlgVendorEditVis = true;
     },
     openEditDep(node, data) {
       this.depObj.id = data.id;

@@ -1,7 +1,7 @@
 <template>
   <section>
     <el-row :gutter="20">
-      <el-col :span="16">
+      <el-col :span="14">
         <el-card style="margin-top: 20px;">
           <div slot="header" class="clearfix">
             <span>参数</span>
@@ -21,7 +21,7 @@
           <!-- <el-button type="primary" @click="dlgParamKeyEditVis=true" icon="el-icon-circle-plus" style="margin-top: 20px;">增加参数</el-button> -->
         </el-card>
       </el-col>
-      <el-col :span="8">
+      <el-col :span="10">
         <el-card  style="margin-top: 20px;">
           <div slot="header" class="clearfix">
             <span>参数值</span>
@@ -29,6 +29,7 @@
           </div>
         <el-table :data="paramValueList">
           <el-table-column prop="paramValue" label="参数值"></el-table-column>
+          <el-table-column prop="paramDesc" label="参数含义"></el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button size="mini" @click="onEditParamValue(scope.row)">编辑</el-button>
@@ -67,6 +68,9 @@
       <el-form :model="paramValueObj" :rules="paramValueObjRules" ref="paramValueForm" label-width="80px">
         <el-form-item label="参数值" prop="paramValue">
           <el-input type="text" v-model="paramValueObj.paramValue"></el-input>
+        </el-form-item>
+        <el-form-item label="参数值" prop="paramDesc">
+          <el-input type="text" v-model="paramValueObj.paramDesc"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="updateParamValue" :loading="logining">保存</el-button>
@@ -108,10 +112,12 @@ export default {
       paramValueObj: {
         id: "",
         paramId: "",
-        paramValue: ""
+        paramValue: "",
+        paramDesc: ""
       },
       paramValueObjRules: {
-        paramValue: [{ required: true, message: "请输入参数值", trigger: "blur" }]
+        paramValue: [{ required: true, message: "请输入参数值", trigger: "blur" }],
+        paramDesc: [{ required: true, message: "请输入参数含义", trigger: "blur" }]
       }
     };
   },
@@ -213,7 +219,5 @@ export default {
 </script>
 
 <style>
-.el-button {
-  /* margin-top: 20px; */
-}
+
 </style>
