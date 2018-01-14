@@ -19,3 +19,11 @@ export const DELETE_DEP = (params) => { return axios.post(`${base}/deleteDep`, p
 export const SELECT_DEP_EMP_LIST = (params) => { return axios.post(`${base}/selectDepEmpList`, params).then(res => res.data); };
 export const UPDATE_DEP_EMP = (params) => { return axios.post(`${base}/updateDepEmp`, params).then(res => res.data); };
 export const DELETE_DEP_EMP = (params) => { return axios.post(`${base}/deleteDepEmp`, params).then(res => res.data); };
+export const SELECT_VENDOR_LIST = () => { return axios.post(`${base}/selectVendorList`).then(res => res.data); };
+export const UPDATE_VENDOR = (params) => { return axios.post(`${base}/updateVendor`, params).then(res => res.data); };
+export const DELETE_VENDOR = (params) => { return axios.post(`${base}/deleteVendor`, params).then(res => res.data); };
+export const SELECT_VENDOR_EMP_LIST = (params) => { return axios.post(`${base}/selectVendorEmpList`, params).then(res => res.data); };
+export const UPDATE_VENDOR_EMP = (params) => { return axios.post(`${base}/updateVendorEmp`, params).then(res => res.data); };
+export const DELETE_VENDOR_EMP = (params) => { return axios.post(`${base}/deleteVendorEmp`, params).then(res => res.data); };
+
+//
