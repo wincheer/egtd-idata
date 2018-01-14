@@ -9,7 +9,7 @@ package com.idata.gtd.common;
  */
 public enum LogEvent
 {
-	LOGIN("签入"), LOGOUT("签出"), QUERY("查询"), CREATE("增加"), UPDATE("修改"), DELETE("删除");
+	LOGIN("登录"), LOGOUT("退出系统"), QUERY("查询"), CREATE("增加"), UPDATE("修改"), DELETE("删除"), UPLOAD("上传");
 
 	private final String eventName;
 

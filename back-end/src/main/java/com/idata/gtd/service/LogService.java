@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.idata.gtd.common.LogEvent;
+import com.idata.gtd.common.LogTarget;
 import com.idata.gtd.dao.LogMapper;
 import com.idata.gtd.entity.Log;
 
@@ -31,13 +33,14 @@ public class LogService {
 		return logDao.insertLog(log);
 	}
 	
-	public int insertLog(Integer actor,String action,String target) {
+	public int insertLog(Integer actor,LogEvent action,LogTarget target,String detail) {
 		
 		Log log = new Log();
 		log.setActor(actor);
 		log.setOpTime(new Date());
-		log.setAction(action);
-		log.setTarget(target); 
+		log.setAction(action.toString());
+		log.setTarget(target.toString());
+		log.setDetail(detail);
 		
 		return logDao.insertLog(log);
 	}

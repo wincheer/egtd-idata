@@ -9,6 +9,7 @@ public class Log {
 	private Date opTime;
 	private String action;
 	private String target;
+	private String detail;
 
 	public Integer getId() {
 		return id;
@@ -48,5 +49,13 @@ public class Log {
 
 	public void setTarget(String target) {
 		this.target = target;
+	}
+
+	public String getDetail() {
+		return detail;
+	}
+
+	public void setDetail(String detail) {
+		this.detail = detail;
 	}
 }
