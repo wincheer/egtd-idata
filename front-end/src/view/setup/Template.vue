@@ -180,9 +180,29 @@ export default {
       this.tplStageObj.stageName = data.label;
       this.tplStageObj.tplId = parseInt(data.desc);
       this.tplStageObj.parentId = data.parentId;
-      //this.builderParentIdSeq(node);
+      this.builderParentIdSeq(node,1);
       this.dlgTplStageEditVis = true;
     },
+
+    builderParentIdSeq(node,who) {
+      if(who == 1){
+        this.stageParentIds = [];
+        this.stageParentIds.unshift(node.data.parentId)
+      }
+      else{
+        this.groupParentIds = [];
+        this.groupParentIds.unshift(node.data.parentId)
+      }
+      this.unshiftParentId(node.parent,who);
+    },
+    unshiftParentId(pnode,who) {
+      if (pnode!=null && pnode.level != 1) {
+        if(who == 1) this.stageParentIds.unshift(pnode.data.parentId)
+        else this.groupParentIds.unshift(pnode.data.parentId);        
+        this.unshiftParentId(pnode.parent,who);
+      }
+    },
+
     updateTplProject() {
       var _this = this;
       this.$refs.tplProjectForm.validate(valid => {
