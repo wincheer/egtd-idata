@@ -65,12 +65,12 @@
   <select id="selectVendorEmployeeList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select *
     from vendor_employee
-    where vendorId = #{vendorId,jdbcType=INTEGER}
+    where vendor_id = #{vendorId,jdbcType=INTEGER}
   </select>
   
   <delete id="deleteVendorEmps" parameterType="java.lang.Integer">
     delete from vendor_employee
-    where vendorId = #{vendorId,jdbcType=INTEGER}
+    where vendor_id = #{vendorId,jdbcType=INTEGER}
   </delete>
 
 </mapper>

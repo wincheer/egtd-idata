@@ -40,33 +40,46 @@
       <el-tab-pane name="second">
         <span slot="label"><i class="el-icon-menu"></i> 供应商资源管理</span>
         <el-row :gutter="20">
-          <el-col :span="12">
+          <el-col :span="10">
             <el-card>
               <div slot="header" class="clearfix">
                 <span>供应商</span>
                 <el-button @click="openAddVendor" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加供应商</el-button>
               </div>
-              <el-table :data="vendorList">
-                <el-table-column label="名称" prop="empName"></el-table-column>
-                <el-table-column label="全称" prop="empName"></el-table-column>
-                <el-table-column label="资质" prop="empName"></el-table-column>
-                <el-table-column label="联系人" prop="empName"></el-table-column>
-                <el-table-column label="联系电话" prop="empName"></el-table-column>
+              <el-table :data="vendorList" highlight-current-row @current-change="onVendorChange" border>
+                <el-table-column label="名称" prop="vendorName" width="120"></el-table-column>
+                <el-table-column label="全称" prop="vendorFullName"></el-table-column>
+                <!-- <el-table-column label="资质" prop="empName"></el-table-column> -->
+                <el-table-column label="联系人" prop="contactName" width="90"></el-table-column>
+                <el-table-column label="联系电话" prop="contactMobile" width="120"></el-table-column>
+                <el-table-column label="操作" width="100">
+                  <template slot-scope="scope">
+                    <el-button size="mini" type="text" @click="openEditVendor(scope.row)">编辑</el-button>
+                    <el-button size="mini" type="text" @click="delVendor(scope.row)" >删除</el-button>
+                  </template>
+                </el-table-column>
               </el-table>
             </el-card>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="14">
             <el-card>
               <div slot="header" class="clearfix">
                 <span>供应商员工</span>
-                <el-button @click="dlgVendorEmpEditVis=true" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加供应商员工</el-button>
+                <el-button @click="openAddVendorEmp" :disabled="vendorEmpObj.vendorId==''" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加供应商员工</el-button>
               </div>
-              <el-table>
-                <el-table-column label="姓名"></el-table-column>
-                <el-table-column label="电话"></el-table-column>
-                <el-table-column label="邮箱"></el-table-column>
-                <el-table-column label="职位"></el-table-column>
-                <el-table-column label="职级"></el-table-column>
+              <el-table :data="vendorEmpList" border>
+                <el-table-column label="姓名" prop="empName" width="90"></el-table-column>
+                <el-table-column label="性别" prop="empGender" width="50"></el-table-column>
+                <el-table-column label="电话" prop="empMobile" width="120"></el-table-column>
+                <el-table-column label="邮箱" prop="empEmail"></el-table-column>
+                <el-table-column label="职位" prop="empGrade" width="120"></el-table-column>
+                <el-table-column label="职务" prop="empTitle" width="120"></el-table-column>
+                <el-table-column label="操作" width="100">
+                  <template slot-scope="scope">
+                    <el-button size="mini" type="text" @click="openEditVendorEmp(scope.row)">编辑</el-button>
+                    <el-button size="mini" type="text" @click="delVendorEmp(scope.row)" >删除</el-button>
+                  </template>
+                </el-table-column>
               </el-table>
             </el-card>
           </el-col>
@@ -133,8 +146,34 @@
           <el-input type="text" v-model="vendorObj.contactMobile" placeholder="电话号码(手机)"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="updateDep" :loading="logining">保存</el-button>
+          <el-button type="primary" @click="updateVendor" :loading="logining">保存</el-button>
           <el-button @click="dlgVendorEditVis = false">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+    <el-dialog :title="vendorEmpObj.id==''?'增加供应商员工':'编辑供应商员工'" :visible.sync="dlgVendorEmpEditVis" width="30%">
+      <el-form :model="vendorEmpObj" :rules="vendorEmpObjRules" ref="vendorEmpForm" label-width="80px">
+        <el-form-item label="姓名" prop="empName">
+          <el-input type="text" v-model="vendorEmpObj.empName"></el-input>
+        </el-form-item>
+        <el-form-item label="性别" prop="empGender">
+          <el-switch v-model="vendorEmpObj.empGender" active-text="女" inactive-text="男" active-value="0" inactive-value="1" active-color="#13ce66" inactive-color="#ff4949" />
+        </el-form-item>
+        <el-form-item label="电话" prop="empMobile">
+          <el-input type="text" v-model="vendorEmpObj.empMobile"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="empEmail">
+          <el-input type="text" v-model="vendorEmpObj.empEmail"></el-input>
+        </el-form-item>
+        <el-form-item label="职务" prop="empTitle">
+          <el-input type="text" v-model="vendorEmpObj.empTitle"></el-input>
+        </el-form-item>
+        <el-form-item label="职位" prop="empGrade">
+          <el-input type="text" v-model="vendorEmpObj.empGrade"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="updateVendorEmp" :loading="logining">保存</el-button>
+          <el-button @click="dlgVendorEmpEditVis = false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -210,8 +249,23 @@ export default {
       },
       vendorObjRules: {
         vendorName: [{ required: true, message: "请输入供应商名称", trigger: "blur" }],
-        contactName: [{ required: true, message: "请输入联系人姓名", trigger: "blur" },{ min: 8, max: 11, message: '电话号码长度为8-11个字符', trigger: 'blur' }],
-        contactMobile: [{ required: true, message: "请输入联系电话(手机)", trigger: "blur" }]
+        contactName: [{ required: true, message: "请输入联系人姓名", trigger: "blur" }],
+        contactMobile: [{ required: true, message: "请输入联系电话(手机)", trigger: "blur" },{ min: 8, max: 11, message: '电话号码长度为8-11个字符', trigger: 'blur' }]
+      },
+      vendorEmpObj: {
+        id: "",
+        vendorId: "",
+        empName: "",
+        empGender: 1,
+        empMobile: "",
+        empEmail: "",
+        empTitle: "",
+        empGrade: ""
+      },
+      vendorEmpObjRules: {
+        empName: [{ required: true, message: "请输入员工姓名", trigger: "blur" }],
+        empMobile: [{ required: true, message: "请输入电话号码（用来登陆）", trigger: "blur" },{ min: 11, max: 11, message: '电话号码长度为11个字符', trigger: 'blur' }],
+        empEmail:[{ type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur,change' }]
       },
     };
   },
@@ -233,6 +287,26 @@ export default {
           _this.$message({ message: "获取结构员工失败，请联系系统管理员。", type: "error" });
         else {
           _this.depEmpList = res;
+        }
+      });
+    },
+    selectVendorList(){
+      var _this = this;
+      SELECT_VENDOR_LIST().then(res => {
+        if (!Array.isArray(res))
+          _this.$message({ message: "获取供应商失败，请联系系统管理员。", type: "error" });
+        else {
+          _this.vendorList = res;
+        }
+      });
+    },
+    selectVendorEmpList(vendorId){
+      var _this = this;
+      SELECT_VENDOR_EMP_LIST({ id: vendorId }).then(res => {
+        if (!Array.isArray(res))
+          _this.$message({ message: "获取供应商员工失败，请联系系统管理员。", type: "error" });
+        else {
+          _this.vendorEmpList = res;
         }
       });
     },
@@ -275,6 +349,40 @@ export default {
         }
       });
     },
+    updateVendor() {
+      var _this = this;
+      this.$refs.vendorForm.validate(valid => {
+        if (valid) {
+          _this.logining = true;
+          UPDATE_VENDOR(_this.vendorObj).then(data => {
+            _this.logining = false;
+            if (data == "") {
+              _this.$message({ message: "更新供应商失败，请联系系统管理员。", type: "error" });
+            } else {
+              _this.selectVendorList();
+              _this.dlgVendorEditVis = false;
+            }
+          });
+        }
+      });
+    },
+    updateVendorEmp() {
+      var _this = this;
+      this.$refs.vendorEmpForm.validate(valid => {
+        if (valid) {
+          _this.logining = true;
+          UPDATE_VENDOR_EMP(_this.vendorEmpObj).then(data => {
+            _this.logining = false;
+            if (data == "") {
+              _this.$message({ message: "更新员工失败，请联系系统管理员。", type: "error" });
+            } else {
+              _this.selectVendorEmpList(_this.vendorEmpObj.vendorId);
+              _this.dlgVendorEmpEditVis = false;
+            }
+          });
+        }
+      });
+    },
     openAddDep() {
       this.depObj.id = null;
       this.depObj.depName = "";
@@ -301,6 +409,16 @@ export default {
       this.vendorObj.contactMobile = "";
       this.dlgVendorEditVis = true;
     },
+    openAddVendorEmp() {
+      this.vendorEmpObj.id = "";
+      this.vendorEmpObj.empName = "";
+      this.vendorEmpObj.empGender = 1;
+      this.vendorEmpObj.empMobile = "";
+      this.vendorEmpObj.empEmail = "";
+      this.vendorEmpObj.empTitle = "";
+      this.vendorEmpObj.empGrade = "";
+      this.dlgVendorEmpEditVis = true;
+    },
     openEditDep(node, data) {
       this.depObj.id = data.id;
       this.depObj.depName = data.label;
@@ -312,6 +430,14 @@ export default {
     openEditDepEmp(row) {
       Object.assign(this.depEmpObj, row);
       this.dlgDepEmpEditVis = true;
+    },
+    openEditVendor(row) {
+      Object.assign(this.vendorObj, row);
+      this.dlgVendorEditVis = true;
+    },
+    openEditVendorEmp(row) {
+      Object.assign(this.vendorEmpObj, row);
+      this.dlgVendorEmpEditVis = true;
     },
     builderParentIdSeq(node) {
       this.parentIds = [];
@@ -353,10 +479,37 @@ export default {
           });
         });
     },
+    delVendor(row) {
+      var _this = this;
+      _this.$confirm("确认删除该记录吗?", "提示", {
+          type: "warning"
+        }).then(() => {
+          DELETE_VENDOR({ id: row.id }).then(res => {
+            _this.$message({ message: "删除成功", type: "success" });
+            _this.selectVendorList(row.depId);
+          });
+        });
+    },
+    delVendorEmp(row) {
+      var _this = this;
+      _this.$confirm("确认删除该记录吗?", "提示", {
+          type: "warning"
+        }).then(() => {
+          DELETE_VENDOR_EMP({ id: row.id }).then(res => {
+            _this.$message({ message: "删除成功", type: "success" });
+            _this.selectVendorEmpList(row.vendorId);
+          });
+        });
+    },
     onNodeClick(data) {
       // 查询当前机构的员工
       this.selectDepEmpList(data.id);
       this.depEmpObj.depId = data.id;
+    },
+    onVendorChange(data) {
+      // 查询当前供应商的员工
+      this.selectVendorEmpList(data.id);
+      this.vendorEmpObj.vendorId = data.id;
     },
     onParentChange(value) {
       if (value.length != 0) {
@@ -393,6 +546,7 @@ export default {
   computed: {},
   mounted() {
     this.selectDepTreeList();
+    this.selectVendorList();
   }
 };
 </script>
