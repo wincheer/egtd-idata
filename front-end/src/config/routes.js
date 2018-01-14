@@ -4,6 +4,7 @@ import Project from '@/view/project/Project.vue'
 import Calendar from '@/view/gtd/Calendar.vue'
 import ParamConfig from '@/view/setup/ParamConfig.vue'
 import Resource from '@/view/setup/Resource.vue'
+import Template from '@/view/setup/Template.vue'
 
 import Foo from '@/view/Foo.vue'
 import DOING from '@/view/Doing.vue'
@@ -41,7 +42,7 @@ let routes = [
         iconCls: 'el-icon-setting',
         children: [
             { path: '/resource', component: Resource, name: '资源管理',iconCls:'el-icon-goods' },
-            { path: '/hello32', component: DOING, name: '项目模板定义' ,iconCls:'el-icon-star-on'},
+            { path: '/template', component: Template, name: '项目模板定义' ,iconCls:'el-icon-star-on'},
             { path: '/param-config', component: ParamConfig, name: '系统参数' ,iconCls:'el-icon-edit-outline'}
         ]
     }
