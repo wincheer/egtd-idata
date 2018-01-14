@@ -21,7 +21,7 @@
               </div>
               <el-table :data="depEmpList" style="width: 100%">
                 <el-table-column label="姓名" prop="empName"></el-table-column>
-                <el-table-column label="性别" prop="empGender"></el-table-column>
+                <el-table-column label="性别" prop="empGender" :formatter="fmtGender"></el-table-column>
                 <el-table-column label="电话" prop="empMobile"></el-table-column>
                 <el-table-column label="邮箱" prop="empEmail"></el-table-column>
                 <el-table-column label="职位" prop="empGrade"></el-table-column>
@@ -46,10 +46,9 @@
                 <span>供应商</span>
                 <el-button @click="openAddVendor" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加供应商</el-button>
               </div>
-              <el-table :data="vendorList" highlight-current-row @current-change="onVendorChange" border>
+              <el-table :data="vendorList" highlight-current-row @current-change="onVendorChange">
                 <el-table-column label="名称" prop="vendorName" width="120"></el-table-column>
                 <el-table-column label="全称" prop="vendorFullName"></el-table-column>
-                <!-- <el-table-column label="资质" prop="empName"></el-table-column> -->
                 <el-table-column label="联系人" prop="contactName" width="90"></el-table-column>
                 <el-table-column label="联系电话" prop="contactMobile" width="120"></el-table-column>
                 <el-table-column label="操作" width="100">
@@ -67,9 +66,9 @@
                 <span>供应商员工</span>
                 <el-button @click="openAddVendorEmp" :disabled="vendorEmpObj.vendorId==''" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加供应商员工</el-button>
               </div>
-              <el-table :data="vendorEmpList" border>
+              <el-table :data="vendorEmpList">
                 <el-table-column label="姓名" prop="empName" width="90"></el-table-column>
-                <el-table-column label="性别" prop="empGender" width="50"></el-table-column>
+                <el-table-column label="性别" prop="empGender" width="50" :formatter="fmtGender"></el-table-column>
                 <el-table-column label="电话" prop="empMobile" width="120"></el-table-column>
                 <el-table-column label="邮箱" prop="empEmail"></el-table-column>
                 <el-table-column label="职位" prop="empGrade" width="120"></el-table-column>
@@ -131,7 +130,7 @@
         </el-form-item>
       </el-form>
     </el-dialog>
-    <el-dialog :title="vendorObj.id==''?'增加机构':'编辑机构'" :visible.sync="dlgVendorEditVis" width="30%">
+    <el-dialog :title="vendorObj.id==''?'增加供应商':'编辑供应商'" :visible.sync="dlgVendorEditVis" width="30%">
       <el-form :model="vendorObj" :rules="vendorObjRules" ref="vendorForm" label-width="80px">
         <el-form-item label="名称" prop="vendorName">
           <el-input type="text" v-model="vendorObj.vendorName" placeholder="供应商公司名称"></el-input>
@@ -327,6 +326,7 @@ export default {
             } else {
               _this.selectDepTreeList();
               _this.dlgDepEditVis = false;
+              _this.depEmpList = [];
             }
           });
         }
@@ -361,6 +361,7 @@ export default {
             } else {
               _this.selectVendorList();
               _this.dlgVendorEditVis = false;
+              _this.vendorEmpList = [];
             }
           });
         }
@@ -487,6 +488,7 @@ export default {
           DELETE_VENDOR({ id: row.id }).then(res => {
             _this.$message({ message: "删除成功", type: "success" });
             _this.selectVendorList(row.depId);
+            _this.vendorEmpList = [];
           });
         });
     },
@@ -540,6 +542,10 @@ export default {
           </span>
         </span>
       );
+    },
+
+    fmtGender(row, column, cellValue){
+      return cellValue==1?"男":"女";
     }
   },
   watch: {},
