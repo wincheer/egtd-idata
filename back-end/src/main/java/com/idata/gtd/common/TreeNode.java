@@ -20,6 +20,12 @@ public class TreeNode {
 	public TreeNode() {
 	}
 
+	public TreeNode(Integer id, String label, Integer parentId) {
+		this.id = id;
+		this.label = label;
+		this.parentId = parentId;
+	}
+	
 	public TreeNode(Integer id, String label, String desc, Integer parentId) {
 		this.id = id;
 		this.label = label;
