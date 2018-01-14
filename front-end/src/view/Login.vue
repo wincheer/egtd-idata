@@ -37,9 +37,9 @@ export default {
           _this.logining = true;
           var loginParams = {
             staffMobile: _this.loginForm.staffMobile,
-            password: _this.loginForm.password
+            password: _this.loginForm.password,
           };
-          LOGIN(loginParams).then(data => {
+          LOGIN({model:loginParams,actor:0}).then(data => {
             _this.logining = false;
             if (data == "") {
               _this.$message({

@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
  * 杨文清 | 2018年1月13日 上午11:41:48 | 创建
  */
 public class Utils {
+	
 	private static Logger log = Logger.getLogger(Utils.class);
 
 	/**

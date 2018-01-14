@@ -8,8 +8,8 @@ package com.idata.gtd.common;
  */
 public enum LogTarget {
 
-	DEPARTMENT("部门"), DEP_EMP("部门人员"), VENDOR("供应商"), VENDOR_EMP("供应商人员"), PROJECT("项目"), PROJECT_GROUP(
-			"项目组"), PROJECT_STAFF("项目成员"),PROJECT_STAGE("项目阶段"),PROJECT_TASK("项目任务"),DOCUMENT("文档");
+	APP("系统"), DEPARTMENT("部门"), DEP_EMP("部门人员"), VENDOR("供应商"), VENDOR_EMP("供应商人员"), PROJECT("项目"), PROJECT_GROUP(
+			"项目组"), PROJECT_STAFF("项目成员"), PROJECT_STAGE("项目阶段"), PROJECT_TASK("项目任务"), DOCUMENT("文档");
 
 	private final String objectName;
 
