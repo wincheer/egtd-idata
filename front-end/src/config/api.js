@@ -30,9 +30,9 @@ export const DELETE_VENDOR_EMP = (params) => { return axios.post(`${base}/delete
 export const SELECT_TPL_PROJECT_LIST = () => { return axios.post(`${base}/selectTplProjectList`).then(res => res.data); };
 export const UPDATE_TPL_PROJECT = (params) => { return axios.post(`${base}/updateTplProject`, params).then(res => res.data); };
 export const DELETE_TPL_PROJECT = (params) => { return axios.post(`${base}/deleteTplProject`, params).then(res => res.data); };
-export const SELECT_TPL_STAGE_TREE_LIST = (params) => { return axios.post(`${base}/selectTplStageTreeList`).then(res => res.data); };
+export const SELECT_TPL_STAGE_TREE_LIST = (params) => { return axios.post(`${base}/selectTplStageTreeList`,params).then(res => res.data); };
 export const UPDATE_TPL_STAGE = (params) => { return axios.post(`${base}/updateTplStage`, params).then(res => res.data); };
 export const DELETE_TPL_STAGE = (params) => { return axios.post(`${base}/deleteTplStage`, params).then(res => res.data); };
-export const SELECT_TPL_GROUP_TREE_LIST = (params) => { return axios.post(`${base}/selectTplGroupTreeList`).then(res => res.data); };
+export const SELECT_TPL_GROUP_TREE_LIST = (params) => { return axios.post(`${base}/selectTplGroupTreeList`,params).then(res => res.data); };
 export const UPDATE_TPL_GROUP = (params) => { return axios.post(`${base}/updateTplGroup`, params).then(res => res.data); };
 export const DELETE_TPL_GROUP = (params) => { return axios.post(`${base}/deleteTplGroup`, params).then(res => res.data); };

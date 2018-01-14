@@ -36,7 +36,7 @@ public class TemplateService {
 	
 	public List<TplProject> selectTplProjectList() {
 		
-		logger.info("查询业主的组织结构");
+		logger.info("查询项目模板");
 		return tplProjectDao.selectTplProjectList();
 	}
 
