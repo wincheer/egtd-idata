@@ -71,6 +71,21 @@
       </el-form>
     </el-dialog>
 
+    <el-dialog :title="tplGroupObj.id==''?'增加项目组':'编辑项目组'" :visible.sync="dlgTplGroupEditVis" width="30%">
+      <el-form :model="tplGroupObj" :rules="tplGroupObjRules" ref="tplGroupForm" label-width="100px">
+        <el-form-item label="上级项目组" prop="parentId">
+          <el-cascader :options="tplGroupTreeList" :props="{value:'id'}" v-model="groupParentIds" @change="onGroupParentChange" change-on-select style="width:100%"/>
+        </el-form-item>
+        <el-form-item label="项目组名称" prop="groupName">
+          <el-input type="text" v-model="tplGroupObj.groupName"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="updateTplGroup" :loading="logining">保存</el-button>
+          <el-button @click="dlgTplGroupEditVis = false">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
   </section>
 </template>
 
@@ -170,7 +185,12 @@ export default {
       this.tplStageObj.parentId = 0;
       this.dlgTplStageEditVis = true;
     },
-    openAddTplGroup() {},
+    openAddTplGroup() {
+      this.tplGroupObj.id = "";
+      this.tplGroupObj.groupName = "";
+      this.tplGroupObj.parentId = 0;
+      this.dlgTplGroupEditVis = true;
+    },
     openEditTplProject(row) {
       Object.assign(this.tplProjectObj, row);
       this.dlgTplProjectEditVis = true;
@@ -182,6 +202,14 @@ export default {
       this.tplStageObj.parentId = data.parentId;
       this.builderParentIdSeq(node,1);
       this.dlgTplStageEditVis = true;
+    },
+    openEditTplGroup(node, data){
+      this.tplGroupObj.id = data.id;
+      this.tplGroupObj.groupName = data.label;
+      this.tplGroupObj.tplId = parseInt(data.desc);
+      this.tplGroupObj.parentId = data.parentId;
+      this.builderParentIdSeq(node,2);
+      this.dlgTplGroupEditVis = true;
     },
 
     builderParentIdSeq(node,who) {
@@ -244,7 +272,28 @@ export default {
         }
       });
     },
-    updateTplGroup(){},
+    updateTplGroup(){
+      var _this = this;
+      this.$refs.tplGroupForm.validate(valid => {
+        if (valid) {
+          // 检查parentId是否等于自身的id
+          if (_this.tplGroupObj.id === _this.tplGroupObj.parentId) {
+            _this.$message({ message: "不能将自身设置为上级。", type: "error" });
+            return;
+          }
+          _this.logining = true;
+          UPDATE_TPL_GROUP(_this.tplGroupObj).then(data => {
+            _this.logining = false;
+            if (data == "") {
+              _this.$message({ message: "更新项目组失败，请联系系统管理员。", type: "error" });
+            } else {
+              _this.selectTplGroupTreeList(_this.tplGroupObj.tplId);
+              _this.dlgTplGroupEditVis = false;
+            }
+          });
+        }
+      });
+    },
     delTplProject(row) {
       var _this = this;
       _this
@@ -255,6 +304,32 @@ export default {
           DELETE_TPL_PROJECT({ id: row.id }).then(res => {
             _this.$message({ message: "删除成功", type: "success" });
             _this.selectTplProjectList();
+          });
+        });
+    },
+    delTplStage(node, data){
+      var _this = this;
+      _this
+        .$confirm("确认删除该记录吗?", "提示", {
+          type: "warning"
+        })
+        .then(() => {
+          DELETE_TPL_STAGE({ id: data.id }).then(res => {
+            _this.$message({ message: "删除成功", type: "success" });
+            _this.selectTplStageTreeList(parseInt(data.desc));
+          });
+        });
+    },
+    delTplGroup(node, data){
+      var _this = this;
+      _this
+        .$confirm("确认删除该记录吗?", "提示", {
+          type: "warning"
+        })
+        .then(() => {
+          DELETE_TPL_GROUP({ id: data.id }).then(res => {
+            _this.$message({ message: "删除成功", type: "success" });
+            _this.selectTplGroupTreeList(parseInt(data.desc));
           });
         });
     },
@@ -269,7 +344,11 @@ export default {
         this.tplStageObj.parentId = value[value.length - 1];
       } else this.tplStageObj.parentId = 0;
     },
-    onGroupParentChange(){},
+    onGroupParentChange(value){
+      if (value.length != 0) {
+        this.tplGroupObj.parentId = value[value.length - 1];
+      } else this.tplGroupObj.parentId = 0;
+    },
     renderContentStage(h, { node, data, store }) {
       return (
         <span style="flex: 1; display: flex; align-items: center; justify-content: space-between; font-size: 14px; padding-right: 8px;">
