@@ -36,3 +36,8 @@ export const DELETE_TPL_STAGE = (params) => { return axios.post(`${base}/deleteT
 export const SELECT_TPL_GROUP_TREE_LIST = (params) => { return axios.post(`${base}/selectTplGroupTreeList`,params).then(res => res.data); };
 export const UPDATE_TPL_GROUP = (params) => { return axios.post(`${base}/updateTplGroup`, params).then(res => res.data); };
 export const DELETE_TPL_GROUP = (params) => { return axios.post(`${base}/deleteTplGroup`, params).then(res => res.data); };
+
+//项目维护
+export const SELECT_PROJECT_LIST = () => { return axios.post(`${base}/selectProjectList`).then(res => res.data); };
+export const UPDATE_PROJECT = (params) => { return axios.post(`${base}/updateProject`, params).then(res => res.data); };
+export const DELETE_PROJECT = (params) => { return axios.post(`${base}/deleteProject`, params).then(res => res.data); };

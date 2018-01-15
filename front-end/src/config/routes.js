@@ -1,6 +1,7 @@
 import Login from '@/view/Login.vue'
 import Home from '@/view/Home.vue'
 import Project from '@/view/project/Project.vue'
+import ProjectInit from '@/view/project/ProjectInit.vue'
 import Calendar from '@/view/gtd/Calendar.vue'
 import ParamConfig from '@/view/setup/ParamConfig.vue'
 import Resource from '@/view/setup/Resource.vue'
@@ -32,7 +33,8 @@ let routes = [
         iconCls: 'el-icon-view',
         children: [
             { path: '/project', component: DOING, name: '项目总览' ,iconCls: 'el-icon-search',},
-            { path: '/hello42', component: Project, name: '项目详情' ,iconCls:'el-icon-tickets'}
+            { path: '/hello42', component: Project, name: '项目详情' ,iconCls:'el-icon-tickets'},
+            { path: '/project-init', component: ProjectInit, name: '项目维护' ,iconCls:'el-icon-refresh'}
         ]
     },
     {
