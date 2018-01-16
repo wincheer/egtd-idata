@@ -89,15 +89,51 @@
       </el-form>
     </el-dialog>
 
-    <el-dialog title="维护项目合同" :visible.sync="dlgProjectContractEditVis" width="40%" :close-on-click-modal="false">
-      <el-form :model="projectContractObj" :rules="projectContractObjRules" ref="projectContractForm" label-width="80px">
+    <el-dialog title="维护项目合同" :visible.sync="dlgProjectContractListVis" width="40%" :close-on-click-modal="false">
+       <el-card>
+        <div slot="header" class="clearfix">
+          <span>项目合同</span>
+          <el-button @click="openAddProjectContract" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加合同</el-button>
+        </div>
+        <el-table :data="vendorList" highlight-current-row >
+          <el-table-column label="合同" prop="vendorName"></el-table-column>
+          <el-table-column label="供应商" prop="vendorFullName"></el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button size="mini" type="text" @click="delVendor(scope.row)" >删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-card>
+    </el-dialog>
+    <el-dialog title="添加合同" :visible.sync="dlgProjectContractEditVis" width="25%" :close-on-click-modal="false">
+      <el-form :model="projectContractObj" :rules="projectContractObjRules" ref="projectContractForm" label-width="100px">
+        <el-form-item label="项目合同" prop="contractName">
+          <el-upload 
+            ref="upload" 
+            :action="UPLOAD_URL"
+            :on-change="onFileChange"
+            :on-remove="onFileRemove"
+            :auto-upload="false" 
+            :limit="1" 
+            :file-list="contractFileList" 
+            :data="projectContractObj">
+            <el-button slot="trigger" size="mini" type="primary">选取合同</el-button>
+        </el-upload>
+        </el-form-item>
+        <el-form-item label="关联供应商" prop="vendorId">
+          <el-select v-model="projectContractObj.vendorId" placeholder="请选择">
+            <el-option v-for="vendor in vendorList" :key="vendor.id" :label="vendor.vendorName" :value="vendor.vendorId" />
+          </el-select>
+        </el-form-item>
         <el-form-item>
-          项目合同
+          <el-button type="primary" @click="updateProjectContract">保存</el-button>
+          <el-button @click="dlgProjectContractEditVis = false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
 
-    <el-dialog title="配置项目组" :visible.sync="dlgProjectGroupEditVis" width="40%" :close-on-click-modal="false">
+    <el-dialog title="配置项目组" :visible.sync="dlgProjectGroupEditVis" width="30%" :close-on-click-modal="false">
       <el-form :model="projectGroupObj" :rules="projectGroupObjRules" ref="projectGroupForm" label-width="80px">
         <el-form-item>
           项目组
@@ -105,7 +141,7 @@
       </el-form>
     </el-dialog>
 
-    <el-dialog title="分解项目阶段" :visible.sync="dlgProjectStageEditVis" width="40%" :close-on-click-modal="false">
+    <el-dialog title="分解项目阶段" :visible.sync="dlgProjectStageEditVis" width="30%" :close-on-click-modal="false">
       <el-form :model="projectStageObj" :rules="projectStageObjRules" ref="projectStageForm" label-width="80px">
         <el-form-item>
           项目阶段
@@ -118,15 +154,18 @@
 <script>
 import {
   SELECT_DEP_TREE_LIST,
+  SELECT_VENDOR_LIST, 
   SELECT_PARAM_VALUE_LIST,
   SELECT_PROJECT_LIST,
   UPDATE_PROJECT,
   DELETE_PROJECT,
 } from "@/config/api";
+import base from "@/config/remote";
 export default {
   props: {},
   data() {
     return {
+      UPLOAD_URL:'',
       active: 0,
       step: "新建项目",
       projectObj: {
@@ -146,10 +185,16 @@ export default {
       projectObjRules: {
         projectName: [{ required: true, message: "请输入项目名称", trigger: "blur" }]
       },
-      projectContractObj:{id:''},
-      projectContractObjRules: {
-        
+      projectContractObj: {
+        id:'',
+        projectId:'',
+        vendorId:'',
+        contractName:''
       },
+      projectContractObjRules: {
+        vendorId: [{ required: true, message: "请选择合同相关的供应商", trigger: "blur" }]
+      },
+      contractFileList:[],
       projectGroupObj:{id:''},
       projectGroupObjRules: {
         
@@ -163,17 +208,19 @@ export default {
       projectList: [],
       dlgProjectEditVis: false,
       dlgProjectContractEditVis:false,
+      dlgProjectContractListVis:false,
       dlgProjectGroupEditVis:false,
       dlgProjectStageEditVis:false,
       depIds:[],
       depTreeList:[],
-      categoryParamList:[]
+      categoryParamList:[],
+      vendorList:[]
     };
   },
   methods: {
     next() {
       if (this.active == 0) this.openAddProject();
-      else if (this.active == 1) this.openAddProjectContract();
+      else if (this.active == 1) this.openProjectContractList();
       else if (this.active == 2) this.openAddProjectGroup();
       else if (this.active == 3) this.openAddProjectStage();
     },
@@ -184,6 +231,16 @@ export default {
           _this.$message({ message: "获取参数列表失败，请联系系统管理员。", type: "error" });
         else {
           _this.categoryParamList = res;
+        }
+      });
+    },
+    selectVendorList(){
+      var _this = this;
+      SELECT_VENDOR_LIST().then(res => {
+        if (!Array.isArray(res))
+          _this.$message({ message: "获取供应商失败，请联系系统管理员。", type: "error" });
+        else {
+          _this.vendorList = res;
         }
       });
     },
@@ -211,7 +268,11 @@ export default {
       this.dlgProjectEditVis = true;
     },
     openAddProjectContract() {
+      //this.projectContractObj = row;
       this.dlgProjectContractEditVis = true;
+    },
+    openProjectContractList() {
+      this.dlgProjectContractListVis = true;
     },
     openAddProjectGroup() {
       this.dlgProjectGroupEditVis = true;
@@ -224,8 +285,8 @@ export default {
       this.dlgProjectEditVis = true;
     },
     openEditProjectContract(row) {
-      this.projectContractObj = row;
-      this.dlgProjectContractEditVis = true;
+      
+      this.dlgProjectContractListVis = true;
     },
     openEditProjectGroup(row) {
       this.projectGroupObj = row;
@@ -250,11 +311,28 @@ export default {
               
               _this.active = 1;
               _this.step = "维护项目合同";
-              _this.dlgProjectContractEditVis = false;
+              _this.dlgProjectContractEditVis = true;
             }
           });
         }
       });
+    },
+    updateProjectContract(){
+      if(this.projectContractObj.contractName != ''){
+        this.$refs.upload.submit();
+      }else{
+        this.$message({ message: "请选择项目合同", type: "warning" });
+      }
+    },
+    onFileChange(file, fileList){
+      if(fileList.length != 0){
+        this.projectContractObj.contractName = fileList[0].name;
+      }else{
+        this.projectContractObj.contractName = '';
+      }
+    },
+    onFileRemove(file, fileList){
+      this.projectContractObj.contractName = '';
     },
     delProject(row){
       var _this = this;
@@ -279,9 +357,11 @@ export default {
     }
   },
   mounted() {
+    this.UPLOAD_URL = base + "/upload";
     this.selectProjectList();
     this.selectDepTreeList();
     this.selectParamValueList({paramKey:'category'});
+    this.selectVendorList();
   }
 };
 </script>

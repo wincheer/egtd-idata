@@ -1,13 +1,18 @@
 package com.idata.gtd.action;
 
 import java.util.List;
+import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.idata.gtd.entity.Project;
 import com.idata.gtd.service.ProjectService;
@@ -22,6 +27,7 @@ import com.idata.gtd.service.ProjectService;
 @CrossOrigin
 public class ProjectAction {
 
+	private final static Logger logger = LoggerFactory.getLogger(ProjectAction.class);
 	@Autowired
 	private ProjectService projectService;
 
@@ -46,6 +52,17 @@ public class ProjectAction {
 
 		return projectService.deleteProject(project.getId());
 	};
+	
+	@RequestMapping(value = "/upload", method = RequestMethod.POST)
+	public void upload(@RequestParam MultipartFile file, @RequestParam Map<String, Object> data) {
+
+		logger.info("上传文档......" + file.getName());
+//		try {
+//			projectService.upload(file,data);
+//		} catch (Exception e) {
+//			logger.error(e.getMessage());
+//		}
+	}
 
 	
 
