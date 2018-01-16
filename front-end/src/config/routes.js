@@ -34,7 +34,7 @@ let routes = [
         children: [
             { path: '/project', component: DOING, name: '项目总览' ,iconCls: 'el-icon-search',},
             { path: '/hello42', component: Project, name: '项目详情' ,iconCls:'el-icon-tickets'},
-            { path: '/project-init', component: ProjectInit, name: '项目维护' ,iconCls:'el-icon-refresh'}
+            { path: '/project-init', component: ProjectInit, name: '项目信息维护' ,iconCls:'el-icon-refresh'}
         ]
     },
     {

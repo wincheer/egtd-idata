@@ -5,11 +5,10 @@
       <el-step title="维护项目合同" description="维护合同的同时选择供应商"></el-step>
       <el-step title="配置项目组" description="当前项目的组织结构以及项目成员"></el-step>
       <el-step title="分解项目阶段" description="分解项目阶段及任务，指派责任人以及配置检查链"></el-step>
-      <!-- <el-step title="指派任务" description="将分阶段任务阶段指派给责任人"></el-step> -->
       <el-step title="项目就绪"></el-step>
     </el-steps>
     <el-button style="margin-top: 12px;" @click="next" type="primary">{{step}}</el-button>
-    <el-table border stripe :data="projectList" style="margin-top: 20px;" highlight-current-row>
+    <el-table border stripe :data="projectList" style="margin-top: 20px;" highlight-current-row @current-change="onProjectChange">
       <el-table-column type="index" width="30"></el-table-column>
       <el-table-column prop="projectName" label="项目名称"></el-table-column>
       <el-table-column prop="createDate" label="立项时间"></el-table-column>
@@ -22,25 +21,94 @@
             <el-button size="mini" type="primary">编辑<i class="el-icon-arrow-down el-icon--right"></i></el-button>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item @click.native="openEditProject(scope.row)">项目</el-dropdown-item>
-              <el-dropdown-item command="b">合同</el-dropdown-item>
-              <el-dropdown-item command="c">项目组</el-dropdown-item>
-              <el-dropdown-item command="d">项目阶段</el-dropdown-item>
+              <el-dropdown-item @click.native="openEditProjectContract(scope.row)">合同</el-dropdown-item>
+              <el-dropdown-item @click.native="openEditProjectGroup(scope.row)">项目组</el-dropdown-item>
+              <el-dropdown-item @click.native="openEditProjectStage(scope.row)">项目阶段</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
           <el-button size="mini" type="warning">冻结</el-button>
-          <el-button size="mini" type="danger">删除</el-button>
+          <el-button size="mini" type="danger" @click="delProject(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- 编辑框 -->
-    <el-dialog :title="projectObj.id==''?'增加项目':'编辑项目'" :visible.sync="dlgProjectEditVis" width="30%" :close-on-click-modal="false">
-      <el-form :model="projectObj" :rules="projectObjRules" ref="projectObjForm" label-width="80px">
-        <el-form-item label="项目名称" prop="projectName">
-          <el-input type="text" v-model="projectObj.projectName"></el-input>
+    <el-dialog :title="projectObj.id==''?'增加项目':'编辑项目'" :visible.sync="dlgProjectEditVis" width="40%" :close-on-click-modal="false">
+      <el-form :model="projectObj" :rules="projectObjRules" ref="projectForm" label-width="80px">
+        <el-row>
+          <el-col :span="15">
+            <el-form-item label="项目名称" prop="projectName">
+              <el-input type="text" v-model="projectObj.projectName" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="类别" prop="category">
+              <el-select v-model="projectObj.category" placeholder="请选择">
+                <el-option v-for="item in categoryParamList" :key="item.id" :label="item.paramDesc" :value="item.paramValue" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-form-item label="项目描述" prop="projectDesc">
+          <el-input type="textarea" v-model="projectObj.projectDesc"></el-input>
         </el-form-item>
+        <el-form-item label="项目金额" prop="amount">
+          <el-input-number type="text" v-model="projectObj.amount" /> 万元
+        </el-form-item>
+        <el-row>
+          <el-col :span="15">
+            <el-form-item label="所属部门" prop="depId">
+              <!-- <el-input type="text" placeholder="所属部门" v-model="projectObj.depId"/> -->
+              <el-cascader :options="depTreeList" :props="{value:'id'}" v-model="depIds" @change="onDepChange" change-on-select clearable style="width:100%"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="关键项目" prop="isKey">
+              <el-switch v-model="projectObj.isKey" active-text="是" inactive-text="否" :active-value="1" :inactive-value="0"></el-switch>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-form-item label="立项时间" prop="createDate">
+          <el-date-picker type="date" clearable placeholder="立项时间" v-model="projectObj.createDate"/>
+        </el-form-item>
+        <el-row>
+          <el-col :span="10">
+            <el-form-item label="启动日期" prop="startDate">
+              <el-date-picker type="date" clearable placeholder="启动日期" v-model="projectObj.startDate"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
+            <el-form-item label="结束日期" prop="endDate">
+              <el-date-picker type="date" clearable placeholder="结束日期" v-model="projectObj.endDate"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-form-item>
           <el-button type="primary" @click="updateProject">保存</el-button>
           <el-button @click="dlgProjectEditVis = false">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
+    <el-dialog title="维护项目合同" :visible.sync="dlgProjectContractEditVis" width="40%" :close-on-click-modal="false">
+      <el-form :model="projectContractObj" :rules="projectContractObjRules" ref="projectContractForm" label-width="80px">
+        <el-form-item>
+          项目合同
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
+    <el-dialog title="配置项目组" :visible.sync="dlgProjectGroupEditVis" width="40%" :close-on-click-modal="false">
+      <el-form :model="projectGroupObj" :rules="projectGroupObjRules" ref="projectGroupForm" label-width="80px">
+        <el-form-item>
+          项目组
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
+    <el-dialog title="分解项目阶段" :visible.sync="dlgProjectStageEditVis" width="40%" :close-on-click-modal="false">
+      <el-form :model="projectStageObj" :rules="projectStageObjRules" ref="projectStageForm" label-width="80px">
+        <el-form-item>
+          项目阶段
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -49,6 +117,8 @@
 
 <script>
 import {
+  SELECT_DEP_TREE_LIST,
+  SELECT_PARAM_VALUE_LIST,
   SELECT_PROJECT_LIST,
   UPDATE_PROJECT,
   DELETE_PROJECT,
@@ -60,7 +130,7 @@ export default {
       active: 0,
       step: "新建项目",
       projectObj: {
-        id:0,
+        id:'',
         projectName:'',
         projectDesc:'',
         category:'',
@@ -76,12 +146,28 @@ export default {
       projectObjRules: {
         projectName: [{ required: true, message: "请输入项目名称", trigger: "blur" }]
       },
+      projectContractObj:{id:''},
+      projectContractObjRules: {
+        
+      },
+      projectGroupObj:{id:''},
+      projectGroupObjRules: {
+        
+      },
+      projectStageObj:{id:''},
+      projectStageObjRules: {
+        
+      },
+      
       selectedProject:{},
-      projectList: [
-        { projectName: "视频监控", depId: "信息中心", createDate: "2017-12-23" },
-        { projectName: "CRM", depId: "网监", createDate: "2017-1-13" }
-      ],
-      dlgProjectEditVis: false
+      projectList: [],
+      dlgProjectEditVis: false,
+      dlgProjectContractEditVis:false,
+      dlgProjectGroupEditVis:false,
+      dlgProjectStageEditVis:false,
+      depIds:[],
+      depTreeList:[],
+      categoryParamList:[]
     };
   },
   methods: {
@@ -90,6 +176,26 @@ export default {
       else if (this.active == 1) this.openAddProjectContract();
       else if (this.active == 2) this.openAddProjectGroup();
       else if (this.active == 3) this.openAddProjectStage();
+    },
+    selectParamValueList(paramKeyObj) {
+      var _this = this;
+      SELECT_PARAM_VALUE_LIST(paramKeyObj).then(res => {
+        if (!Array.isArray(res))
+          _this.$message({ message: "获取参数列表失败，请联系系统管理员。", type: "error" });
+        else {
+          _this.categoryParamList = res;
+        }
+      });
+    },
+    selectDepTreeList() {
+      var _this = this;
+      SELECT_DEP_TREE_LIST().then(res => {
+        if (!Array.isArray(res))
+          _this.$message({ message: "获取组织结构失败，请联系系统管理员。", type: "error" });
+        else {
+          _this.depTreeList = res;
+        }
+      });
     },
     selectProjectList(){
       var _this = this;
@@ -104,11 +210,30 @@ export default {
     openAddProject() {
       this.dlgProjectEditVis = true;
     },
-    openAddProjectContract() {},
-    openAddProjectGroup() {},
-    openAddProjectStage() {},
+    openAddProjectContract() {
+      this.dlgProjectContractEditVis = true;
+    },
+    openAddProjectGroup() {
+      this.dlgProjectGroupEditVis = true;
+    },
+    openAddProjectStage() {
+      this.dlgProjectStageEditVis = true;
+    },
     openEditProject(row) {
-      this.$message(row.projectName);
+      this.projectObj = row;
+      this.dlgProjectEditVis = true;
+    },
+    openEditProjectContract(row) {
+      this.projectContractObj = row;
+      this.dlgProjectContractEditVis = true;
+    },
+    openEditProjectGroup(row) {
+      this.projectGroupObj = row;
+      this.dlgProjectGroupEditVis = true;
+    },
+    openEditProjectStage(row) {
+      this.projectStageObj = row;
+      this.dlgProjectStageEditVis = true;
     },
     updateProject(){
       var _this = this;
@@ -118,17 +243,45 @@ export default {
             if (data == "") {
               _this.$message({ message: "更新项目失败，请联系系统管理员。", type: "error" });
             } else {
-              _this.selectProjectList();
               _this.dlgProjectEditVis = false;
+              _this.selectProjectList();
+              _this.projectObj.id = data;
+              _this.selectedProject = _this.projectObj;
+              
+              _this.active = 1;
+              _this.step = "维护项目合同";
+              _this.dlgProjectContractEditVis = false;
             }
           });
         }
       });
     },
-    delProject(){}
+    delProject(row){
+      var _this = this;
+      _this.$confirm("确认删除该记录吗?", "提示", {
+          type: "warning"
+        }).then(() => {
+          DELETE_PROJECT({ id: row.id }).then(res => {
+            _this.$message({ message: "删除成功", type: "success" });
+            _this.selectProjectList(row.depId);
+            _this.active = 0;
+            _this.step = "新建项目";
+          });
+        });
+    },
+    onProjectChange(row){
+      this.selectedProject = row;
+    },
+    onDepChange(value){
+      if (value.length != 0) {
+        this.projectObj.depId = value[value.length - 1];
+      } else this.projectObj.depId = '';
+    }
   },
   mounted() {
-    //this.selectProjectList();
+    this.selectProjectList();
+    this.selectDepTreeList();
+    this.selectParamValueList({paramKey:'category'});
   }
 };
 </script>

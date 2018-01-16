@@ -44,7 +44,7 @@ public class ParamAction {
 	@RequestMapping(value = "/selectParamValueList", method = RequestMethod.POST)
 	public List<ParamValue> selectParamValueList(@RequestBody ParamKey paramKey) {
 
-		return paramService.selectParamValueList(paramKey.getId());
+		return paramService.selectParamValueList(paramKey);
 	};
 	
 	@RequestMapping(value = "/updateParamValue", method = RequestMethod.POST)

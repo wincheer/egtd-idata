@@ -2,6 +2,7 @@ package com.idata.gtd.dao;
 
 import java.util.List;
 
+import com.idata.gtd.entity.ParamKey;
 import com.idata.gtd.entity.ParamValue;
 
 public interface ParamValueMapper {
@@ -14,7 +15,7 @@ public interface ParamValueMapper {
 
 	int updateParamValue(ParamValue record);
 
-	List<ParamValue> selectParamValueList(Integer paramKeyId);
+	List<ParamValue> selectParamValueList(ParamKey paramKey);
 
 	void deleteParamValues(Integer paramKeyId); 
 }

@@ -58,9 +58,9 @@ public class ParamService {
 		return paramKeyDao.updateParamKey(paramKey);
 	}
 
-	public List<ParamValue> selectParamValueList(Integer paramKeyId) {
+	public List<ParamValue> selectParamValueList(ParamKey paramKey) {
 
-		List<ParamValue> paramValueList = paramValueDao.selectParamValueList(paramKeyId);
+		List<ParamValue> paramValueList = paramValueDao.selectParamValueList(paramKey);
 		return paramValueList;
 	}
 

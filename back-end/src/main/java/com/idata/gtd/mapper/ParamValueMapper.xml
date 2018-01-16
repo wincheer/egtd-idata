@@ -46,10 +46,16 @@
 		where id = #{id,jdbcType=INTEGER}
 	</update>
 	
-	<select id="selectParamValueList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+	<select id="selectParamValueList" parameterType="com.idata.gtd.entity.ParamKey" resultMap="BaseResultMap">
 		select *
 		from param_value
-		where param_id = #{paramKeyId,jdbcType=INTEGER}
+		left join param_key on param_value.param_id = param_key.id
+		where 1=1
+		<trim prefix=" and (" suffix=")" suffixOverrides="and">
+			<if test="id != null">param_key.id = #{id,jdbcType=INTEGER}  and </if>
+			<if test="paramKey != null">param_key.param_key = #{paramKey,jdbcType=VARCHAR}  and </if>
+			<if test="paramKeyName != null">param_key.param_key_name = #{paramKeyName,jdbcType=VARCHAR}  and </if>
+		</trim>
 	</select>
 	
 	<delete id="deleteParamValues" parameterType="java.lang.Integer">
