@@ -1,0 +1,32 @@
+package com.idata.gtd.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.idata.gtd.dao.DocumentMapper;
+import com.idata.gtd.entity.Document;
+
+@Service
+@Transactional
+public class DocumentService {
+	
+	//private final static Logger logger = LoggerFactory.getLogger(DocumentService.class);
+	
+	@Value("${upload_path}")
+	private String UPLOAD_PATH;
+	@Autowired
+	private DocumentMapper documentDao;
+	
+	public void upload(MultipartFile uploadFile,Document data) throws Exception {
+
+		//上传文件
+		java.io.File outputFile = new java.io.File(UPLOAD_PATH, String.valueOf(data.getDocumentName()));
+		uploadFile.transferTo(outputFile);
+		//更新记录
+		documentDao.insertDocument(data);
+
+	}
+}

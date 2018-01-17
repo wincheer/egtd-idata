@@ -1,7 +1,6 @@
 package com.idata.gtd.action;
 
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.idata.gtd.entity.Project;
+import com.idata.gtd.entity.ProjectContract;
 import com.idata.gtd.service.ProjectService;
 
 /**
@@ -52,18 +52,22 @@ public class ProjectAction {
 
 		return projectService.deleteProject(project.getId());
 	};
-	
-	@RequestMapping(value = "/upload", method = RequestMethod.POST)
-	public void upload(@RequestParam MultipartFile file, @RequestParam Map<String, Object> data) {
 
-		logger.info("上传文档......" + file.getName());
-//		try {
-//			projectService.upload(file,data);
-//		} catch (Exception e) {
-//			logger.error(e.getMessage());
-//		}
-	}
+	@RequestMapping(value = "/updateProjectContract", method = RequestMethod.POST)
+	public int updateProjectContract(@RequestParam MultipartFile file, @RequestParam ProjectContract data) throws Exception {
 
+		logger.info("上传合同附加参数  = " + data.toString());
+		
+		if (data.getId() == null)
+			return projectService.insertProjectContract(file, data);
+		else
+			return projectService.updateProjectContract(file, data);
+	};
 	
+	@RequestMapping(value = "/deleteProjectContract", method = RequestMethod.POST)
+	public int deleteProjectContract(@RequestBody ProjectContract data) {
+
+		return projectService.deleteProjectContract(data.getId());
+	};
 
 }

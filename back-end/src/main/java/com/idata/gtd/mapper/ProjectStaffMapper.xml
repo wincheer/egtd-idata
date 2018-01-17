@@ -24,7 +24,7 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   
-  <insert id="insertStaff" parameterType="com.idata.gtd.entity.ProjectStaff">
+  <insert id="insertStaff" useGeneratedKeys="true" parameterType="com.idata.gtd.entity.ProjectStaff">
     insert into project_staff
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

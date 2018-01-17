@@ -20,7 +20,7 @@
 		where id = #{id,jdbcType=INTEGER}
 	</delete>
 
-	<insert id="insertParamKey" parameterType="com.idata.gtd.entity.ParamKey">
+	<insert id="insertParamKey" useGeneratedKeys="true" parameterType="com.idata.gtd.entity.ParamKey">
 		insert into param_key
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="id != null">id,</if>

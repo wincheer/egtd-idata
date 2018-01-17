@@ -19,7 +19,7 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   
-  <insert id="insertTplProject" parameterType="com.idata.gtd.entity.TplProject">
+  <insert id="insertTplProject" useGeneratedKeys="true" parameterType="com.idata.gtd.entity.TplProject">
     insert into tpl_project
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">id,</if>

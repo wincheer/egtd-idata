@@ -318,6 +318,12 @@ export default {
       });
     },
     updateProjectContract(){
+      
+      
+       
+       var param = Object.assign(_this.projectObj);
+       this.$set(param,'loginUserId',123); //添加属性
+
       if(this.projectContractObj.contractName != ''){
         this.$refs.upload.submit();
       }else{
@@ -357,7 +363,7 @@ export default {
     }
   },
   mounted() {
-    this.UPLOAD_URL = base + "/upload";
+    this.UPLOAD_URL = base + "/updateProjectContract";
     this.selectProjectList();
     this.selectDepTreeList();
     this.selectParamValueList({paramKey:'category'});
