@@ -7,7 +7,7 @@
       <el-step title="分解项目阶段" description="分解项目阶段及任务，指派责任人以及配置检查链"></el-step>
       <el-step title="项目就绪"></el-step>
     </el-steps>
-    <el-button style="margin-top: 12px;" @click="next" type="primary">{{step}}</el-button>
+    <el-button style="margin-top: 12px;" @click="next" type="primary">新建项目</el-button>
     <el-table border stripe :data="projectList" style="margin-top: 20px;" highlight-current-row @current-change="onProjectChange">
       <el-table-column type="index" width="30"></el-table-column>
       <el-table-column prop="projectName" label="项目名称"></el-table-column>
@@ -100,7 +100,8 @@
           <el-table-column label="供应商" prop="vendorFullName"></el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <el-button size="mini" type="text" @click="delVendor(scope.row)" >删除</el-button>
+              <el-button size="mini" type="primary" @click="delVendor(scope.row)" >编辑</el-button>
+              <el-button size="mini" type="warning" @click="delVendor(scope.row)" >删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -108,7 +109,15 @@
     </el-dialog>
     <el-dialog title="添加合同" :visible.sync="dlgProjectContractEditVis" width="25%" :close-on-click-modal="false">
       <el-form :model="projectContractObj" :rules="projectContractObjRules" ref="projectContractForm" label-width="100px">
-        <el-form-item label="项目合同" prop="contractName">
+        <el-form-item label="合同名称" prop="contractName">
+          <el-input type="text" v-model="projectContractObj.contractName"></el-input>
+        </el-form-item>
+        <el-form-item label="相关供应商" prop="vendorId">
+          <el-select v-model="projectContractObj.vendorId" placeholder="请选择">
+            <el-option v-for="vendor in vendorList" :key="vendor.id" :label="vendor.vendorName" :value="vendor.vendorId" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="附件" >
           <el-upload 
             ref="upload" 
             :action="UPLOAD_URL"
@@ -118,13 +127,8 @@
             :limit="1" 
             :file-list="contractFileList" 
             :data="projectContractObj">
-            <el-button slot="trigger" size="mini" type="primary">选取合同</el-button>
-        </el-upload>
-        </el-form-item>
-        <el-form-item label="关联供应商" prop="vendorId">
-          <el-select v-model="projectContractObj.vendorId" placeholder="请选择">
-            <el-option v-for="vendor in vendorList" :key="vendor.id" :label="vendor.vendorName" :value="vendor.vendorId" />
-          </el-select>
+            <el-button slot="trigger" size="mini">选取合同 ...</el-button>
+          </el-upload>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="updateProjectContract">保存</el-button>
@@ -167,7 +171,6 @@ export default {
     return {
       UPLOAD_URL:'',
       active: 0,
-      step: "新建项目",
       projectObj: {
         id:'',
         projectName:'',
@@ -308,10 +311,6 @@ export default {
               _this.selectProjectList();
               _this.projectObj.id = data;
               _this.selectedProject = _this.projectObj;
-              
-              _this.active = 1;
-              _this.step = "维护项目合同";
-              _this.dlgProjectContractEditVis = true;
             }
           });
         }
@@ -348,13 +347,12 @@ export default {
           DELETE_PROJECT({ id: row.id }).then(res => {
             _this.$message({ message: "删除成功", type: "success" });
             _this.selectProjectList(row.depId);
-            _this.active = 0;
-            _this.step = "新建项目";
           });
         });
     },
     onProjectChange(row){
       this.selectedProject = row;
+      //TODO 查询相关表的list，用以判断当前项目的完整程度......
     },
     onDepChange(value){
       if (value.length != 0) {
