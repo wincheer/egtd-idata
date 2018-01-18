@@ -43,6 +43,7 @@ export const UPDATE_PROJECT = (params) => { return axios.post(`${base}/updatePro
 export const DELETE_PROJECT = (params) => { return axios.post(`${base}/deleteProject`, params).then(res => res.data); };
 export const SELECT_PROJECT_CONTRACT_LIST = (params) => { return axios.post(`${base}/selectProjectContractList`,params).then(res => res.data); };
 export const UPDATE_PROJECT_CONTRACT = (params) => { return axios.post(`${base}/updateProjectContract`, params).then(res => res.data); };
+export const UPDATE_PROJECT_CONTRACT_NO_FILE = (params) => { return axios.post(`${base}/updateProjectContractNoFile`, params).then(res => res.data); };
 export const DELETE_PROJECT_CONTRACT = (params) => { return axios.post(`${base}/deleteProjectContract`, params).then(res => res.data); };
 export const SELECT_PROJECT_GROUP_LIST = (params) => { return axios.post(`${base}/selectProjectGroupList`,params).then(res => res.data); };
 export const UPDATE_PROJECT_GROUP = (params) => { return axios.post(`${base}/updateProjectGroup`, params).then(res => res.data); };

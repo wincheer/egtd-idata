@@ -21,7 +21,7 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   
-  <insert id="insertDocument" useGeneratedKeys="true" parameterType="com.idata.gtd.entity.Document">
+  <insert id="insertDocument" useGeneratedKeys="true" keyProperty="id" parameterType="com.idata.gtd.entity.Document">
     insert into document
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">id,</if>
@@ -58,7 +58,18 @@
 		<if test="documentName != null">document_name = #{documentName,jdbcType=VARCHAR} and </if>
 	    <if test="fileName != null">file_name = #{fileName,jdbcType=VARCHAR} and </if>
 		<if test="belongTo != null">belong_to = #{belongTo,jdbcType=VARCHAR} and </if>
-		<if test="source_id != null">source_id = #{sourceId,jdbcType=INTEGER} and </if>
+		<if test="sourceId != null">source_id = #{sourceId,jdbcType=INTEGER} and </if>
+	</trim>
+  </select>
+  
+  <select id="deleteDocuments" parameterType="com.idata.gtd.entity.Document">
+    delete from document
+    where 1=1
+	<trim prefix=" and (" suffix=")" suffixOverrides="and">
+		<if test="documentName != null">document_name = #{documentName,jdbcType=VARCHAR} and </if>
+	    <if test="fileName != null">file_name = #{fileName,jdbcType=VARCHAR} and </if>
+		<if test="belongTo != null">belong_to = #{belongTo,jdbcType=VARCHAR} and </if>
+		<if test="sourceId != null">source_id = #{sourceId,jdbcType=INTEGER} and </if>
 	</trim>
   </select>
  

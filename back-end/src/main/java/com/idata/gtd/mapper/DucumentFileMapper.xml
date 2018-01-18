@@ -19,7 +19,7 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
 
-  <insert id="insertDucumentFile" useGeneratedKeys="true" parameterType="com.idata.gtd.entity.DucumentFile">
+  <insert id="insertDucumentFile" useGeneratedKeys="true" keyProperty="id" parameterType="com.idata.gtd.entity.DucumentFile">
     insert into ducument_file
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">id,</if>

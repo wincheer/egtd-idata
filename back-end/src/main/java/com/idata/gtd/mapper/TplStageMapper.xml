@@ -20,7 +20,7 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   
-  <insert id="insertTplStage" useGeneratedKeys="true" parameterType="com.idata.gtd.entity.TplStage">
+  <insert id="insertTplStage" useGeneratedKeys="true" keyProperty="id" parameterType="com.idata.gtd.entity.TplStage">
     insert into tpl_stage
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">id,</if>

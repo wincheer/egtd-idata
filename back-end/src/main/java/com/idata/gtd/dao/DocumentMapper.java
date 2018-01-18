@@ -15,4 +15,6 @@ public interface DocumentMapper {
 	int updateDocument(Document record);
 
 	List<Document> selectDocumentList(Document document);
+
+	void deleteDocuments(Document doc); 
 }

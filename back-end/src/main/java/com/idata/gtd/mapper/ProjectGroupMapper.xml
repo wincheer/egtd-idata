@@ -21,59 +21,31 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
 
-  <insert id="insertProjectGroup" useGeneratedKeys="true" parameterType="com.idata.gtd.entity.ProjectGroup">
+  <insert id="insertProjectGroup" useGeneratedKeys="true" keyProperty="id" parameterType="com.idata.gtd.entity.ProjectGroup">
     insert into project_group
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="projectId != null">
-        project_id,
-      </if>
-      <if test="groupName != null">
-        group_name,
-      </if>
-      <if test="groupDesc != null">
-        group_desc,
-      </if>
-      <if test="parentId != null">
-        parent_id,
-      </if>
+      <if test="id != null">id,</if>
+      <if test="projectId != null">project_id,</if>
+      <if test="groupName != null">group_name,</if>
+      <if test="groupDesc != null">group_desc,</if>
+      <if test="parentId != null">parent_id,</if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="projectId != null">
-        #{projectId,jdbcType=INTEGER},
-      </if>
-      <if test="groupName != null">
-        #{groupName,jdbcType=VARCHAR},
-      </if>
-      <if test="groupDesc != null">
-        #{groupDesc,jdbcType=VARCHAR},
-      </if>
-      <if test="parentId != null">
-        #{parentId,jdbcType=INTEGER},
-      </if>
+      <if test="id != null">#{id,jdbcType=INTEGER},</if>
+      <if test="projectId != null">#{projectId,jdbcType=INTEGER},</if>
+      <if test="groupName != null">#{groupName,jdbcType=VARCHAR},</if>
+      <if test="groupDesc != null">#{groupDesc,jdbcType=VARCHAR},</if>
+      <if test="parentId != null">#{parentId,jdbcType=INTEGER},</if>
     </trim>
   </insert>
   
   <update id="updateProjectGroup" parameterType="com.idata.gtd.entity.ProjectGroup">
     update project_group
     <set>
-      <if test="projectId != null">
-        project_id = #{projectId,jdbcType=INTEGER},
-      </if>
-      <if test="groupName != null">
-        group_name = #{groupName,jdbcType=VARCHAR},
-      </if>
-      <if test="groupDesc != null">
-        group_desc = #{groupDesc,jdbcType=VARCHAR},
-      </if>
-      <if test="parentId != null">
-        parent_id = #{parentId,jdbcType=INTEGER},
-      </if>
+      <if test="projectId != null">project_id = #{projectId,jdbcType=INTEGER},</if>
+      <if test="groupName != null">group_name = #{groupName,jdbcType=VARCHAR},</if>
+      <if test="groupDesc != null">group_desc = #{groupDesc,jdbcType=VARCHAR},</if>
+      <if test="parentId != null">parent_id = #{parentId,jdbcType=INTEGER},</if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>

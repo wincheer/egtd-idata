@@ -1,6 +1,7 @@
 package com.idata.gtd.action;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +14,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.idata.gtd.entity.Project;
 import com.idata.gtd.entity.ProjectContract;
+import com.idata.gtd.entity.ProjectGroup;
+import com.idata.gtd.entity.ProjectStage;
 import com.idata.gtd.service.ProjectService;
 
 /**
@@ -52,7 +57,8 @@ public class ProjectAction {
 
 		return projectService.deleteProject(project.getId());
 	};
-	
+
+	////////
 
 	@RequestMapping(value = "/selectProjectContractList", method = RequestMethod.POST)
 	public List<ProjectContract> selectProjectContractList(@RequestBody ProjectContract data) throws Exception {
@@ -60,22 +66,85 @@ public class ProjectAction {
 		List<ProjectContract> projectContractList = projectService.selectProjectContractList(data.getProjectId());
 		return projectContractList;
 	}
-	
-	@RequestMapping(value = "/updateProjectContract", method = RequestMethod.POST)
-	public int updateProjectContract(@RequestParam MultipartFile file, @RequestParam ProjectContract data) throws Exception {
 
-		logger.info("上传合同附加参数  = " + data.toString());
+	@RequestMapping(value = "/updateProjectContract", method = RequestMethod.POST)
+	public int updateProjectContract(@RequestParam Map<String,Object> data, @RequestParam MultipartFile file) throws Exception {
+
+		logger.info("合同上传的附件 = " + file.getOriginalFilename());
+		Gson gson = new GsonBuilder().create();
+		ProjectContract model = gson.fromJson(data.toString(), ProjectContract.class);
 		
-		if (data.getId() == null)
-			return projectService.insertProjectContract(file, data);
+		if (model.getId() == 0){
+			model.setId(null);
+			return projectService.insertProjectContract(file, model);
+		}
 		else
-			return projectService.updateProjectContract(file, data);
+			return projectService.updateProjectContract(file, model);
+
 	};
-	
+	@RequestMapping(value = "/updateProjectContractNoFile", method = RequestMethod.POST)
+	public int updateProjectContractNoFile(@RequestBody ProjectContract data) throws Exception {
+
+		if (data.getId() == 0)
+		{
+			data.setId(null);
+			return projectService.insertProjectContract(data);
+		}
+		else
+			return projectService.updateProjectContract(data);
+	};
+
 	@RequestMapping(value = "/deleteProjectContract", method = RequestMethod.POST)
 	public int deleteProjectContract(@RequestBody ProjectContract data) {
 
 		return projectService.deleteProjectContract(data.getId());
+	};
+
+	/////////
+
+	@RequestMapping(value = "/selectProjectGroupList", method = RequestMethod.POST)
+	public List<ProjectGroup> selectProjectGroupList(@RequestBody ProjectGroup data) throws Exception {
+
+		List<ProjectGroup> projectGroupList = projectService.selectProjectGroupList(data.getProjectId());
+		return projectGroupList;
+	}
+
+	@RequestMapping(value = "/updateProjectGroup", method = RequestMethod.POST)
+	public int updateProjectGroup(@RequestBody ProjectGroup data) throws Exception {
+
+		if (data.getId() == null)
+			return projectService.insertProjectGroup(data);
+		else
+			return projectService.updateProjectGroup(data);
+	};
+
+	@RequestMapping(value = "/deleteProjectGroup", method = RequestMethod.POST)
+	public int deleteProjectGroup(@RequestBody ProjectGroup data) {
+
+		return projectService.deleteProjectGroup(data.getId());
+	};
+
+	///////
+	@RequestMapping(value = "/selectProjectStageList", method = RequestMethod.POST)
+	public List<ProjectStage> selectProjectStageList(@RequestBody ProjectStage data) throws Exception {
+
+		List<ProjectStage> projectStageList = projectService.selectProjectStageList(data.getProjectId());
+		return projectStageList;
+	}
+
+	@RequestMapping(value = "/updateProjectStage", method = RequestMethod.POST)
+	public int updateProjectStage(@RequestBody ProjectStage data) throws Exception {
+
+		if (data.getId() == null)
+			return projectService.insertProjectStage(data);
+		else
+			return projectService.updateProjectStage(data);
+	};
+
+	@RequestMapping(value = "/deleteProjectStage", method = RequestMethod.POST)
+	public int deleteProjectStage(@RequestBody ProjectStage data) {
+
+		return projectService.deleteProjectStage(data.getId());
 	};
 
 }

@@ -25,7 +25,7 @@ public class DocumentService {
 	public void upload(MultipartFile uploadFile,Document data) throws Exception {
 
 		//上传文件
-		java.io.File outputFile = new java.io.File(UPLOAD_PATH, String.valueOf(data.getDocumentName()));
+		java.io.File outputFile = new java.io.File(UPLOAD_PATH, String.valueOf(data.getFileName()));
 		uploadFile.transferTo(outputFile);
 		//更新记录
 		documentDao.insertDocument(data);
@@ -50,5 +50,10 @@ public class DocumentService {
 	public int deleteDocument(Integer id) {
 
 		return documentDao.deleteDocumentByPK(id);
+	}
+	
+	public void deleteDocuments(Document doc) {
+
+		documentDao.deleteDocuments(doc);
 	}
 }

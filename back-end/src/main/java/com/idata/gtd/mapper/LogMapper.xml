@@ -22,7 +22,7 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   
-  <insert id="insertLog" useGeneratedKeys="true" parameterType="com.idata.gtd.entity.Log">
+  <insert id="insertLog" useGeneratedKeys="true" keyProperty="id" parameterType="com.idata.gtd.entity.Log">
     insert into log
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">id,</if>

@@ -20,7 +20,7 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
 
-  <insert id="insertDocumentVersion" useGeneratedKeys="true" parameterType="com.idata.gtd.entity.DocumentVersion">
+  <insert id="insertDocumentVersion" useGeneratedKeys="true" keyProperty="id" parameterType="com.idata.gtd.entity.DocumentVersion">
     insert into document_version
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">id,</if>
