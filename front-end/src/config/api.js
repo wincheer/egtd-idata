@@ -41,3 +41,17 @@ export const DELETE_TPL_GROUP = (params) => { return axios.post(`${base}/deleteT
 export const SELECT_PROJECT_LIST = () => { return axios.post(`${base}/selectProjectList`).then(res => res.data); };
 export const UPDATE_PROJECT = (params) => { return axios.post(`${base}/updateProject`, params).then(res => res.data); };
 export const DELETE_PROJECT = (params) => { return axios.post(`${base}/deleteProject`, params).then(res => res.data); };
+export const SELECT_PROJECT_CONTRACT_LIST = (params) => { return axios.post(`${base}/selectProjectContractList`,params).then(res => res.data); };
+export const UPDATE_PROJECT_CONTRACT = (params) => { return axios.post(`${base}/updateProjectContract`, params).then(res => res.data); };
+export const DELETE_PROJECT_CONTRACT = (params) => { return axios.post(`${base}/deleteProjectContract`, params).then(res => res.data); };
+export const SELECT_PROJECT_GROUP_LIST = (params) => { return axios.post(`${base}/selectProjectGroupList`,params).then(res => res.data); };
+export const UPDATE_PROJECT_GROUP = (params) => { return axios.post(`${base}/updateProjectGroup`, params).then(res => res.data); };
+export const DELETE_PROJECT_GROUP = (params) => { return axios.post(`${base}/deleteProjectGroup`, params).then(res => res.data); };
+export const SELECT_PROJECT_STAGE_LIST = (params) => { return axios.post(`${base}/selectProjectStageList`,params).then(res => res.data); };
+export const UPDATE_PROJECT_STAGE = (params) => { return axios.post(`${base}/updateProjectStage`, params).then(res => res.data); };
+export const DELETE_PROJECT_STAGE = (params) => { return axios.post(`${base}/deleteProjectStage`, params).then(res => res.data); };
+
+//文档附件
+export const SELECT_DOCUMENT_LIST = (params) => { return axios.post(`${base}/selectDocumentList`,params).then(res => res.data); };
+export const UPDATE_DOCUMENT = (params) => { return axios.post(`${base}/updateDocument`,params).then(res => res.data); };
+export const DELETE_DOCUMENT = (params) => { return axios.post(`${base}/deleteDocument`,params).then(res => res.data); };

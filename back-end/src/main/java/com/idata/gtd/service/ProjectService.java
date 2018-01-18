@@ -80,8 +80,13 @@ public class ProjectService {
 	}
 
 	public int deleteProjectContract(Integer id) {
-		//TODO 同时删除合同文档
+		
 		return projectContractDao.deleteProjectContractByPK(id);
+	}
+
+	public List<ProjectContract> selectProjectContractList(Integer projectId) {
+
+		return projectContractDao.selectProjectContractList(projectId);
 	}
 	
 }

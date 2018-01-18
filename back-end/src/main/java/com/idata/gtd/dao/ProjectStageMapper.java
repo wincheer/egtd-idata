@@ -1,5 +1,7 @@
 package com.idata.gtd.dao;
 
+import java.util.List;
+
 import com.idata.gtd.entity.ProjectStage;
 
 public interface ProjectStageMapper {
@@ -11,4 +13,6 @@ public interface ProjectStageMapper {
 	ProjectStage selectProjectStageByPK(Integer id);
 
 	int updateProjectStage(ProjectStage record);
+	
+	List<ProjectStage> selectProjectStageList(Integer projectId); 
 }

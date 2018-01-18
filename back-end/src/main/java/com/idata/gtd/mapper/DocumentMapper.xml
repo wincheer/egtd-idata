@@ -49,5 +49,17 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <select id="selectDocumentList" parameterType="com.idata.gtd.entity.Document" resultMap="BaseResultMap">
+    select *
+    from document
+    where 1=1
+	<trim prefix=" and (" suffix=")" suffixOverrides="and">
+		<if test="documentName != null">document_name = #{documentName,jdbcType=VARCHAR} and </if>
+	    <if test="fileName != null">file_name = #{fileName,jdbcType=VARCHAR} and </if>
+		<if test="belongTo != null">belong_to = #{belongTo,jdbcType=VARCHAR} and </if>
+		<if test="source_id != null">source_id = #{sourceId,jdbcType=INTEGER} and </if>
+	</trim>
+  </select>
  
 </mapper>

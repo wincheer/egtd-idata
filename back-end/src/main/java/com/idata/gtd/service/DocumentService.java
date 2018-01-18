@@ -1,5 +1,7 @@
 package com.idata.gtd.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -28,5 +30,25 @@ public class DocumentService {
 		//更新记录
 		documentDao.insertDocument(data);
 
+	}
+
+	public List<Document> selectDocumentList(Document data) {
+		
+		return documentDao.selectDocumentList(data);
+	}
+
+	public int insertDocument(Document doc) {
+
+		return documentDao.insertDocument(doc);
+	}
+
+	public int updateDocument(Document doc) {
+		
+		return documentDao.updateDocument(doc);
+	}
+
+	public int deleteDocument(Integer id) {
+
+		return documentDao.deleteDocumentByPK(id);
 	}
 }

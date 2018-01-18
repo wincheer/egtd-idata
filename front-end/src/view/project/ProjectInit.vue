@@ -88,7 +88,7 @@
         </el-form-item>
       </el-form>
     </el-dialog>
-
+    <!--合同-->
     <el-dialog title="维护项目合同" :visible.sync="dlgProjectContractListVis" width="40%" :close-on-click-modal="false">
        <el-card>
         <div slot="header" class="clearfix">
@@ -136,7 +136,7 @@
         </el-form-item>
       </el-form>
     </el-dialog>
-
+    <!--项目组-->
     <el-dialog title="配置项目组" :visible.sync="dlgProjectGroupEditVis" width="30%" :close-on-click-modal="false">
       <el-form :model="projectGroupObj" :rules="projectGroupObjRules" ref="projectGroupForm" label-width="80px">
         <el-form-item>
@@ -144,7 +144,7 @@
         </el-form-item>
       </el-form>
     </el-dialog>
-
+    <!--项目阶段-->
     <el-dialog title="分解项目阶段" :visible.sync="dlgProjectStageEditVis" width="30%" :close-on-click-modal="false">
       <el-form :model="projectStageObj" :rules="projectStageObjRules" ref="projectStageForm" label-width="80px">
         <el-form-item>
@@ -163,6 +163,18 @@ import {
   SELECT_PROJECT_LIST,
   UPDATE_PROJECT,
   DELETE_PROJECT,
+  SELECT_PROJECT_CONTRACT_LIST,
+  UPDATE_PROJECT_CONTRACT,
+  DELETE_PROJECT_CONTRACT,
+  SELECT_PROJECT_GROUP_LIST,
+  UPDATE_PROJECT_GROUP,
+  DELETE_PROJECT_GROUP,
+  SELECT_PROJECT_STAGE_LIST,
+  UPDATE_PROJECT_STAGE,
+  DELETE_PROJECT_STAGE,
+  SELECT_DOCUMENT_LIST,
+  UPDATE_DOCUMENT,
+  DELETE_DOCUMENT
 } from "@/config/api";
 import base from "@/config/remote";
 export default {
@@ -208,7 +220,12 @@ export default {
       },
       
       selectedProject:{},
+
       projectList: [],
+      projectContractList: [],
+      projectGroupList: [],
+      projectStageList: [],
+
       dlgProjectEditVis: false,
       dlgProjectContractEditVis:false,
       dlgProjectContractListVis:false,
@@ -267,6 +284,36 @@ export default {
         }
       });
     },
+    selectProjectContractList(projectId){
+      var _this = this;
+      SELECT_PROJECT_CONTRACT_LIST({ projectId: projectId }).then(res => {
+        if (!Array.isArray(res))
+          _this.$message({ message: "获取项目合同失败，请联系系统管理员。", type: "error" });
+        else {
+          _this.projectContractList = res;
+        }
+      });
+    },
+    selectProjectGroupList(projectId){
+      var _this = this;
+      SELECT_PROJECT_GROUP_LIST({ projectId: projectId }).then(res => {
+        if (!Array.isArray(res))
+          _this.$message({ message: "获取项目组失败，请联系系统管理员。", type: "error" });
+        else {
+          _this.projectGroupList = res;
+        }
+      });
+    },
+    selectProjectStageList(projectId){
+      var _this = this;
+      SELECT_PROJECT_STAGE_LIST({ projectId: projectId }).then(res => {
+        if (!Array.isArray(res))
+          _this.$message({ message: "获取项目阶段失败，请联系系统管理员。", type: "error" });
+        else {
+          _this.projectStageList = res;
+        }
+      });
+    },
     openAddProject() {
       this.dlgProjectEditVis = true;
     },
@@ -317,9 +364,6 @@ export default {
       });
     },
     updateProjectContract(){
-      
-      
-       
        var param = Object.assign(_this.projectObj);
        this.$set(param,'loginUserId',123); //添加属性
 
@@ -352,7 +396,10 @@ export default {
     },
     onProjectChange(row){
       this.selectedProject = row;
-      //TODO 查询相关表的list，用以判断当前项目的完整程度......
+      //查询相关表的list，用以判断当前项目的完整程度......
+      this.selectProjectContractList(row.id);
+      this.selectProjectGroupList(row.id);
+      this.selectProjectStageList(row.id);
     },
     onDepChange(value){
       if (value.length != 0) {

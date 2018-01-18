@@ -52,7 +52,15 @@ public class ProjectAction {
 
 		return projectService.deleteProject(project.getId());
 	};
+	
 
+	@RequestMapping(value = "/selectProjectContractList", method = RequestMethod.POST)
+	public List<ProjectContract> selectProjectContractList(@RequestBody ProjectContract data) throws Exception {
+
+		List<ProjectContract> projectContractList = projectService.selectProjectContractList(data.getProjectId());
+		return projectContractList;
+	}
+	
 	@RequestMapping(value = "/updateProjectContract", method = RequestMethod.POST)
 	public int updateProjectContract(@RequestParam MultipartFile file, @RequestParam ProjectContract data) throws Exception {
 

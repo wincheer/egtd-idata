@@ -45,5 +45,11 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <select id="selectProjectContractList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select *
+    from project_contract
+    where project_id = #{projectId,jdbcType=INTEGER}
+  </select>
 
 </mapper>
