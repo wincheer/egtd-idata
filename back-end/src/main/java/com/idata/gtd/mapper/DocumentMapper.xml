@@ -4,7 +4,7 @@
 
   <resultMap id="BaseResultMap" type="com.idata.gtd.entity.Document">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="document_name" jdbcType="VARCHAR" property="documentName" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="file_name" jdbcType="VARCHAR" property="fileName" />
     <result column="belong_to" jdbcType="VARCHAR" property="belongTo" />
     <result column="source_id" jdbcType="INTEGER" property="sourceId" />
@@ -25,14 +25,14 @@
     insert into document
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">id,</if>
-      <if test="documentName != null">document_name,</if>
+      <if test="name != null">name,</if>
       <if test="fileName != null">file_name,</if>
       <if test="belongTo != null">belong_to,</if>
       <if test="sourceId != null">source_id,</if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">#{id,jdbcType=INTEGER},</if>
-      <if test="documentName != null">#{documentName,jdbcType=VARCHAR},</if>
+      <if test="name != null">#{name,jdbcType=VARCHAR},</if>
       <if test="fileName != null">#{fileName,jdbcType=VARCHAR},</if>
       <if test="belongTo != null">#{belongTo,jdbcType=VARCHAR},</if>
       <if test="sourceId != null">#{sourceId,jdbcType=INTEGER},</if>
@@ -42,7 +42,7 @@
   <update id="updateDocument" parameterType="com.idata.gtd.entity.Document">
     update document
     <set>
-      <if test="documentName != null">document_name = #{documentName,jdbcType=VARCHAR},</if>
+      <if test="name != null">name = #{name,jdbcType=VARCHAR},</if>
       <if test="fileName != null">file_name = #{fileName,jdbcType=VARCHAR},</if>
       <if test="belongTo != null">belong_to = #{belongTo,jdbcType=VARCHAR},</if>
       <if test="sourceId != null">source_id = #{sourceId,jdbcType=INTEGER},</if>
@@ -55,7 +55,7 @@
     from document
     where 1=1
 	<trim prefix=" and (" suffix=")" suffixOverrides="and">
-		<if test="documentName != null">document_name = #{documentName,jdbcType=VARCHAR} and </if>
+		<if test="name != null">name = #{name,jdbcType=VARCHAR} and </if>
 	    <if test="fileName != null">file_name = #{fileName,jdbcType=VARCHAR} and </if>
 		<if test="belongTo != null">belong_to = #{belongTo,jdbcType=VARCHAR} and </if>
 		<if test="sourceId != null">source_id = #{sourceId,jdbcType=INTEGER} and </if>

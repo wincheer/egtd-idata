@@ -71,7 +71,7 @@ public class ProjectService {
 		projectContractDao.insertProjectContract(data);
 		
 		Document doc = new Document();
-		doc.setDocumentName(file.getOriginalFilename());
+		doc.setName(file.getOriginalFilename());
 		doc.setFileName(String.valueOf(System.currentTimeMillis()));
 		doc.setBelongTo("contract");
 		doc.setSourceId(data.getId());
@@ -87,10 +87,17 @@ public class ProjectService {
 		return projectContractDao.insertProjectContract(data);
 	}
 
-	public int updateProjectContract(MultipartFile file, ProjectContract data) {
+	public int updateProjectContract(MultipartFile file, ProjectContract data) throws Exception {
 
 		projectContractDao.updateProjectContract(data);
-		// TODO 
+		
+		Document doc = new Document();
+		doc.setName(file.getOriginalFilename());
+		doc.setFileName(String.valueOf(System.currentTimeMillis()));
+		doc.setBelongTo("contract");
+		doc.setSourceId(data.getId());
+		
+		documentService.upload(file, doc);
 		return 0;
 	}
 	public int updateProjectContract(ProjectContract data) {

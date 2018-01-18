@@ -101,7 +101,7 @@
           <el-table-column label="供应商" prop="vendorId"></el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <el-button size="mini" type="primary" @click="openProjectContractList(scope.row)" >编辑</el-button>
+              <el-button size="mini" type="primary" @click="openEditProjectContract(scope.row)" >编辑</el-button>
               <el-button size="mini" type="warning" @click="delProjectContract(scope.row)" >删除</el-button>
             </template>
           </el-table-column>
@@ -214,7 +214,11 @@ export default {
       },
       projectContractObjRules: {
         vendorId: [
-          { required: true, message: "请选择合同相关的供应商", trigger: "blur,change" }
+          {
+            required: true,
+            message: "请选择合同相关的供应商",
+            trigger: "blur,change"
+          }
         ],
         contractName: [
           { required: true, message: "请输入合同名称", trigger: "blur" }
@@ -337,6 +341,19 @@ export default {
         }
       });
     },
+    selectDocumentList(projectContractId){
+      var _this = this;
+      SELECT_DOCUMENT_LIST({ belongTo: 'contract',sourceId:projectContractId }).then(res => {
+        if (!Array.isArray(res))
+          _this.$message({
+            message: "获取项目文档文件失败，请联系系统管理员。",
+            type: "error"
+          });
+        else {
+          _this.contractFileList = res;
+        }
+      });
+    },
     openAddProject() {
       this.dlgProjectEditVis = true;
     },
@@ -348,16 +365,20 @@ export default {
       this.dlgProjectContractListVis = true;
     },
     openAddProjectContract() {
-      this.projectContractObj.id = 0;
-      this.projectContractObj.projectId = this.selectedProject.id;
-      this.projectContractObj.vendorId = "";
-      this.projectContractObj.contractName = "";
+      this.projectContractObj = Object.assign({
+        id: 0,
+        projectId: "",
+        vendorId: "",
+        contractName: ""
+      });
+      this.contractFileList = [];
 
       this.dlgProjectContractEditVis = true;
     },
     openEditProjectContract(row) {
       this.projectContractObj = Object.assign(row);
-
+      //查询当前合同的文档
+      this.selectDocumentList(row.id)
       this.dlgProjectContractEditVis = true;
     },
     openAddProjectGroup() {
@@ -395,11 +416,20 @@ export default {
       });
     },
     /**上传文件，同时包含表单内容 */
-    uploadFile(){
-      if(this.$refs.upload.uploadFiles.length == 0)
+    uploadFile() {
+      var _uploadFiles = this.$refs.upload.uploadFiles;
+      if (_uploadFiles.length == 0)
         this.updateProjectContractNoFile();
-      else
-        this.$refs.upload.submit();
+      else {
+        for(var i=0;i<_uploadFiles.length;i++){
+          var _uploadFile = _uploadFiles[i];
+          if(_uploadFile.status != "success"){
+            this.$refs.upload.submit();
+            return;
+          }
+        }
+       this.updateProjectContractNoFile();
+      }
     },
     updateProjectContract(item) {
       var _this = this;
@@ -407,29 +437,11 @@ export default {
         if (valid) {
           var formData = new FormData();
           for (var key in _this.projectContractObj) {
-              formData.append(key, _this.projectContractObj[key]);
+            formData.append(key, _this.projectContractObj[key]);
           }
-          formData.append("file",item.file); 
+          formData.append("file", item.file);
           UPDATE_PROJECT_CONTRACT(formData).then(data => {
             if (data !== 0)
-              _this.$message({
-                message: "更新项目合同失败，请联系系统管理员。",
-                type: "error"
-              });
-            else {
-               _this.dlgProjectContractEditVis = false;
-              _this.selectProjectContractList(_this.selectedProject.id);
-            }
-          });
-        }
-      });
-    },
-    updateProjectContractNoFile() {
-      var _this = this;
-      this.$refs.projectContractForm.validate(valid => {
-        if (valid) {
-          UPDATE_PROJECT_CONTRACT_NO_FILE(_this.projectContractObj).then(data => {
-            if (data == '')
               _this.$message({
                 message: "更新项目合同失败，请联系系统管理员。",
                 type: "error"
@@ -442,17 +454,44 @@ export default {
         }
       });
     },
+    updateProjectContractNoFile() {
+      var _this = this;
+      this.$refs.projectContractForm.validate(valid => {
+        if (valid) {
+          UPDATE_PROJECT_CONTRACT_NO_FILE(_this.projectContractObj).then(
+            data => {
+              if (data == "")
+                _this.$message({
+                  message: "更新项目合同失败，请联系系统管理员。",
+                  type: "error"
+                });
+              else {
+                _this.dlgProjectContractEditVis = false;
+                _this.selectProjectContractList(_this.selectedProject.id);
+              }
+            }
+          );
+        }
+      });
+    },
     onFileChange(file, fileList) {
       if (fileList.length != 0) {
-        this.projectContractObj.contractName = fileList[0].name;
+        //this.projectContractObj.contractName = fileList[0].name;
         this.selectedFile = file;
       } else {
-        this.projectContractObj.contractName = "";
+        //this.projectContractObj.contractName = "";
         this.selectedFile = null;
       }
     },
     onFileRemove(file, fileList) {
-      this.projectContractObj.contractName = "";
+      if(file.status=="success"){
+        //删除文件file.id
+        DELETE_DOCUMENT({ id: file.id }).then(res => {
+            _this.$message({ message: "删除成功", type: "success" });
+            _this.selectDocumentList(file.sourceId);
+          });
+      }
+      //this.projectContractObj.contractName = "";
       this.selectedFile = null;
     },
     delProject(row) {

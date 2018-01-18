@@ -3,7 +3,7 @@ package com.idata.gtd.entity;
 public class Document {
 
 	private Integer id;
-	private String documentName;
+	private String name;
 	private String fileName;
 	private String belongTo;
 	private Integer sourceId;
@@ -16,12 +16,12 @@ public class Document {
 		this.id = id;
 	}
 
-	public String getDocumentName() {
-		return documentName;
+	public String getName() {
+		return name;
 	}
 
-	public void setDocumentName(String documentName) {
-		this.documentName = documentName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getBelongTo() {
