@@ -75,4 +75,9 @@ public class DepartmentService {
 		return depEmpDao.deleteDepartmentEmployeeByPK(id);
 	}
 
+	public List<DepartmentEmployee> selectAllDepEmpList() {
+
+		return depEmpDao.selectAllDepEmpList();
+	}
+
 }

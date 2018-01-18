@@ -63,6 +63,11 @@ public class DepartmentAction {
 
 		return depService.selectDepartmentEmployeeList(dep.getId());
 	}
+	@RequestMapping(value = "/selectAllDepEmpList", method = RequestMethod.POST)
+	public List<DepartmentEmployee> selectAllDepEmpList() {
+
+		return depService.selectAllDepEmpList();
+	}
 	
 	@RequestMapping(value = "/updateDepEmp", method = RequestMethod.POST)
 	public int updateDepEmp(@RequestBody DepartmentEmployee depEmp) {

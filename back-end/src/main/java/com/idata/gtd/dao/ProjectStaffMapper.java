@@ -1,5 +1,7 @@
 package com.idata.gtd.dao;
 
+import java.util.List;
+
 import com.idata.gtd.entity.ProjectStaff;
 
 public interface ProjectStaffMapper {
@@ -13,4 +15,6 @@ public interface ProjectStaffMapper {
 	int updateStaff(ProjectStaff record);
 
 	ProjectStaff login(ProjectStaff record);
+
+	List<ProjectStaff> selectProjectStaffList(Integer groupId);
 }

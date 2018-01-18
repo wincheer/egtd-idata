@@ -72,5 +72,10 @@
     from department_employee
     where dep_id = #{depId,jdbcType=INTEGER}
   </select>
+  
+  <select id="selectAllDepEmpList" resultMap="BaseResultMap">
+    select *
+    from department_employee
+  </select>
 
 </mapper>

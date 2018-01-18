@@ -23,4 +23,6 @@ public interface DepartmentEmployeeMapper {
     int deleteDepartmentEmployees(Integer depId);
     
     List<DepartmentEmployee> selectDepartmentEmployeeList(Integer depId);
+
+	List<DepartmentEmployee> selectAllDepEmpList(); 
 }

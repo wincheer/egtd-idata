@@ -1,5 +1,6 @@
 package com.idata.gtd.action;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -16,9 +17,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.idata.gtd.common.TreeNode;
+import com.idata.gtd.common.Utils;
 import com.idata.gtd.entity.Project;
 import com.idata.gtd.entity.ProjectContract;
 import com.idata.gtd.entity.ProjectGroup;
+import com.idata.gtd.entity.ProjectStaff;
 import com.idata.gtd.entity.ProjectStage;
 import com.idata.gtd.service.ProjectService;
 
@@ -102,11 +106,19 @@ public class ProjectAction {
 
 	/////////
 
-	@RequestMapping(value = "/selectProjectGroupList", method = RequestMethod.POST)
-	public List<ProjectGroup> selectProjectGroupList(@RequestBody ProjectGroup data) throws Exception {
+	@RequestMapping(value = "/selectProjectGroupTreeList", method = RequestMethod.POST)
+	public List<TreeNode> selectProjectGroupTreeList(@RequestBody ProjectGroup data) throws Exception {
 
-		List<ProjectGroup> projectGroupList = projectService.selectProjectGroupList(data.getProjectId());
-		return projectGroupList;
+		List<ProjectGroup> groupList = projectService.selectProjectGroupList(data.getProjectId());
+		
+		List<TreeNode> groupTreeNodeList = new ArrayList<TreeNode>();
+		for (ProjectGroup group : groupList) {
+			TreeNode treeNode = new TreeNode(group.getId(), group.getGroupName(), group.getGroupDesc(),group.getParentId());
+			groupTreeNodeList.add(treeNode);
+		}
+		List<TreeNode> groupTreeList = Utils.builderTree(groupTreeNodeList);
+		
+		return groupTreeList;
 	}
 
 	@RequestMapping(value = "/updateProjectGroup", method = RequestMethod.POST)
@@ -146,5 +158,13 @@ public class ProjectAction {
 
 		return projectService.deleteProjectStage(data.getId());
 	};
+	
+	///////////
+	@RequestMapping(value = "/selectProjectStaffList", method = RequestMethod.POST)
+	public List<ProjectStaff> selectProjectStaffList(@RequestBody ProjectStaff data) throws Exception {
+
+		List<ProjectStaff> projectStaffList = projectService.selectProjectStaffList(data.getGroupId());
+		return projectStaffList;
+	}
 
 }

@@ -12,11 +12,13 @@ import org.springframework.web.multipart.MultipartFile;
 import com.idata.gtd.dao.ProjectContractMapper;
 import com.idata.gtd.dao.ProjectGroupMapper;
 import com.idata.gtd.dao.ProjectMapper;
+import com.idata.gtd.dao.ProjectStaffMapper;
 import com.idata.gtd.dao.ProjectStageMapper;
 import com.idata.gtd.entity.Document;
 import com.idata.gtd.entity.Project;
 import com.idata.gtd.entity.ProjectContract;
 import com.idata.gtd.entity.ProjectGroup;
+import com.idata.gtd.entity.ProjectStaff;
 import com.idata.gtd.entity.ProjectStage;
 
 /**
@@ -39,6 +41,8 @@ public class ProjectService {
 	private ProjectGroupMapper projectGroupDao;
 	@Autowired
 	private ProjectStageMapper projectStageDao;
+	@Autowired
+	private ProjectStaffMapper projectStaffDao;
 	@Autowired
 	private DocumentService documentService;
 
@@ -160,6 +164,11 @@ public class ProjectService {
 	public int deleteProjectStage(Integer id) {
 
 		return projectStageDao.deleteProjectStageByPK(id);
+	}
+
+	public List<ProjectStaff> selectProjectStaffList(Integer groupId) {
+		
+		return projectStaffDao.selectProjectStaffList(groupId);
 	}
 
 }
