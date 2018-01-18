@@ -367,7 +367,7 @@ export default {
     openAddProjectContract() {
       this.projectContractObj = Object.assign({
         id: 0,
-        projectId: "",
+        projectId: this.selectedProject.id,
         vendorId: "",
         contractName: ""
       });
