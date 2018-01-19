@@ -198,10 +198,47 @@
       </el-form>
     </el-dialog>
     <!--项目阶段-->
-    <el-dialog title="分解项目阶段" :visible.sync="dlgProjectStageEditVis" width="30%" :close-on-click-modal="false">
-      <el-form :model="projectStageObj" :rules="projectStageObjRules" ref="projectStageForm" label-width="80px">
+    <el-dialog title="分解项目阶段" :visible.sync="dlgProjectStageListVis" width="35%" :close-on-click-modal="false">
+      <el-card>
+        <div slot="header" class="clearfix">
+          <span>项目阶段</span>
+          <el-button @click="openAddProjectStage" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加项目阶段</el-button>
+        </div>
+        <el-table :data="projectStageList" highlight-current-row >
+          <el-table-column label="阶段" prop="contractName"></el-table-column>
+          <el-table-column label="开始日期" prop="vendorId"></el-table-column>
+          <el-table-column label="截至日期" prop="vendorId"></el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button size="mini" type="primary" @click="openEditProjectStage(scope.row)" >编辑</el-button>
+              <el-button size="mini" type="warning" @click="delProjectStage(scope.row)" >删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-card>
+    </el-dialog>
+    <el-dialog :title="projectStageObj.id==''?'增加项目阶段':'编辑项目阶段'" :visible.sync="dlgProjectStageEditVis" width="23%" :close-on-click-modal="false">
+      <el-form :model="projectStageObj" :rules="projectStageObjRules" ref="projectStageObjForm" label-width="100px">
+        <el-form-item label="阶段名称" prop="stageName">
+          <el-input type="text" v-model="projectStageObj.stageName" />
+        </el-form-item>
+        <el-form-item label="启动日期" prop="startDate">
+          <el-date-picker type="date" clearable placeholder="启动日期" v-model="projectStageObj.startDate"/>
+        </el-form-item>
+        <el-form-item label="结束日期" prop="endDate">
+          <el-date-picker type="date" clearable placeholder="结束日期" v-model="projectStageObj.endDate"/>
+        </el-form-item>
+        <el-form-item label="监理参与" prop="hasSupervisor">
+          <el-switch v-model="projectStageObj.hasSupervisor" active-text="是" inactive-text="否" :active-value="1" :inactive-value="0"></el-switch>
+        </el-form-item>
+        <el-form-item label="责任人" prop="category">
+          <el-select v-model="projectStageObj.actorStaffId" placeholder="请选择" clearable>
+            <el-option v-for="item in categoryParamList" :key="item.id" :label="item.paramDesc" :value="item.paramValue" />
+          </el-select>
+        </el-form-item>
         <el-form-item>
-          项目阶段
+          <el-button type="primary" @click="updateProjectStage">保存</el-button>
+          <el-button @click="dlgProjectStageEditVis = false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -231,8 +268,8 @@ import {
   SELECT_DOCUMENT_LIST,
   UPDATE_DOCUMENT,
   DELETE_DOCUMENT,
-  SELECT_PROJECT_STAFF_LIST,
-  SELECT_EMPLOYEE_LIST,
+  SELECT_GROUP_STAFF_LIST,
+  SELECT_AVAILABLE_PROJECT_STAFF_LIST,
   UPDATE_PROJECT_STAFFS
 } from "@/config/api";
 export default {
@@ -466,7 +503,7 @@ export default {
     },
     selectProjectStaffList(projectGroupId) {
       var _this = this;
-      SELECT_PROJECT_STAFF_LIST({ groupId: projectGroupId }).then(res => {
+      SELECT_GROUP_STAFF_LIST({ groupId: projectGroupId }).then(res => {
         if (!Array.isArray(res))
           _this.$message({
             message: "获取项目组成员失败，请联系系统管理员。",
@@ -551,7 +588,7 @@ export default {
     },
     openProjectStageList(row) {
       //this.projectStageObj = row;
-      this.dlgProjectStageEditVis = true;
+      this.dlgProjectStageListVis = true;
     },
     updateProject() {
       var _this = this;
@@ -741,7 +778,7 @@ export default {
     },
     selectEmployeeList(projectId){
       var _this = this;
-      SELECT_EMPLOYEE_LIST({id:projectId}).then(res =>{
+      SELECT_AVAILABLE_PROJECT_STAFF_LIST({id:projectId}).then(res =>{
         _this.employeeList = res;
       })
     },

@@ -160,17 +160,19 @@ public class ProjectAction {
 	};
 	
 	///////////
-	@RequestMapping(value = "/selectProjectStaffList", method = RequestMethod.POST)
-	public List<ProjectStaff> selectProjectStaffList(@RequestBody ProjectStaff data) throws Exception {
+	//项目组人员
+	@RequestMapping(value = "/selectGroupStaffList", method = RequestMethod.POST)
+	public List<ProjectStaff> selectGroupStaffList(@RequestBody ProjectStaff data) throws Exception {
 
-		List<ProjectStaff> projectStaffList = projectService.selectProjectStaffList(data.getGroupId());
+		List<ProjectStaff> projectStaffList = projectService.selectGroupStaffList(data.getGroupId());
 		return projectStaffList;
 	}
 	
-	@RequestMapping(value = "/selectEmployeeList", method = RequestMethod.POST)
-	public List<Map<String,Object>> selectEmployeeList(@RequestBody Project data) throws Exception {
+	//项目中所有可用的人员（不一定全部用上） - available
+	@RequestMapping(value = "/selectAvailableProjectStaffList", method = RequestMethod.POST)
+	public List<Map<String,Object>> selectAvailableProjectStaffList(@RequestBody Project data) throws Exception {
 
-		List<Map<String,Object>> employeeList = projectService.selectEmployeeList(data.getId());
+		List<Map<String,Object>> employeeList = projectService.selectAvailableProjectStaffList(data.getId());
 		return employeeList;
 	}
 	

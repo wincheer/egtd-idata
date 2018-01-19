@@ -52,8 +52,8 @@ export const DELETE_PROJECT_GROUP = (params) => { return axios.post(`${base}/del
 export const SELECT_PROJECT_STAGE_LIST = (params) => { return axios.post(`${base}/selectProjectStageList`,params).then(res => res.data); };
 export const UPDATE_PROJECT_STAGE = (params) => { return axios.post(`${base}/updateProjectStage`, params).then(res => res.data); };
 export const DELETE_PROJECT_STAGE = (params) => { return axios.post(`${base}/deleteProjectStage`, params).then(res => res.data); };
-export const SELECT_PROJECT_STAFF_LIST = (params) => { return axios.post(`${base}/selectProjectStaffList`,params).then(res => res.data); };
-export const SELECT_EMPLOYEE_LIST = (params) => { return axios.post(`${base}/selectEmployeeList`,params).then(res => res.data); };
+export const SELECT_GROUP_STAFF_LIST = (params) => { return axios.post(`${base}/selectGroupStaffList`,params).then(res => res.data); };
+export const SELECT_AVAILABLE_PROJECT_STAFF_LIST = (params) => { return axios.post(`${base}/selectAvailableProjectStaffList`,params).then(res => res.data); };
 export const UPDATE_PROJECT_STAFFS = (params) => { return axios.post(`${base}/updateProjectStaffs`,params).then(res => res.data); };
 
 

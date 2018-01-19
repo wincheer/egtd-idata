@@ -187,12 +187,12 @@ public class ProjectService {
 		return projectStageDao.deleteProjectStageByPK(id);
 	}
 
-	public List<ProjectStaff> selectProjectStaffList(Integer groupId) {
+	public List<ProjectStaff> selectGroupStaffList(Integer groupId) {
 		
 		return projectStaffDao.selectProjectStaffList(groupId);
 	}
 
-	public List<Map<String,Object>> selectEmployeeList(Integer projectId) { 
+	public List<Map<String,Object>> selectAvailableProjectStaffList(Integer projectId) { 
 		
 		List<Map<String,Object>> staffList = new ArrayList<Map<String,Object>>();
 		//查询业主的员工并转换格式 => projectStaff
