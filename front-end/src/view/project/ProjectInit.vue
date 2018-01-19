@@ -515,6 +515,30 @@ export default {
       });
       this.dlgProjectGroupEditVis = true;
     },
+    openEditProjectGroup(node, data){
+      this.projectGroupObj = {
+        id: data.id,
+        projectId: this.selectedProject.id,
+        groupName: data.label,
+        groupDesc: data.desc,
+        parentId: data.parentId
+      };
+      this.builderParentIdSeq(node);
+      this.dlgProjectGroupEditVis = true;
+    },
+    builderParentIdSeq(node) {
+      this.parentGroupIds = [];
+      if (node.level != 1) {
+        this.parentGroupIds.unshift(node.data.parentId); //push末尾添加,unshift开头添加
+        this.unshiftParentId(node.parent);
+      }
+    },
+    unshiftParentId(pnode) {
+      if (pnode.level != 1) {
+        this.parentGroupIds.unshift(pnode.data.parentId);
+        this.unshiftParentId(pnode.parent);
+      }
+    },
     openAddProjectStaff() {
       this.dlgProjectStaffEditVis = true;
     },
@@ -691,6 +715,20 @@ export default {
           });
         });
     },
+    delProjectGroup(node,data){
+      console.log("当前记录id = " + data.id + ",projectId = "+ this.selectedProject.id)
+      var _this = this;
+      _this
+        .$confirm("确认删除该记录吗?", "提示", {
+          type: "warning"
+        })
+        .then(() => {
+          DELETE_PROJECT_GROUP({ id: data.id }).then(res => {
+            _this.$message({ message: "删除成功", type: "success" });
+            _this.selectProjectGroupTreeList(_this.selectedProject.id);
+          });
+        });
+    },
     onProjectChange(row) {
       var _this = this;
       _this.selectedProject = row;
@@ -734,14 +772,14 @@ export default {
             <el-button
               style="font-size: 12px;"
               type="text"
-              on-click={() => this.openEditDep(node, data)}
+              on-click={() => this.openEditProjectGroup(node, data)}
             >
               编辑
             </el-button>
             <el-button
               style="font-size: 12px;"
               type="text"
-              on-click={() => this.delDep(node, data)}
+              on-click={() => this.delProjectGroup(node, data)}
             >
               删除
             </el-button>

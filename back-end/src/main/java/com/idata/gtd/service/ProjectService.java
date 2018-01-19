@@ -157,9 +157,14 @@ public class ProjectService {
 		return projectGroupDao.updateProjectGroup(data);
 	}
 
-	public int deleteProjectGroup(Integer id) {
+	public int deleteProjectGroup(Integer groupId) {
 
-		return projectGroupDao.deleteProjectGroupByPK(id);
+		//删除当前组
+		projectGroupDao.deleteProjectGroupByPK(groupId);
+		//删除当前组下面的项目组成员
+		projectStaffDao.deleteStaffsByGroupId(groupId);
+		
+		return 1;
 	}
 
 	public List<ProjectStage> selectProjectStageList(Integer projectId) {
