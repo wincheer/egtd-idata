@@ -174,12 +174,14 @@ public class ProjectService {
 
 	public int insertProjectStage(ProjectStage data) {
 
-		return projectStageDao.insertProjectStage(data);
+		projectStageDao.insertProjectStage(data);
+		return data.getId();
 	}
 
 	public int updateProjectStage(ProjectStage data) {
 
-		return projectStageDao.updateProjectStage(data);
+		projectStageDao.updateProjectStage(data);
+		return data.getId();
 	}
 
 	public int deleteProjectStage(Integer id) {

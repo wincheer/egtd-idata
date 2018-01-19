@@ -167,7 +167,6 @@
     <el-dialog :title="projectGroupObj.id==''?'增加项目组':'编辑项目组'" :visible.sync="dlgProjectGroupEditVis" width="25%" :close-on-click-modal="false">
       <el-form :model="projectGroupObj" :rules="projectGroupObjRules" ref="projectGroupForm" label-width="100px">
         <el-form-item label="上级项目组" prop="parentId">
-          <!-- <el-input type="text" v-model="projectGroupObj.parentId"></el-input> -->
           <el-cascader :options="projectGroupTreeList" :props="{value:'id'}" v-model="parentGroupIds" @change="onParentGroupChange" change-on-select clearable style="width:100%" />
         </el-form-item>
         <el-form-item label="项目组名称" prop="groupName">
@@ -205,9 +204,9 @@
           <el-button @click="openAddProjectStage" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加项目阶段</el-button>
         </div>
         <el-table :data="projectStageList" highlight-current-row >
-          <el-table-column label="阶段" prop="contractName"></el-table-column>
-          <el-table-column label="开始日期" prop="vendorId"></el-table-column>
-          <el-table-column label="结束日期" prop="vendorId"></el-table-column>
+          <el-table-column label="阶段" prop="stageName"></el-table-column>
+          <el-table-column label="开始日期" prop="startDate"></el-table-column>
+          <el-table-column label="结束日期" prop="endDate"></el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button size="mini" type="primary" @click="openEditProjectStage(scope.row)" >编辑</el-button>
@@ -218,7 +217,7 @@
       </el-card>
     </el-dialog>
     <el-dialog :title="projectStageObj.id==''?'增加项目阶段':'编辑项目阶段'" :visible.sync="dlgProjectStageEditVis" width="23%" :close-on-click-modal="false">
-      <el-form :model="projectStageObj" :rules="projectStageObjRules" ref="projectStageObjForm" label-width="100px">
+      <el-form :model="projectStageObj" :rules="projectStageObjRules" ref="projectStageForm" label-width="100px">
         <el-form-item label="阶段名称" prop="stageName">
           <el-input type="text" v-model="projectStageObj.stageName" />
         </el-form-item>
@@ -355,15 +354,27 @@ export default {
       availableStaffList: [],
       selectedProjectStaffs: [],
 
-      projectStageObj: { id: "" },
-      projectStageObjRules: {},
+      projectStageObj: {
+        id: "",
+        projectId: "",
+        stageName: "",
+        startDate: "",
+        endDate: "",
+        hasSupervisor: 0,
+        actorStaffId: ""
+      },
+      projectStageObjRules: {
+        stageName: [
+          { required: true, message: "请输入项目阶段名称", trigger: "blur" }
+        ]
+      },
 
       selectedProject: {},
 
       projectList: [],
       projectContractList: [],
       projectGroupTreeList: [],
-      projectStaffList:[],
+      projectStaffList: [],
       groupStaffList: [],
       projectStageList: [],
 
@@ -450,11 +461,10 @@ export default {
             var _vendor = _this.vendorList[i];
             for (var j = 0; j < _this.projectContractList.length; j++) {
               var _contract = _this.projectContractList[j];
-              if (_vendor.id == _contract.vendorId){
-                if(_this.projectVendorList.indexOf(_vendor) == -1)
+              if (_vendor.id == _contract.vendorId) {
+                if (_this.projectVendorList.indexOf(_vendor) == -1)
                   _this.projectVendorList.push(_vendor);
-              }
-              else break;
+              } else break;
             }
           }
         }
@@ -566,7 +576,7 @@ export default {
       });
       this.dlgProjectGroupEditVis = true;
     },
-    openEditProjectGroup(node, data){
+    openEditProjectGroup(node, data) {
       this.projectGroupObj = {
         id: data.id,
         projectId: this.selectedProject.id,
@@ -593,7 +603,21 @@ export default {
     openAddProjectStaff() {
       this.dlgProjectStaffEditVis = true;
     },
+    openEditProjectStage(row) {
+      this.projectStageObj = Object.assign(row);
+      this.dlgProjectStageEditVis = true;
+    },
     openAddProjectStage() {
+      this.projectStageObj = Object.assign({
+        id: "",
+        projectId: this.selectedProject.id,
+        stageName: "",
+        startDate: "",
+        endDate: "",
+        hasSupervisor: 0,
+        actorStaffId: ""
+      });
+
       this.dlgProjectStageEditVis = true;
     },
     openProjectGroupList(row) {
@@ -701,27 +725,45 @@ export default {
         }
       });
     },
-    updateProjectStage(){
-      console.log("--------------")
-    },
-    updateProjectStaffs() {
+    updateProjectStage() {
       var _this = this;
-      for(var i=0;i<this.selectedProjectStaffs.length;i++){
-        this.selectedProjectStaffs[i].groupId = this.projectGroupObj.id;
-      }
-      var params = {groupId:this.projectGroupObj.id,staffList:this.selectedProjectStaffs}
-      UPDATE_PROJECT_STAFFS(params).then(data =>{
-        if (data === "") {
+      this.$refs.projectStageForm.validate(valid => {
+        if (valid) {
+          UPDATE_PROJECT_STAGE(_this.projectStageObj).then(data => {
+            if (data === "") {
               _this.$message({
-                message: "更新项目组成员失败，请联系系统管理员。",
+                message: "更新项目阶段失败，请联系系统管理员。",
                 type: "error"
               });
             } else {
-              _this.selectGroupStaffList(_this.projectGroupObj.id);
-              _this.dlgProjectStaffEditVis = false;
+              _this.dlgProjectStageEditVis = false;
+              _this.selectProjectStageList(_this.selectedProject.id);
+              _this.projectStageObj.id = data;
             }
+          });
+        }
       });
-
+    },
+    updateProjectStaffs() {
+      var _this = this;
+      for (var i = 0; i < this.selectedProjectStaffs.length; i++) {
+        this.selectedProjectStaffs[i].groupId = this.projectGroupObj.id;
+      }
+      var params = {
+        groupId: this.projectGroupObj.id,
+        staffList: this.selectedProjectStaffs
+      };
+      UPDATE_PROJECT_STAFFS(params).then(data => {
+        if (data === "") {
+          _this.$message({
+            message: "更新项目组成员失败，请联系系统管理员。",
+            type: "error"
+          });
+        } else {
+          _this.selectGroupStaffList(_this.projectGroupObj.id);
+          _this.dlgProjectStaffEditVis = false;
+        }
+      });
     },
     onFileChange(file, fileList) {
       if (fileList.length != 0) {
@@ -769,8 +811,10 @@ export default {
           });
         });
     },
-    delProjectGroup(node,data){
-      console.log("当前记录id = " + data.id + ",projectId = "+ this.selectedProject.id)
+    delProjectGroup(node, data) {
+      console.log(
+        "当前记录id = " + data.id + ",projectId = " + this.selectedProject.id
+      );
       var _this = this;
       _this
         .$confirm("确认删除该记录吗?", "提示", {
@@ -780,6 +824,19 @@ export default {
           DELETE_PROJECT_GROUP({ id: data.id }).then(res => {
             _this.$message({ message: "删除成功", type: "success" });
             _this.selectProjectGroupTreeList(_this.selectedProject.id);
+          });
+        });
+    },
+    delProjectStage(row) {
+      var _this = this;
+      _this
+        .$confirm("确认删除该记录吗?", "提示", {
+          type: "warning"
+        })
+        .then(() => {
+          DELETE_PROJECT_STAGE({ id: row.id }).then(res => {
+            _this.$message({ message: "删除成功", type: "success" });
+            _this.selectProjectStageList(row.projectId);
           });
         });
     },
@@ -794,17 +851,17 @@ export default {
       this.selectEmployeeList(row.id);
       this.selectProjectStaffList(row.id);
     },
-    selectEmployeeList(projectId){
+    selectEmployeeList(projectId) {
       var _this = this;
-      SELECT_AVAILABLE_PROJECT_STAFF_LIST({id:projectId}).then(res =>{
+      SELECT_AVAILABLE_PROJECT_STAFF_LIST({ id: projectId }).then(res => {
         _this.availableStaffList = res;
-      })
+      });
     },
     onProjectGroupChange(data) {
       // 查询当前项目组的员工
-      console.log("=============== "+ data.id);
+      console.log("=============== " + data.id);
       this.selectGroupStaffList(data.id);
-      //填充 
+      //填充
       this.projectGroupObj.id = data.id;
     },
     onDepChange(value) {
