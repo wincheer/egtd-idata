@@ -11,10 +11,10 @@
     <el-table border stripe :data="projectList" style="margin-top: 20px;" highlight-current-row @current-change="onProjectChange">
       <el-table-column type="index" width="30"></el-table-column>
       <el-table-column prop="projectName" label="项目名称"></el-table-column>
-      <el-table-column prop="createDate" label="立项时间"></el-table-column>
+      <el-table-column prop="createDate" label="立项时间" :formatter="fmtDate"></el-table-column>
       <el-table-column prop="depId" label="所属部门"></el-table-column>
-      <el-table-column prop="createDate" label="启动时间"></el-table-column>
-      <el-table-column prop="createDate" label="结束时间"></el-table-column>
+      <el-table-column prop="createDate" label="启动时间" :formatter="fmtDate"></el-table-column>
+      <el-table-column prop="createDate" label="结束时间" :formatter="fmtDate"></el-table-column>
       <el-table-column label="操作" width="230">
         <template slot-scope="scope">
           <el-dropdown  trigger="click">
@@ -205,8 +205,8 @@
         </div>
         <el-table :data="projectStageList" highlight-current-row >
           <el-table-column label="阶段" prop="stageName"></el-table-column>
-          <el-table-column label="开始日期" prop="startDate"></el-table-column>
-          <el-table-column label="结束日期" prop="endDate"></el-table-column>
+          <el-table-column label="开始日期" prop="startDate" :formatter="fmtDate"></el-table-column>
+          <el-table-column label="结束日期" prop="endDate" :formatter="fmtDate"></el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button size="mini" type="primary" @click="openEditProjectStage(scope.row)" >编辑</el-button>
@@ -272,6 +272,7 @@ import {
   UPDATE_PROJECT_STAFFS,
   SELECT_PROJECT_STAFF_LIST
 } from "@/config/api";
+import {formatDate} from '@/util/date.js';
 export default {
   props: {},
   data() {
@@ -845,8 +846,8 @@ export default {
       _this.selectedProject = row;
       //查询相关表的list，用以判断当前项目的完整程度......
       _this.selectProjectContractList(row.id);
-      this.selectProjectGroupTreeList(row.id);
-      this.selectProjectStageList(row.id);
+      _this.selectProjectGroupTreeList(row.id);
+      _this.selectProjectStageList(row.id);
       //填充项目相关的供应商
       this.selectEmployeeList(row.id);
       this.selectProjectStaffList(row.id);
@@ -898,6 +899,9 @@ export default {
           </span>
         </span>
       );
+    },
+    fmtDate(row, column, cellValue){
+      return formatDate(new Date(cellValue), 'yyyy-MM-dd');
     }
   },
   computed: {

@@ -69,7 +69,7 @@
         <el-form-item label="参数值" prop="paramValue">
           <el-input type="text" v-model="paramValueObj.paramValue"></el-input>
         </el-form-item>
-        <el-form-item label="参数值" prop="paramDesc">
+        <el-form-item label="参数含义" prop="paramDesc">
           <el-input type="text" v-model="paramValueObj.paramDesc"></el-input>
         </el-form-item>
         <el-form-item>
