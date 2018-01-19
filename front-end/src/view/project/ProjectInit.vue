@@ -186,7 +186,7 @@
       <el-form :model="projectStaffObj" :rules="projectStaffObjRules" ref="projectStaffObjForm" label-width="80px">
         <el-form-item label="机构员工">
             <el-select v-model="selectedProjectStaffs" value-key="code" filterable multiple clearable placeholder="请选择">
-              <el-option-group v-for="group in employeeList" :key="group.branch" :label="group.branch">
+              <el-option-group v-for="group in availableStaffList" :key="group.branch" :label="group.branch">
                 <el-option v-for="item in group.staffList" :key="item.id" :label="item.staffName" :value="item"></el-option>
               </el-option-group>
             </el-select>
@@ -233,7 +233,7 @@
         </el-form-item>
         <el-form-item label="责任人" prop="category">
           <el-select v-model="projectStageObj.actorStaffId" placeholder="请选择" clearable>
-            <el-option v-for="item in categoryParamList" :key="item.id" :label="item.paramDesc" :value="item.paramValue" />
+            <el-option v-for="item in projectStaffList" :key="item.id" :label="item.staffName" :value="item.id" />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -270,7 +270,8 @@ import {
   DELETE_DOCUMENT,
   SELECT_GROUP_STAFF_LIST,
   SELECT_AVAILABLE_PROJECT_STAFF_LIST,
-  UPDATE_PROJECT_STAFFS
+  UPDATE_PROJECT_STAFFS,
+  SELECT_PROJECT_STAFF_LIST
 } from "@/config/api";
 export default {
   props: {},
@@ -351,8 +352,7 @@ export default {
           }
         ]
       },
-      selectedOrg: [],
-      employeeList: [],
+      availableStaffList: [],
       selectedProjectStaffs: [],
 
       projectStageObj: { id: "" },
@@ -363,6 +363,7 @@ export default {
       projectList: [],
       projectContractList: [],
       projectGroupTreeList: [],
+      projectStaffList:[],
       groupStaffList: [],
       projectStageList: [],
 
@@ -512,6 +513,19 @@ export default {
         else {
           _this.groupStaffList = res;
           _this.selectedProjectStaffs = res;
+        }
+      });
+    },
+    selectProjectStaffList(projectId) {
+      var _this = this;
+      SELECT_PROJECT_STAFF_LIST({ id: projectId }).then(res => {
+        if (!Array.isArray(res))
+          _this.$message({
+            message: "获取项目组成员失败，请联系系统管理员。",
+            type: "error"
+          });
+        else {
+          _this.projectStaffList = res;
         }
       });
     },
@@ -775,11 +789,12 @@ export default {
       this.selectProjectStageList(row.id);
       //填充项目相关的供应商
       this.selectEmployeeList(row.id);
+      this.selectProjectStaffList(row.id);
     },
     selectEmployeeList(projectId){
       var _this = this;
       SELECT_AVAILABLE_PROJECT_STAFF_LIST({id:projectId}).then(res =>{
-        _this.employeeList = res;
+        _this.availableStaffList = res;
       })
     },
     onProjectGroupChange(data) {
