@@ -207,7 +207,7 @@
         <el-table :data="projectStageList" highlight-current-row >
           <el-table-column label="阶段" prop="contractName"></el-table-column>
           <el-table-column label="开始日期" prop="vendorId"></el-table-column>
-          <el-table-column label="截至日期" prop="vendorId"></el-table-column>
+          <el-table-column label="结束日期" prop="vendorId"></el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button size="mini" type="primary" @click="openEditProjectStage(scope.row)" >编辑</el-button>
