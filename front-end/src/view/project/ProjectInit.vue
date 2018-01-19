@@ -187,16 +187,22 @@
         </el-form-item>
       </el-form>
     </el-dialog>
-    <el-dialog title="维护项目组成员" :visible.sync="dlgProjectStaffEditVis" width="35%" :close-on-click-modal="false">
+    <el-dialog title="维护项目组成员" :visible.sync="dlgProjectStaffEditVis" width="20%" :close-on-click-modal="false">
       <el-form :model="projectStaffObj" :rules="projectStaffObjRules" ref="projectStaffObjForm" label-width="80px">
         <el-form-item label="组织">
-          <el-select v-model="selectedOrg" @change="onOrgChange" clearable placeholder="请选择">
-            <el-option label="广州黄埔公安" value="-1"></el-option>
-            <el-option v-for="item in projectVendorList" :key="item.id" :label="item.vendorName" :value="item.id"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="员工">
-          <el-transfer v-model="selectedProjectStaffs" :data="employeeList" :props="{key: 'id', label: 'empName'}" :titles="['备选人员', '项目组成员']"/>
+            <el-select v-model="selectedProjectStaffs" multiple clearable placeholder="请选择">
+              <el-option-group
+                v-for="group in employeeList"
+                :key="group.branch"
+                :label="group.branch">
+                <el-option
+                  v-for="item in group.staffList"
+                  :key="item.isVendor +'_'+ item.empId"
+                  :label="item.staffName"
+                  :value="item.isVendor +'_'+ item.empId">
+                </el-option>
+              </el-option-group>
+            </el-select>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="updateProjectStaff">保存</el-button>
@@ -238,7 +244,8 @@ import {
   SELECT_DOCUMENT_LIST,
   UPDATE_DOCUMENT,
   DELETE_DOCUMENT,
-  SELECT_PROJECT_STAFF_LIST
+  SELECT_PROJECT_STAFF_LIST,
+  SELECT_EMPLOYEE_LIST
 } from "@/config/api";
 export default {
   props: {},
@@ -412,7 +419,6 @@ export default {
           });
         else {
           _this.projectContractList = res;
-
           _this.projectVendorList.length = 0;
           for (var i = 0; i < _this.vendorList.length; i++) {
             var _vendor = _this.vendorList[i];
@@ -689,17 +695,13 @@ export default {
       this.selectProjectGroupTreeList(row.id);
       this.selectProjectStageList(row.id);
       //填充项目相关的供应商
-      //this.projectVendorList,this.projectContractList,this.vendorList
-      // _this.projectVendorList = [];
-      // for (var i = 0; i < _this.vendorList.length; i++) {
-      //   var _vendor = _this.vendorList[i];
-      //   for (var j = 0; j < _this.projectContractList.length; j++) {
-      //     var _contract = _this.projectContractList[j];
-      //     if (_vendor.id == _contract.vendorId)
-      //       _this.projectVendorList.push(_vendor);
-      //     else break;
-      //   }
-      // }
+      this.selectEmployeeList(row.id);
+    },
+    selectEmployeeList(projectId){
+      var _this = this;
+      SELECT_EMPLOYEE_LIST({id:projectId}).then(res =>{
+        _this.employeeList = res;
+      })
     },
     onProjectGroupChange(data) {
       // 查询当前项目组的员工
@@ -715,32 +717,6 @@ export default {
       if (value.length != 0) {
         this.projectGroupObj.parentId = value[value.length - 1];
       } else this.depObj.parentId = 0;
-    },
-    onOrgChange(value) {
-      var _this = this;
-      if (value == -1) {
-        SELECT_ALL_DEP_EMP_LIST().then(res => {
-          if (!Array.isArray(res))
-            _this.$message({
-              message: "获取部门员工失败，请联系系统管理员。",
-              type: "error"
-            });
-          else {
-            _this.employeeList = res;
-          }
-        });
-      } else {
-        SELECT_VENDOR_EMP_LIST({ id: value }).then(res => {
-          if (!Array.isArray(res))
-            _this.$message({
-              message: "获取供应商员工失败，请联系系统管理员。",
-              type: "error"
-            });
-          else {
-            _this.employeeList = res;
-          }
-        });
-      }
     },
     renderContent(h, { node, data, store }) {
       return (

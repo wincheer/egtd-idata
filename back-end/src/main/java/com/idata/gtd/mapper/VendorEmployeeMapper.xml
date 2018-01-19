@@ -72,5 +72,16 @@
     delete from vendor_employee
     where vendor_id = #{vendorId,jdbcType=INTEGER}
   </delete>
+  
+  <select id="selectVendorEmployeeListByProject" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT DISTINCT
+		vendor_employee.*
+	FROM
+		vendor_employee
+	LEFT JOIN project_contract ON vendor_employee.vendor_id = project_contract.vendor_id
+	LEFT JOIN project ON project_contract.project_id = project.id
+	WHERE
+		project.id = #{projectId,jdbcType=INTEGER}
+  </select>
 
 </mapper>

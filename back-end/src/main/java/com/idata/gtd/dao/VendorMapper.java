@@ -15,5 +15,7 @@ public interface VendorMapper {
 	int updateVendor(Vendor record);
 
 	List<Vendor> selectVendorList();
+
+	List<Vendor> selectVendorListByProject(Integer projectId);
 	
 }

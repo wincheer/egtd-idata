@@ -53,6 +53,7 @@ export const SELECT_PROJECT_STAGE_LIST = (params) => { return axios.post(`${base
 export const UPDATE_PROJECT_STAGE = (params) => { return axios.post(`${base}/updateProjectStage`, params).then(res => res.data); };
 export const DELETE_PROJECT_STAGE = (params) => { return axios.post(`${base}/deleteProjectStage`, params).then(res => res.data); };
 export const SELECT_PROJECT_STAFF_LIST = (params) => { return axios.post(`${base}/selectProjectStaffList`,params).then(res => res.data); };
+export const SELECT_EMPLOYEE_LIST = (params) => { return axios.post(`${base}/selectEmployeeList`,params).then(res => res.data); };
 
 
 //文档附件

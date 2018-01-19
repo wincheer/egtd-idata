@@ -166,5 +166,14 @@ public class ProjectAction {
 		List<ProjectStaff> projectStaffList = projectService.selectProjectStaffList(data.getGroupId());
 		return projectStaffList;
 	}
+	
+	@RequestMapping(value = "/selectEmployeeList", method = RequestMethod.POST)
+	public List<Map<String,Object>> selectEmployeeList(@RequestBody Project data) throws Exception {
+
+		List<Map<String,Object>> employeeList = projectService.selectEmployeeList(data.getId());
+		return employeeList;
+	}
+	
+	
 
 }

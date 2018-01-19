@@ -54,5 +54,16 @@
     select * 
     from vendor
   </select>
+  
+  <select id="selectVendorListByProject" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT DISTINCT
+		vendor.*
+	FROM
+		vendor
+	LEFT JOIN project_contract ON vendor.id = project_contract.vendor_id
+	LEFT JOIN project ON project_contract.project_id = project.id
+	WHERE
+		project.id = #{projectId,jdbcType=INTEGER}
+  </select>
 
 </mapper>

@@ -16,6 +16,8 @@ public interface VendorEmployeeMapper {
 
 	int deleteVendorEmps(Integer vendorId);
 
-	List<VendorEmployee> selectVendorEmployeeList(Integer vendorId); 
+	List<VendorEmployee> selectVendorEmployeeList(Integer vendorId);
+
+	List<VendorEmployee> selectVendorEmployeeListByProject(Integer projectId); 
 	
 }
