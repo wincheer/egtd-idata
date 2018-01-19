@@ -156,7 +156,7 @@
               <span>项目组成员</span>
               <el-button @click="openAddProjectStaff" :disabled="projectGroupObj.id == ''" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">维护项目组成员</el-button>
             </div>
-            <el-table :data="projectStaffList">
+            <el-table :data="groupStaffList">
               <el-table-column label="姓名" prop="staffName"></el-table-column>
               <el-table-column label="电话" prop="staffMobile"></el-table-column>
             </el-table>
@@ -363,7 +363,7 @@ export default {
       projectList: [],
       projectContractList: [],
       projectGroupTreeList: [],
-      projectStaffList: [],
+      groupStaffList: [],
       projectStageList: [],
 
       dlgProjectEditVis: false,
@@ -501,7 +501,7 @@ export default {
         }
       });
     },
-    selectProjectStaffList(projectGroupId) {
+    selectGroupStaffList(projectGroupId) {
       var _this = this;
       SELECT_GROUP_STAFF_LIST({ groupId: projectGroupId }).then(res => {
         if (!Array.isArray(res))
@@ -510,7 +510,7 @@ export default {
             type: "error"
           });
         else {
-          _this.projectStaffList = res;
+          _this.groupStaffList = res;
           _this.selectedProjectStaffs = res;
         }
       });
@@ -700,7 +700,7 @@ export default {
                 type: "error"
               });
             } else {
-              _this.selectProjectStaffList(_this.projectGroupObj.id);
+              _this.selectGroupStaffList(_this.projectGroupObj.id);
               _this.dlgProjectStaffEditVis = false;
             }
       });
@@ -785,8 +785,8 @@ export default {
     onProjectGroupChange(data) {
       // 查询当前项目组的员工
       console.log("=============== "+ data.id);
-      this.selectProjectStaffList(data.id);
-      //填充 selectedProjectStaffs
+      this.selectGroupStaffList(data.id);
+      //填充 
       this.projectGroupObj.id = data.id;
     },
     onDepChange(value) {

@@ -18,5 +18,7 @@ public interface ProjectStaffMapper {
 
 	ProjectStaff login(ProjectStaff record);
 
-	List<ProjectStaff> selectProjectStaffList(Integer groupId);
+	List<ProjectStaff> selectGroupStaffList(Integer groupId);
+	
+	List<ProjectStaff> selectProjectStaffList(Integer projectId);
 }

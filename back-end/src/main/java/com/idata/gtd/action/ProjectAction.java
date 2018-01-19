@@ -175,6 +175,13 @@ public class ProjectAction {
 		List<Map<String,Object>> employeeList = projectService.selectAvailableProjectStaffList(data.getId());
 		return employeeList;
 	}
+	//项目中已经分配的人员
+	@RequestMapping(value = "/selectProjectStaffList", method = RequestMethod.POST)
+	public List<ProjectStaff> selectProjectStaffList(@RequestBody Project data) throws Exception {
+
+		List<ProjectStaff> staffList = projectService.selectProjectStaffList(data.getId());
+		return staffList;
+	}
 	
 	@RequestMapping(value = "/updateProjectStaffs", method = RequestMethod.POST)
 	public int updateProjectStaffs(@RequestBody Map<String,Object> staffListMap) throws Exception {

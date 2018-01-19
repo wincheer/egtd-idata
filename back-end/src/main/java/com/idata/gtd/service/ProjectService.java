@@ -189,7 +189,7 @@ public class ProjectService {
 
 	public List<ProjectStaff> selectGroupStaffList(Integer groupId) {
 		
-		return projectStaffDao.selectProjectStaffList(groupId);
+		return projectStaffDao.selectGroupStaffList(groupId);
 	}
 
 	public List<Map<String,Object>> selectAvailableProjectStaffList(Integer projectId) { 
@@ -278,6 +278,11 @@ public class ProjectService {
 		}
 		
 		return 1;
+	}
+
+	public List<ProjectStaff> selectProjectStaffList(Integer projectId) {
+		
+		return projectStaffDao.selectProjectStaffList(projectId);
 	}
 
 }
