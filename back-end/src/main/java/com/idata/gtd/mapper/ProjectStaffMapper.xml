@@ -77,4 +77,9 @@
     where group_id = #{groupId,jdbcType=INTEGER}
   </select>
   
+  <delete id="deleteStaffsByGroupId" parameterType="java.lang.Integer">
+    delete from project_staff
+    where group_id = #{groupId,jdbcType=INTEGER}
+  </delete>
+  
 </mapper>

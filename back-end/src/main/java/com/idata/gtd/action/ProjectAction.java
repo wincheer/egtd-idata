@@ -174,6 +174,10 @@ public class ProjectAction {
 		return employeeList;
 	}
 	
-	
+	@RequestMapping(value = "/updateProjectStaffs", method = RequestMethod.POST)
+	public int updateProjectStaffs(@RequestBody Map<String,Object> staffListMap) throws Exception {
+
+		return projectService.updateProjectStaffs(staffListMap);
+	}
 
 }

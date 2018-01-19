@@ -141,7 +141,7 @@
     <!--项目组-->
     <el-dialog title="配置项目组" :visible.sync="dlgProjectGroupListVis" width="35%" :close-on-click-modal="false">
       <el-row :gutter="20">
-        <el-col :span="12">
+        <el-col :span="14">
           <el-card>
             <div slot="header" class="clearfix">
               <span>项目组</span>
@@ -150,17 +150,16 @@
             <el-tree :data="projectGroupTreeList" @node-click="onProjectGroupChange" :render-content="renderContent" highlight-current :expand-on-click-node="false" default-expand-all></el-tree>
           </el-card>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="10">
           <el-card>
             <div slot="header" class="clearfix">
               <span>项目组员工</span>
-              <el-button @click="openAddProjectStaff" :disabled="projectGroupObj.id == ''" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加项目组员工</el-button>
+              <el-button @click="openAddProjectStaff" :disabled="projectGroupObj.id == ''" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">维护项目组成员</el-button>
             </div>
             <el-table :data="projectStaffList">
               <el-table-column label="姓名" prop="staffName"></el-table-column>
-              <el-table-column label="操作" width="160">
+              <el-table-column label="操作">
                 <template slot-scope="scope">
-                  <el-button size="mini" type="text" @click="openEditDepEmp(scope.row)">编辑</el-button>
                   <el-button size="mini" type="text" @click="delDepEmp(scope.row)" >删除</el-button>
                 </template>
               </el-table-column>
@@ -189,23 +188,16 @@
     </el-dialog>
     <el-dialog title="维护项目组成员" :visible.sync="dlgProjectStaffEditVis" width="20%" :close-on-click-modal="false">
       <el-form :model="projectStaffObj" :rules="projectStaffObjRules" ref="projectStaffObjForm" label-width="80px">
-        <el-form-item label="组织">
-            <el-select v-model="selectedProjectStaffs" multiple clearable placeholder="请选择">
-              <el-option-group
-                v-for="group in employeeList"
-                :key="group.branch"
-                :label="group.branch">
-                <el-option
-                  v-for="item in group.staffList"
-                  :key="item.isVendor +'_'+ item.empId"
-                  :label="item.staffName"
-                  :value="item.isVendor +'_'+ item.empId">
-                </el-option>
+        <el-form-item label="机构员工">
+            <el-select v-model="selectedProjectStaffs" value-key="id" filterable multiple clearable placeholder="请选择">
+              <el-option-group v-for="group in employeeList" :key="group.branch" :label="group.branch">
+                <!-- <el-option v-for="item in group.staffList" :key="item.isVendor +'_'+ item.empId" :label="item.staffName" :value="item.isVendor +'_'+ item.empId"></el-option> -->
+                <el-option v-for="item in group.staffList" :key="item.id" :label="item.staffName" :value="item"></el-option>
               </el-option-group>
             </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="updateProjectStaff">保存</el-button>
+          <el-button type="primary" @click="updateProjectStaffs">保存</el-button>
           <el-button @click="dlgProjectStaffEditVis = false">取消</el-button>
         </el-form-item>
       </el-form>
@@ -245,7 +237,8 @@ import {
   UPDATE_DOCUMENT,
   DELETE_DOCUMENT,
   SELECT_PROJECT_STAFF_LIST,
-  SELECT_EMPLOYEE_LIST
+  SELECT_EMPLOYEE_LIST,
+  UPDATE_PROJECT_STAFFS
 } from "@/config/api";
 export default {
   props: {},
@@ -637,9 +630,24 @@ export default {
         }
       });
     },
-    updateProjectStaff() {
-      var _it = this.selectedProjectStaffs;
-      console.log("=============" + _it);
+    updateProjectStaffs() {
+      var _this = this;
+      for(var i=0;i<this.selectedProjectStaffs.length;i++){
+        this.selectedProjectStaffs[i].groupId = this.projectGroupObj.id;
+      }
+      var params = {groupId:this.projectGroupObj.id,staffList:this.selectedProjectStaffs}
+      UPDATE_PROJECT_STAFFS(params).then(data =>{
+        if (data === "") {
+              _this.$message({
+                message: "更新项目组成员失败，请联系系统管理员。",
+                type: "error"
+              });
+            } else {
+              _this.selectProjectStaffList(_this.projectGroupObj.id);
+              _this.dlgProjectStaffEditVis = false;
+            }
+      });
+
     },
     onFileChange(file, fileList) {
       if (fileList.length != 0) {
@@ -705,6 +713,7 @@ export default {
     },
     onProjectGroupChange(data) {
       // 查询当前项目组的员工
+      console.log("=============== "+ data.id);
       this.selectProjectStaffList(data.id);
       this.projectGroupObj.id = data.id;
     },

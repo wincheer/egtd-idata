@@ -199,9 +199,10 @@ public class ProjectService {
 			staff.setEmpId(emp.getId());
 			staff.setIsVendor(0);
 			staff.setPassword("12345678");
-			staff.setStaffEmail(emp.getEmpName());
+			staff.setStaffEmail(emp.getEmpEmail());
 			staff.setStaffMobile(emp.getEmpMobile());
 			staff.setStaffName(emp.getEmpName());
+			staff.setId(emp.getId()); // -- 唯一标识，业主的用正数，供应商负数
 			
 			staffList_dep.add(staff);
 		}
@@ -223,9 +224,11 @@ public class ProjectService {
 					staff.setEmpId(emp.getId());
 					staff.setIsVendor(1);
 					staff.setPassword("12345678");
-					staff.setStaffEmail(emp.getEmpName());
+					staff.setStaffEmail(emp.getEmpEmail());
 					staff.setStaffMobile(emp.getEmpMobile());
 					staff.setStaffName(emp.getEmpName());	
+					staff.setId(-1*emp.getId()); // -- 唯一标识，业主的用正数，供应商负数
+					
 					vendorStaffList.add(staff);
 				}
 			}
@@ -236,6 +239,34 @@ public class ProjectService {
 		}
 		
 		return staffList;
+	}
+
+	public int updateProjectStaffs(Map<String,Object> map) {
+		
+		int groupId = (Integer)map.get("groupId");
+		//删除组内所有成员
+		projectStaffDao.deleteStaffsByGroupId(groupId);
+		
+		@SuppressWarnings("unchecked")
+		List<Map<String,Object>> _staffList = (List<Map<String,Object>>)map.get("staffList");
+		@SuppressWarnings("unused")
+		List<ProjectStaff> staffList = new ArrayList<ProjectStaff>();
+		//添加所有成员
+		for(Map<String,Object> _map:_staffList){
+			ProjectStaff staff = new ProjectStaff();
+			staff.setGroupId(groupId);
+			staff.setEmpId((Integer)_map.get("empId"));
+			staff.setId(null);
+			staff.setIsVendor((Integer)_map.get("isVendor"));
+			staff.setPassword((String)_map.get("password"));
+			staff.setStaffEmail((String)_map.get("staffEmail"));
+			staff.setStaffMobile((String)_map.get("staffMobile"));
+			staff.setStaffName((String)_map.get("staffName"));
+			
+			projectStaffDao.insertStaff(staff);
+		}
+		
+		return 1;
 	}
 
 }

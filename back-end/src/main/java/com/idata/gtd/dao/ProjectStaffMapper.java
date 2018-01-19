@@ -7,6 +7,8 @@ import com.idata.gtd.entity.ProjectStaff;
 public interface ProjectStaffMapper {
 
 	int deleteStaffByPK(Integer id);
+	
+	int deleteStaffsByGroupId(Integer groupId);
 
 	int insertStaff(ProjectStaff record);
 
