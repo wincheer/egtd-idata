@@ -701,6 +701,9 @@ export default {
         }
       });
     },
+    updateProjectStage(){
+      console.log("--------------")
+    },
     updateProjectStaffs() {
       var _this = this;
       for(var i=0;i<this.selectedProjectStaffs.length;i++){
