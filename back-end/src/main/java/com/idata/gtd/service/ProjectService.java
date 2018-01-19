@@ -203,6 +203,7 @@ public class ProjectService {
 			staff.setStaffMobile(emp.getEmpMobile());
 			staff.setStaffName(emp.getEmpName());
 			staff.setId(emp.getId()); // -- 唯一标识，业主的用正数，供应商负数
+			staff.setCode("o"+emp.getId()); //ownder o+empId
 			
 			staffList_dep.add(staff);
 		}
@@ -228,6 +229,7 @@ public class ProjectService {
 					staff.setStaffMobile(emp.getEmpMobile());
 					staff.setStaffName(emp.getEmpName());	
 					staff.setId(-1*emp.getId()); // -- 唯一标识，业主的用正数，供应商负数
+					staff.setCode("s"+emp.getId()); //supply s+empId
 					
 					vendorStaffList.add(staff);
 				}
@@ -262,6 +264,10 @@ public class ProjectService {
 			staff.setStaffEmail((String)_map.get("staffEmail"));
 			staff.setStaffMobile((String)_map.get("staffMobile"));
 			staff.setStaffName((String)_map.get("staffName"));
+			if(staff.getIsVendor()==1)
+				staff.setCode("s"+staff.getEmpId());
+			else
+				staff.setCode("o"+staff.getEmpId());
 			
 			projectStaffDao.insertStaff(staff);
 		}

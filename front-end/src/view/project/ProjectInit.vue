@@ -141,7 +141,7 @@
     <!--项目组-->
     <el-dialog title="配置项目组" :visible.sync="dlgProjectGroupListVis" width="35%" :close-on-click-modal="false">
       <el-row :gutter="20">
-        <el-col :span="14">
+        <el-col :span="13">
           <el-card>
             <div slot="header" class="clearfix">
               <span>项目组</span>
@@ -150,19 +150,15 @@
             <el-tree :data="projectGroupTreeList" @node-click="onProjectGroupChange" :render-content="renderContent" highlight-current :expand-on-click-node="false" default-expand-all></el-tree>
           </el-card>
         </el-col>
-        <el-col :span="10">
+        <el-col :span="11">
           <el-card>
             <div slot="header" class="clearfix">
-              <span>项目组员工</span>
+              <span>项目组成员</span>
               <el-button @click="openAddProjectStaff" :disabled="projectGroupObj.id == ''" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">维护项目组成员</el-button>
             </div>
             <el-table :data="projectStaffList">
               <el-table-column label="姓名" prop="staffName"></el-table-column>
-              <el-table-column label="操作">
-                <template slot-scope="scope">
-                  <el-button size="mini" type="text" @click="delDepEmp(scope.row)" >删除</el-button>
-                </template>
-              </el-table-column>
+              <el-table-column label="电话" prop="staffMobile"></el-table-column>
             </el-table>
           </el-card>
         </el-col>
@@ -189,9 +185,8 @@
     <el-dialog title="维护项目组成员" :visible.sync="dlgProjectStaffEditVis" width="20%" :close-on-click-modal="false">
       <el-form :model="projectStaffObj" :rules="projectStaffObjRules" ref="projectStaffObjForm" label-width="80px">
         <el-form-item label="机构员工">
-            <el-select v-model="selectedProjectStaffs" value-key="id" filterable multiple clearable placeholder="请选择">
+            <el-select v-model="selectedProjectStaffs" value-key="code" filterable multiple clearable placeholder="请选择">
               <el-option-group v-for="group in employeeList" :key="group.branch" :label="group.branch">
-                <!-- <el-option v-for="item in group.staffList" :key="item.isVendor +'_'+ item.empId" :label="item.staffName" :value="item.isVendor +'_'+ item.empId"></el-option> -->
                 <el-option v-for="item in group.staffList" :key="item.id" :label="item.staffName" :value="item"></el-option>
               </el-option-group>
             </el-select>
@@ -479,6 +474,7 @@ export default {
           });
         else {
           _this.projectStaffList = res;
+          _this.selectedProjectStaffs = res;
         }
       });
     },
@@ -715,6 +711,7 @@ export default {
       // 查询当前项目组的员工
       console.log("=============== "+ data.id);
       this.selectProjectStaffList(data.id);
+      //填充 selectedProjectStaffs
       this.projectGroupObj.id = data.id;
     },
     onDepChange(value) {

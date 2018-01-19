@@ -6,6 +6,7 @@ public class ProjectStaff {
 	private Integer isVendor;
 	private Integer groupId;
 	private Integer empId;
+	private String code;
 	private String staffName;
 	private String staffEmail;
 	private String staffMobile;
@@ -41,6 +42,14 @@ public class ProjectStaff {
 
 	public void setEmpId(Integer empId) {
 		this.empId = empId;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 	public String getStaffName() {

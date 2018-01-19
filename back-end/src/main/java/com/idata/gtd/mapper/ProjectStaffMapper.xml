@@ -7,6 +7,7 @@
     <result column="is_vendor" jdbcType="INTEGER" property="isVendor" />
     <result column="group_id" jdbcType="INTEGER" property="groupId" />
     <result column="emp_id" jdbcType="INTEGER" property="empId" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="staff_name" jdbcType="VARCHAR" property="staffName" />
     <result column="staff_email" jdbcType="VARCHAR" property="staffEmail" />
     <result column="staff_mobile" jdbcType="VARCHAR" property="staffMobile" />
@@ -31,6 +32,7 @@
       <if test="isVendor != null">is_vendor,</if>
       <if test="groupId != null">group_id,</if>
       <if test="empId != null">emp_id,</if>
+      <if test="code != null">code,</if>
       <if test="staffName != null">staff_name,</if>
       <if test="staffEmail != null">staff_email,</if>
       <if test="staffMobile != null">staff_mobile,</if>
@@ -41,6 +43,7 @@
       <if test="isVendor != null">#{isVendor,jdbcType=INTEGER},</if>
       <if test="groupId != null">#{groupId,jdbcType=INTEGER},</if>
       <if test="empId != null">#{empId,jdbcType=INTEGER},</if>
+      <if test="code != null">#{code,jdbcType=VARCHAR},</if>
       <if test="staffName != null">#{staffName,jdbcType=VARCHAR},</if>
       <if test="staffEmail != null">#{staffEmail,jdbcType=VARCHAR},</if>
       <if test="staffMobile != null">#{staffMobile,jdbcType=VARCHAR},</if>
@@ -54,6 +57,7 @@
       <if test="isVendor != null">is_vendor = #{isVendor,jdbcType=INTEGER},</if>
       <if test="groupId != null">group_id = #{groupId,jdbcType=INTEGER},</if>
       <if test="empId != null">emp_id = #{empId,jdbcType=INTEGER},</if>
+      <if test="code != null">code = #{code,jdbcType=VARCHAR},</if>
       <if test="staffName != null">staff_name = #{staffName,jdbcType=VARCHAR},</if>
       <if test="staffEmail != null">staff_email = #{staffEmail,jdbcType=VARCHAR},</if>
       <if test="staffMobile != null">staff_mobile = #{staffMobile,jdbcType=VARCHAR},</if>
