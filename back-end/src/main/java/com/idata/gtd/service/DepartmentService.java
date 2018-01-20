@@ -8,10 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.idata.gtd.dao.DepartmentEmployeeMapper;
 import com.idata.gtd.dao.DepartmentMapper;
+import com.idata.gtd.dao.EmployeeMapper;
 import com.idata.gtd.entity.Department;
-import com.idata.gtd.entity.DepartmentEmployee;
+import com.idata.gtd.entity.Employee;
 
 /**
  * <b>版权信息 :</b> 2018，广州智数信息科技有限公司<br/>
@@ -28,7 +28,7 @@ public class DepartmentService {
 	@Autowired
 	private DepartmentMapper depDao;
 	@Autowired
-	private DepartmentEmployeeMapper depEmpDao;
+	private EmployeeMapper empDao;
 	
 	public List<Department> selectDepartmentList() {
 		
@@ -46,38 +46,41 @@ public class DepartmentService {
 		return depDao.updateDepartment(dep);
 	}
 
-	public int deleteDepartment(Integer id) {
+	public int deleteDepartment(Integer depId) {
 
-		depDao.deleteDepartmentByPK(id);
+		depDao.deleteDepartmentByPK(depId);
 		//同时删除当前机构下的员工
-		depEmpDao.deleteDepartmentEmployees(id);
+		empDao.deleteDepartmentEmployees(depId);
 		
 		return 0;
 	}
 	
-	public List<DepartmentEmployee> selectDepartmentEmployeeList(Integer depId){
+	public List<Employee> selectDepartmentEmployeeList(Integer depId){
 		
-		return depEmpDao.selectDepartmentEmployeeList(depId);
+		return empDao.selectDepartmentEmployeeList(depId);
 	}
 
-	public int insertDepartmentEmployee(DepartmentEmployee depEmp) {
+	public int insertDepartmentEmployee(Employee depEmp) {
 
-		return depEmpDao.insertDepartmentEmployee(depEmp);
+		depEmp.setCode("o");
+		depEmp.setPassword("123456");
+		empDao.insertEmployee(depEmp);
+		return depEmp.getId();
 	}
 
-	public int updateDepartmentEmployee(DepartmentEmployee depEmp) {
+	public int updateDepartmentEmployee(Employee depEmp) {
 
-		return depEmpDao.updateDepartmentEmployee(depEmp);
+		return empDao.updateEmployee(depEmp);
 	}
 
 	public int deleteDepartmentEmployee(Integer id) {
 
-		return depEmpDao.deleteDepartmentEmployeeByPK(id);
+		return empDao.deleteEmployeeByPK(id);
 	}
 
-	public List<DepartmentEmployee> selectAllDepEmpList() {
+	public List<Employee> selectAllDepEmpList() {
 
-		return depEmpDao.selectAllDepEmpList();
+		return empDao.selectAllDepEmpList();
 	}
 
 }

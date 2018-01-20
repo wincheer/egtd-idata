@@ -20,7 +20,7 @@
 			targetProject="egtd/src/main/java" type="XMLMAPPER"/>
 			
 		<!-- 要生成的那些表(更改tableName 和domainObjectName 就可以了) -->
-		<table schema="gtd_idata" tableName="param_key" enableCountByExample="false"
+		<table schema="gtd_idata" tableName="xxxx" enableCountByExample="false"
 			enableUpdateByExample="false" enableDeleteByExample="false"
 			enableSelectByExample="false" selectByExampleQueryId="false" />
 	</context>

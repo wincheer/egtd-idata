@@ -13,7 +13,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.idata.gtd.common.LogEvent;
 import com.idata.gtd.common.LogTarget;
-import com.idata.gtd.entity.ProjectStaff;
+import com.idata.gtd.entity.Employee;
 import com.idata.gtd.service.LogService;
 import com.idata.gtd.service.LoginService;
 
@@ -34,12 +34,12 @@ public class LoginAction {
 	// }
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public ProjectStaff login(@RequestBody Map<String, Object> param) {
+	public Employee login(@RequestBody Map<String, Object> param) {
 
 		Gson gson = new GsonBuilder().create();
-		ProjectStaff model = gson.fromJson(param.get("model").toString(), ProjectStaff.class);
+		Employee model = gson.fromJson(param.get("model").toString(), Employee.class);
 
-		ProjectStaff loginUser = loginService.login(model);
+		Employee loginUser = loginService.login(model);
 
 		// 记录日志
 		Integer actor;

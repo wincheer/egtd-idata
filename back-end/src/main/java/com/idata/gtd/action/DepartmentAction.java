@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.idata.gtd.common.TreeNode;
 import com.idata.gtd.common.Utils;
 import com.idata.gtd.entity.Department;
-import com.idata.gtd.entity.DepartmentEmployee;
+import com.idata.gtd.entity.Employee;
 import com.idata.gtd.service.DepartmentService;
 
 /**
@@ -59,19 +59,19 @@ public class DepartmentAction {
 	};
 	
 	@RequestMapping(value = "/selectDepEmpList", method = RequestMethod.POST)
-	public List<DepartmentEmployee> selectDepEmpList(@RequestBody Department dep) {
+	public List<Employee> selectDepEmpList(@RequestBody Department dep) {
 
 		return depService.selectDepartmentEmployeeList(dep.getId());
 	}
 	
 	@RequestMapping(value = "/selectAllDepEmpList", method = RequestMethod.POST)
-	public List<DepartmentEmployee> selectAllDepEmpList() {
+	public List<Employee> selectAllDepEmpList() {
 
 		return depService.selectAllDepEmpList();
 	}
 	
 	@RequestMapping(value = "/updateDepEmp", method = RequestMethod.POST)
-	public int updateDepEmp(@RequestBody DepartmentEmployee depEmp) {
+	public int updateDepEmp(@RequestBody Employee depEmp) {
 
 		if (depEmp.getId() == null)
 			return depService.insertDepartmentEmployee(depEmp);
@@ -80,7 +80,7 @@ public class DepartmentAction {
 	};
 	
 	@RequestMapping(value = "/deleteDepEmp", method = RequestMethod.POST)
-	public int deleteDepEmp(@RequestBody DepartmentEmployee depEmp) {
+	public int deleteDepEmp(@RequestBody Employee depEmp) {
 
 		return depService.deleteDepartmentEmployee(depEmp.getId());
 	};

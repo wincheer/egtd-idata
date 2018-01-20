@@ -14,6 +14,8 @@ public interface ProjectMapper {
 
 	int updateProject(Project record);
 
-	List<Project> selectProjectList(); 
+	List<Project> selectProjectList();
+
+	List<Project> selectMyProjectList(String staffCode); 
 	
 }

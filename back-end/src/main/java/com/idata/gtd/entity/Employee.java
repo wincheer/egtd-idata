@@ -3,13 +3,15 @@ package com.idata.gtd.entity;
 public class Employee {
 
     private Integer id;
-    private Integer depId;
+    private Integer orgId;
+    private String code;
     private String empName;
     private String empGender;
     private String empMobile;
     private String empEmail;
     private String empTitle;
     private String empGrade;
+    private String password;
 
     public Integer getId() {
         return id;
@@ -19,15 +21,23 @@ public class Employee {
         this.id = id;
     }
 
-    public Integer getDepId() {
-        return depId;
-    }
+    public Integer getOrgId() {
+		return orgId;
+	}
 
-    public void setDepId(Integer depId) {
-        this.depId = depId;
-    }
+	public void setOrgId(Integer orgId) {
+		this.orgId = orgId;
+	}
 
-    public String getEmpName() {
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public String getEmpName() {
         return empName;
     }
 
@@ -74,4 +84,12 @@ public class Employee {
     public void setEmpGrade(String empGrade) {
         this.empGrade = empGrade;
     }
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
 }

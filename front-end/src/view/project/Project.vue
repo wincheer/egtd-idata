@@ -2,7 +2,10 @@
     <section>
       <el-row style="margin-top: 20px;margin-bottom: 10px;">
         <!-- <el-col></el-col> -->
-        <el-select placeholder="请选择项目"></el-select>
+        <!-- <el-select v-model="projectObj.category" placeholder="请选择项目"></el-select> -->
+        <el-select v-model="selectedProject" placeholder="请选择项目">
+          <el-option v-for="item in myProjectList" :key="item.id" :label="item.projectName" :value="item.id" />
+        </el-select>
         <el-button icon="el-icon-edit" type="primary" plain>编辑任务</el-button>
         <el-button icon="el-icon-share" type="primary" plain>分配子任务</el-button>
       </el-row>
@@ -43,12 +46,13 @@
           <el-button @click="lightBoxVisible = false">取消</el-button>
           <el-button type="primary" @click="lightBoxVisible = false">保存</el-button>
         </div>
-    </el-dialog>
+      </el-dialog>
     </section>
 </template>
 
 <script>
 import Gantt from "@/component/Gantt.vue";
+import {SELECT_MY_PROJECT_LIST} from "@/config/api";
 export default {
   components: { Gantt },
   data() {
@@ -222,7 +226,7 @@ export default {
         ],
         links: []
       },
-      myProjects:[],
+      myProjectList:[],
       selectedProject: {},
       selectedTask: {},
       lightBoxVisible: false,
@@ -230,6 +234,20 @@ export default {
     };
   },
   methods: {
+    selectMyProjectList(staffCode){
+      var _this = this;
+      SELECT_MY_PROJECT_LIST({ code: staffCode }).then(res => {
+        if (!Array.isArray(res))
+          _this.$message({
+            message: "获取我的项目列表失败，请联系系统管理员。",
+            type: "error"
+          });
+        else {
+          _this.myProjectList = res;
+          if(res.length) this.selectedProject = _this.myProjectList[0];
+        }
+      });
+    },
     onSelectTask(task) {
       this.selectedTask = task;
     },
@@ -248,7 +266,9 @@ export default {
       this.isLightBoxActive = false;
     }
   },
-  mounted() {}
+  mounted() {
+    this.selectMyProjectList(this.$store.state.loginUser.code);
+  }
 };
 </script>
 

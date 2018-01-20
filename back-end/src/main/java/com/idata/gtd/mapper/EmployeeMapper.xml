@@ -4,13 +4,15 @@
 
   <resultMap id="BaseResultMap" type="com.idata.gtd.entity.Employee">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="dep_id" jdbcType="INTEGER" property="depId" />
+    <result column="org_id" jdbcType="INTEGER" property="orgId" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="emp_name" jdbcType="VARCHAR" property="empName" />
     <result column="emp_gender" jdbcType="VARCHAR" property="empGender" />
     <result column="emp_mobile" jdbcType="VARCHAR" property="empMobile" />
     <result column="emp_email" jdbcType="VARCHAR" property="empEmail" />
     <result column="emp_title" jdbcType="VARCHAR" property="empTitle" />
     <result column="emp_grade" jdbcType="VARCHAR" property="empGrade" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
   </resultMap>
 
   <select id="selectEmployeeByPK" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -28,38 +30,92 @@
     insert into employee
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">id,</if>
-      <if test="depId != null">dep_id,</if>
+      <if test="orgId != null">org_id,</if>
+      <if test="code != null">code,</if>
       <if test="empName != null">emp_name,</if>
       <if test="empGender != null">emp_gender,</if>
       <if test="empMobile != null">emp_mobile,</if>
       <if test="empEmail != null">emp_email,</if>
       <if test="empTitle != null">emp_title,</if>
       <if test="empGrade != null">emp_grade,</if>
+      <if test="password != null">password,</if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">#{id,jdbcType=INTEGER},</if>
-      <if test="depId != null">#{depId,jdbcType=INTEGER},</if>
+      <if test="orgId != null">#{orgId,jdbcType=INTEGER},</if>
+      <if test="code != null">#{code,jdbcType=VARCHAR},</if>
       <if test="empName != null">#{empName,jdbcType=VARCHAR},</if>
       <if test="empGender != null">#{empGender,jdbcType=VARCHAR},</if>
       <if test="empMobile != null">#{empMobile,jdbcType=VARCHAR},</if>
       <if test="empEmail != null">#{empEmail,jdbcType=VARCHAR},</if>
       <if test="empTitle != null">#{empTitle,jdbcType=VARCHAR},</if>
       <if test="empGrade != null">#{empGrade,jdbcType=VARCHAR},</if>
+      <if test="password != null">#{password,jdbcType=VARCHAR},</if>
     </trim>
   </insert>
   
   <update id="updateEmployee" parameterType="com.idata.gtd.entity.Employee">
     update employee
     <set>
-      <if test="depId != null">dep_id = #{depId,jdbcType=INTEGER},</if>
+      <if test="orgId != null">org_id = #{orgId,jdbcType=INTEGER},</if>
+      <if test="code != null">code = #{code,jdbcType=VARCHAR},</if>
       <if test="empName != null">emp_name = #{empName,jdbcType=VARCHAR},</if>
       <if test="empGender != null">emp_gender = #{empGender,jdbcType=VARCHAR},</if>
       <if test="empMobile != null">emp_mobile = #{empMobile,jdbcType=VARCHAR},</if>
       <if test="empEmail != null">emp_email = #{empEmail,jdbcType=VARCHAR},</if>
       <if test="empTitle != null">emp_title = #{empTitle,jdbcType=VARCHAR},</if>
       <if test="empGrade != null">emp_grade = #{empGrade,jdbcType=VARCHAR},</if>
+      <if test="password != null">password = #{password,jdbcType=VARCHAR},</if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <select id="login" parameterType="com.idata.gtd.entity.Employee" resultMap="BaseResultMap">
+  	select DISTINCT * from employee
+  	where 1 = 1
+  	<trim prefix=" and (" suffix=")" suffixOverrides="and">
+      <if test="empMobile != null">emp_mobile = #{empMobile,jdbcType=INTEGER} and</if>
+      <if test="password != null">password = #{password,jdbcType=VARCHAR} and</if>
+    </trim>
+  </select>
+  
+  <delete id="deleteDepartmentEmployees" parameterType="java.lang.Integer">
+    delete from employee
+    where left(code,1) ='o' and org_id = #{orgId,jdbcType=INTEGER}
+  </delete>
+  
+  <select id="selectDepartmentEmployeeList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select *
+    from employee
+    where left(code,1) ='o' and org_id = #{depId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectAllDepEmpList" resultMap="BaseResultMap">
+    select *
+    from employee
+    where left(code,1) ='o' and code != 'o0'
+  </select>
+  
+  <delete id="deleteVendorEmps" parameterType="java.lang.Integer">
+    delete from employee
+    where left(code,1) ='s' and org_id = #{vendorId,jdbcType=INTEGER}
+  </delete>
+  
+  <select id="selectVendorEmployeeList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select *
+    from employee
+    where left(code,1) ='s' and org_id = #{vendorId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectVendorEmployeeListByProject" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT DISTINCT
+		employee.*
+	FROM
+		employee
+	LEFT JOIN project_contract ON employee.org_id = project_contract.vendor_id
+	LEFT JOIN project ON project_contract.project_id = project.id
+	WHERE
+		left(employee.code,1) ='s' and project.id = #{projectId,jdbcType=INTEGER}
+  </select>
 
 </mapper>

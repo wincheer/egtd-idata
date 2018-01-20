@@ -40,6 +40,7 @@ export const DELETE_TPL_GROUP = (params) => { return axios.post(`${base}/deleteT
 
 //项目维护
 export const SELECT_PROJECT_LIST = () => { return axios.post(`${base}/selectProjectList`).then(res => res.data); };
+export const SELECT_MY_PROJECT_LIST = (params) => { return axios.post(`${base}/selectMyProjectList`,params).then(res => res.data); };
 export const UPDATE_PROJECT = (params) => { return axios.post(`${base}/updateProject`, params).then(res => res.data); };
 export const DELETE_PROJECT = (params) => { return axios.post(`${base}/deleteProject`, params).then(res => res.data); };
 export const SELECT_PROJECT_CONTRACT_LIST = (params) => { return axios.post(`${base}/selectProjectContractList`,params).then(res => res.data); };
@@ -56,8 +57,6 @@ export const SELECT_GROUP_STAFF_LIST = (params) => { return axios.post(`${base}/
 export const SELECT_AVAILABLE_PROJECT_STAFF_LIST = (params) => { return axios.post(`${base}/selectAvailableProjectStaffList`,params).then(res => res.data); };
 export const SELECT_PROJECT_STAFF_LIST = (params) => { return axios.post(`${base}/selectProjectStaffList`,params).then(res => res.data); };
 export const UPDATE_PROJECT_STAFFS = (params) => { return axios.post(`${base}/updateProjectStaffs`,params).then(res => res.data); };
-
-
 
 //文档附件
 export const SELECT_DOCUMENT_LIST = (params) => { return axios.post(`${base}/selectDocumentList`,params).then(res => res.data); };

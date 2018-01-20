@@ -79,8 +79,18 @@
   </update>
   
   <select id="selectProjectList" resultMap="BaseResultMap">
-    select * 
-    from project
+    select * from project
+  </select>
+  
+  <select id="selectMyProjectList" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+		project.* 
+	FROM
+		project
+	INNER JOIN project_group ON project.id = project_group.project_id
+	INNER JOIN project_staff ON project_group.id = project_staff.group_id
+	WHERE
+		project_staff.`code` = #{stafffCode,jdbcType=VARCHAR}
   </select>
 
 </mapper>

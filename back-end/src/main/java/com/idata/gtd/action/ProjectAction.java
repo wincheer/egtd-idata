@@ -188,5 +188,12 @@ public class ProjectAction {
 
 		return projectService.updateProjectStaffs(staffListMap);
 	}
+	
+	@RequestMapping(value = "/selectMyProjectList", method = RequestMethod.POST)
+	public List<Project> selectMyProjectList(@RequestBody ProjectStaff data) throws Exception {
+
+		List<Project> myProjectList = projectService.selectMyProjectList(data.getCode());
+		return myProjectList;
+	}
 
 }

@@ -1,8 +1,8 @@
 <template>
     <el-form :model="loginForm" :rules="loginFormRules" ref="loginForm" class="login-container">
         <h3 class="title" v-text="'系统登录'"></h3>
-        <el-form-item prop="staffMobile">
-            <el-input type="text" placeholder="手机号" v-model="loginForm.staffMobile"></el-input>
+        <el-form-item prop="empMobile">
+            <el-input type="text" placeholder="手机号" v-model="loginForm.empMobile"></el-input>
         </el-form-item>
         <el-form-item prop="password">
             <el-input type="password" placeholder="密码" v-model="loginForm.password" @keydown.enter.native="login"></el-input>
@@ -20,11 +20,11 @@ export default {
     return {
       logining: false,
       loginForm: {
-        staffMobile: "",
+        empMobile: "",
         password: ""
       },
       loginFormRules: {
-        staffMobile: [{ required: true, message: "请输入电话号码", trigger: "blur" }],
+        empMobile: [{ required: true, message: "请输入电话号码", trigger: "blur" }],
         password: [{ required: true, message: "请输入密码", trigger: "blur" }]
       }
     };
@@ -36,7 +36,7 @@ export default {
         if (valid) {
           _this.logining = true;
           var loginParams = {
-            staffMobile: _this.loginForm.staffMobile,
+            empMobile: _this.loginForm.empMobile,
             password: _this.loginForm.password,
           };
           LOGIN({model:loginParams,actor:0}).then(data => {

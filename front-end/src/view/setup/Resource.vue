@@ -17,7 +17,7 @@
             <el-card>
               <div slot="header" class="clearfix">
                 <span>机构员工</span>
-                <el-button @click="openAddDepEmp" :disabled="depEmpObj.depId==''" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加机构员工</el-button>
+                <el-button @click="openAddDepEmp" :disabled="depEmpObj.orgId==''" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加机构员工</el-button>
               </div>
               <el-table :data="depEmpList" style="width: 100%">
                 <el-table-column label="姓名" prop="empName"></el-table-column>
@@ -64,7 +64,7 @@
             <el-card>
               <div slot="header" class="clearfix">
                 <span>供应商员工</span>
-                <el-button @click="openAddVendorEmp" :disabled="vendorEmpObj.vendorId==''" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加供应商员工</el-button>
+                <el-button @click="openAddVendorEmp" :disabled="vendorEmpObj.orgId==''" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加供应商员工</el-button>
               </div>
               <el-table :data="vendorEmpList">
                 <el-table-column label="姓名" prop="empName" width="90"></el-table-column>
@@ -222,7 +222,7 @@ export default {
       parentIds: [],
       depEmpObj: {
         id: "",
-        depId: "",
+        orgId: "",
         empName: "",
         empGender: 1,
         empMobile: "",
@@ -252,7 +252,7 @@ export default {
       },
       vendorEmpObj: {
         id: "",
-        vendorId: "",
+        orgId: "",
         empName: "",
         empGender: 1,
         empMobile: "",
@@ -278,9 +278,9 @@ export default {
         }
       });
     },
-    selectDepEmpList(depId){
+    selectDepEmpList(orgId){
       var _this = this;
-      SELECT_DEP_EMP_LIST({ id: depId }).then(res => {
+      SELECT_DEP_EMP_LIST({ id: orgId }).then(res => {
         if (!Array.isArray(res))
           _this.$message({ message: "获取结构员工失败，请联系系统管理员。", type: "error" });
         else {
@@ -298,9 +298,9 @@ export default {
         }
       });
     },
-    selectVendorEmpList(vendorId){
+    selectVendorEmpList(orgId){
       var _this = this;
-      SELECT_VENDOR_EMP_LIST({ id: vendorId }).then(res => {
+      SELECT_VENDOR_EMP_LIST({ id: orgId }).then(res => {
         if (!Array.isArray(res))
           _this.$message({ message: "获取供应商员工失败，请联系系统管理员。", type: "error" });
         else {
@@ -341,7 +341,7 @@ export default {
             if (data == "") {
               _this.$message({ message: "更新员工失败，请联系系统管理员。", type: "error" });
             } else {
-              _this.selectDepEmpList(_this.depEmpObj.depId);
+              _this.selectDepEmpList(_this.depEmpObj.orgId);
               _this.dlgDepEmpEditVis = false;
             }
           });
@@ -376,7 +376,7 @@ export default {
             if (data == "") {
               _this.$message({ message: "更新员工失败，请联系系统管理员。", type: "error" });
             } else {
-              _this.selectVendorEmpList(_this.vendorEmpObj.vendorId);
+              _this.selectVendorEmpList(_this.vendorEmpObj.orgId);
               _this.dlgVendorEmpEditVis = false;
             }
           });
@@ -475,7 +475,7 @@ export default {
         }).then(() => {
           DELETE_DEP_EMP({ id: row.id }).then(res => {
             _this.$message({ message: "删除成功", type: "success" });
-            _this.selectDepEmpList(row.depId);
+            _this.selectDepEmpList(row.orgId);
           });
         });
     },
@@ -486,7 +486,7 @@ export default {
         }).then(() => {
           DELETE_VENDOR({ id: row.id }).then(res => {
             _this.$message({ message: "删除成功", type: "success" });
-            _this.selectVendorList(row.depId);
+            _this.selectVendorList(row.orgId);
             _this.vendorEmpList = [];
           });
         });
@@ -498,19 +498,19 @@ export default {
         }).then(() => {
           DELETE_VENDOR_EMP({ id: row.id }).then(res => {
             _this.$message({ message: "删除成功", type: "success" });
-            _this.selectVendorEmpList(row.vendorId);
+            _this.selectVendorEmpList(row.orgId);
           });
         });
     },
     onNodeClick(data) {
       // 查询当前机构的员工
       this.selectDepEmpList(data.id);
-      this.depEmpObj.depId = data.id;
+      this.depEmpObj.orgId = data.id;
     },
     onVendorChange(data) {
       // 查询当前供应商的员工
       this.selectVendorEmpList(data.id);
-      this.vendorEmpObj.vendorId = data.id;
+      this.vendorEmpObj.orgId = data.id;
     },
     onParentChange(value) {
       if (value.length != 0) {

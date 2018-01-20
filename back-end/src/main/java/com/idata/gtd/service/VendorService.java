@@ -8,10 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.idata.gtd.dao.VendorEmployeeMapper;
+import com.idata.gtd.dao.EmployeeMapper;
 import com.idata.gtd.dao.VendorMapper;
+import com.idata.gtd.entity.Employee;
 import com.idata.gtd.entity.Vendor;
-import com.idata.gtd.entity.VendorEmployee;
 
 /**
  * <b>版权信息 :</b> 2018，广州智数信息科技有限公司<br/>
@@ -28,7 +28,7 @@ public class VendorService {
 	@Autowired
 	private VendorMapper vendorDao;
 	@Autowired
-	private VendorEmployeeMapper vendorEmpDao;
+	private EmployeeMapper empDao;
 
 	public List<Vendor> selectVendorList() {
 
@@ -41,7 +41,7 @@ public class VendorService {
 	public int deleteVendor(Integer vendorId) {
 
 		vendorDao.deleteVendorByPK(vendorId);
-		vendorEmpDao.deleteVendorEmps(vendorId);
+		empDao.deleteVendorEmps(vendorId);
 		
 		return 0;
 	}
@@ -56,25 +56,27 @@ public class VendorService {
 		return vendorDao.updateVendor(vendor);
 	}
 
-	public List<VendorEmployee> selectVendorEmpList(Integer vendorId) {
+	public List<Employee> selectVendorEmpList(Integer vendorId) {
 
-		List<VendorEmployee> vendorEmployeeList = vendorEmpDao.selectVendorEmployeeList(vendorId);
+		List<Employee> vendorEmployeeList = empDao.selectVendorEmployeeList(vendorId);
 		return vendorEmployeeList;
 	}
 
-	public int insertVendorEmp(VendorEmployee vendorEmp) {
+	public int insertVendorEmp(Employee vendorEmp) {
 		
-		return vendorEmpDao.insertVendorEmployee(vendorEmp);
+		vendorEmp.setCode("s");
+		vendorEmp.setPassword("123456");
+		return empDao.insertEmployee(vendorEmp);
 	}
 
-	public int updateVendorEmp(VendorEmployee vendorEmp) {
+	public int updateVendorEmp(Employee vendorEmp) {
 		
-		return vendorEmpDao.updateVendorEmployee(vendorEmp);
+		return empDao.updateEmployee(vendorEmp);
 	}
 
 	public int deleteVendorEmp(Integer empId) {
 		
-		return vendorEmpDao.deleteVendorEmployeeByPK(empId);
+		return empDao.deleteEmployeeByPK(empId);
 	}
 
 }
