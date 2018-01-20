@@ -1,6 +1,15 @@
 <template>
     <section>
-      <gantt :tasks="tasks" class="gantt"  @task-updated="onTaskUpdate" @task-selected="onSelectTask" @lightbox-open="onLightBoxOpen" @lightbox-close="onLightBoxClose"></gantt>
+      <el-row style="margin-top: 20px;margin-bottom: 10px;">
+        <!-- <el-col></el-col> -->
+        <el-select placeholder="请选择项目"></el-select>
+        <el-button icon="el-icon-edit" type="primary" plain>编辑任务</el-button>
+        <el-button icon="el-icon-share" type="primary" plain>分配子任务</el-button>
+      </el-row>
+      <el-row>
+        <gantt :tasks="tasks" @task-updated="onTaskUpdate" @task-selected="onSelectTask" @lightbox-open="onLightBoxOpen" @lightbox-close="onLightBoxClose"></gantt>
+      </el-row>
+      <!--任务编辑对话框-->
       <el-dialog :title="selectedTask.text" :visible.sync="lightBoxVisible" width="35%">
         <el-form :model="selectedTask" label-width="80px" label-position="right"> 
           <el-form-item label="任务名称">
@@ -213,6 +222,8 @@ export default {
         ],
         links: []
       },
+      myProjects:[],
+      selectedProject: {},
       selectedTask: {},
       lightBoxVisible: false,
       isLightBoxActive:false
@@ -248,13 +259,6 @@ body {
   padding: 0px;
   margin: 0px;
   overflow: hidden;
-}
-.gantt {
-  overflow: hidden;
-  position: relative;
-  top: 0px;
-  bottom: 0px;
-  height: 700px;
 }
 @import "~dhtmlx-gantt/codebase/dhtmlxgantt.css";
 </style>

@@ -144,9 +144,14 @@ export default {
           if (!item.users) return "Nobody";
           return item.users.join(", ");
         }
-      }
+      },
+      // {
+      //   name:"add", width:40
+      // }
     ];
 
+    gantt.config.autosize = "y";
+    gantt.config.readonly = true;
     gantt.init(this.$refs.gantt);
     gantt.parse(this.$props.tasks);
   }

@@ -19,7 +19,7 @@ public class Project {
 	private Date createDate;
 	private Date startDate;
 	private Date endDate;
-	private Integer depId;
+	private Integer actorStaffId;
 	private String icon;
 	private Integer amount;
 
@@ -95,12 +95,12 @@ public class Project {
 		this.endDate = endDate;
 	}
 
-	public Integer getDepId() {
-		return depId;
+	public Integer getActorStaffId() {
+		return actorStaffId;
 	}
 
-	public void setDepId(Integer depId) {
-		this.depId = depId;
+	public void setActorStaffId(Integer actorStaffId) {
+		this.actorStaffId = actorStaffId;
 	}
 
 	public String getIcon() {

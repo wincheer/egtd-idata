@@ -8,11 +8,11 @@
       <el-step title="项目就绪" :status="projectReadyStatus"></el-step>
     </el-steps>
     <el-button style="margin-top: 12px;" @click="openAddProject" type="primary">新建项目</el-button>
-    <el-table border stripe :data="projectList" style="margin-top: 20px;" highlight-current-row @current-change="onProjectChange">
+    <el-table border stripe :data="projectList" style="margin-top: 20px;" highlight-current-row @current-change="onProjectChange" ref="projectTable">
       <el-table-column type="index" width="30"></el-table-column>
       <el-table-column prop="projectName" label="项目名称"></el-table-column>
       <el-table-column prop="createDate" label="立项时间" :formatter="fmtDate"></el-table-column>
-      <el-table-column prop="depId" label="所属部门" :formatter="fmtDep"></el-table-column>
+      <el-table-column prop="actorStaffId" label="责任人" :formatter="fmtDep"></el-table-column>
       <el-table-column prop="createDate" label="启动时间" :formatter="fmtDate"></el-table-column>
       <el-table-column prop="createDate" label="结束时间" :formatter="fmtDate"></el-table-column>
       <el-table-column label="操作" width="250">
@@ -56,9 +56,10 @@
         </el-form-item>
         <el-row>
           <el-col :span="15">
-            <el-form-item label="所属部门" prop="depId">
-              <el-cascader :options="depTreeList" :props="{value:'id'}" v-model="depIds" @change="onDepChange" change-on-select clearable style="width:100%"/>
-              <!-- <el-cascader :options="depTreeList" :props="{value:'id'}" v-model="parentIds" @change="onParentChange" change-on-select clearable style="width:100%" /> -->
+            <el-form-item label="责任人" prop="actorStaffId">
+              <el-select v-model="projectObj.actorStaffId" placeholder="请选择">
+                <el-option v-for="item in allDepEmpList" :key="item.id" :label="item.empName" :value="item.id" />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -246,7 +247,6 @@
 
 <script>
 import {
-  SELECT_DEP_TREE_LIST,
   SELECT_ALL_DEP_EMP_LIST,
   SELECT_VENDOR_LIST,
   SELECT_VENDOR_EMP_LIST,
@@ -281,6 +281,7 @@ export default {
       // projectContractStatus:'',
       // projectGroupStatus:'',
       // projectStageStatus:'',
+      allDepEmpList: [],
       projectObj: {
         id: "",
         projectName: "",
@@ -291,7 +292,7 @@ export default {
         createDate: "",
         startDate: "",
         endDate: "",
-        depId: "",
+        actorStaffId: "",
         icon: "",
         amount: ""
       },
@@ -387,14 +388,25 @@ export default {
       dlgProjectStaffEditVis: false,
       dlgProjectStageListVis: false,
       dlgProjectStageEditVis: false,
-      depIds: [],
-      depTreeList: [],
       categoryParamList: [],
       vendorList: [],
       projectVendorList: []
     };
   },
   methods: {
+    selectAllDepEmpList() {
+      var _this = this;
+      SELECT_ALL_DEP_EMP_LIST({}).then(res => {
+        if (!Array.isArray(res))
+          _this.$message({
+            message: "获取业主员工列表失败，请联系系统管理员。",
+            type: "error"
+          });
+        else {
+          _this.allDepEmpList = res;
+        }
+      });
+    },
     selectParamValueList(paramKeyObj) {
       var _this = this;
       SELECT_PARAM_VALUE_LIST(paramKeyObj).then(res => {
@@ -418,19 +430,6 @@ export default {
           });
         else {
           _this.vendorList = res;
-        }
-      });
-    },
-    selectDepTreeList() {
-      var _this = this;
-      SELECT_DEP_TREE_LIST().then(res => {
-        if (!Array.isArray(res))
-          _this.$message({
-            message: "获取组织结构失败，请联系系统管理员。",
-            type: "error"
-          });
-        else {
-          _this.depTreeList = res;
         }
       });
     },
@@ -541,7 +540,6 @@ export default {
       });
     },
     openAddProject() {
-      this.depIds = [];
       this.dlgProjectEditVis = true;
     },
     openEditProject(row) {
@@ -636,7 +634,7 @@ export default {
       this.$refs.projectForm.validate(valid => {
         if (valid) {
           UPDATE_PROJECT(_this.projectObj).then(data => {
-            if (data == "") {
+            if (data === "") {
               _this.$message({
                 message: "更新项目失败，请联系系统管理员。",
                 type: "error"
@@ -684,6 +682,7 @@ export default {
             else {
               _this.dlgProjectContractEditVis = false;
               _this.selectProjectContractList(_this.selectedProject.id);
+              _this.selectProjectStaffList(_this.selectedProject.id);
             }
           });
         }
@@ -703,6 +702,7 @@ export default {
               else {
                 _this.dlgProjectContractEditVis = false;
                 _this.selectProjectContractList(_this.selectedProject.id);
+                _this.selectProjectStaffList(_this.selectedProject.id);
               }
             }
           );
@@ -811,9 +811,11 @@ export default {
           DELETE_PROJECT_CONTRACT({ id: row.id }).then(res => {
             _this.$message({ message: "删除成功", type: "success" });
             _this.selectProjectContractList(row.projectId);
+            _this.selectProjectStaffList(row.id);
           });
         });
     },
+
     delProjectGroup(node, data) {
       console.log(
         "当前记录id = " + data.id + ",projectId = " + this.selectedProject.id
@@ -844,15 +846,18 @@ export default {
         });
     },
     onProjectChange(row) {
-      var _this = this;
-      _this.selectedProject = row;
-      //查询相关表的list，用以判断当前项目的完整程度......
-      _this.selectProjectContractList(row.id);
-      _this.selectProjectGroupTreeList(row.id);
-      _this.selectProjectStageList(row.id);
-      //填充项目相关的供应商
-      this.selectEmployeeList(row.id);
-      this.selectProjectStaffList(row.id);
+      if (row) {
+        this.selectedProject = row;
+        //查询相关表的list，用以判断当前项目的完整程度......
+        this.selectProjectContractList(row.id);
+        this.selectProjectGroupTreeList(row.id);
+        this.selectProjectStageList(row.id);
+        //填充项目相关的供应商
+        this.selectEmployeeList(row.id);
+        this.selectProjectStaffList(row.id);
+      } else this.selectedProject = {};
+
+      this.$refs.projectTable.setCurrentRow(row);
     },
     selectEmployeeList(projectId) {
       var _this = this;
@@ -866,11 +871,6 @@ export default {
       this.selectGroupStaffList(data.id);
       //填充
       this.projectGroupObj.id = data.id;
-    },
-    onDepChange(value) {
-      if (value.length != 0) {
-        this.projectObj.depId = value[value.length - 1];
-      } else this.projectObj.depId = "";
     },
     onParentGroupChange(value) {
       if (value.length != 0) {
@@ -913,18 +913,8 @@ export default {
       }
     },
     fmtDep(row, column, cellValue) {
-      return this.parseTreeJson(this.depTreeList,cellValue);
-    },
-    parseTreeJson(treeNodes,value) {
-      if (!treeNodes || !treeNodes.length) return;
-
-      for (var i = 0; i < treeNodes.length; i++) {
-        var childs = treeNodes[i].children;
-        if(treeNodes[i].id == value) return treeNodes[i].label;
-        if (childs && childs.length > 0) {
-          this.parseTreeJson(childs);
-        }
-      }
+      console.log("TODO 格式化责任人");
+      return cellValue;
     }
   },
   computed: {
@@ -933,15 +923,15 @@ export default {
       else return "wait";
     },
     projectContractStatus() {
-      if (this.projectContractList.length != 0) return "finish";
+      if (this.selectedProject.id && this.projectContractList.length != 0) return "finish";
       else return "wait";
     },
     projectGroupStatus() {
-      if (this.projectGroupTreeList.length != 0) return "finish";
+      if (this.selectedProject.id && this.projectGroupTreeList.length != 0) return "finish";
       else return "wait";
     },
     projectStageStatus() {
-      if (this.projectStageList.length != 0) return "finish";
+      if (this.selectedProject.id && this.projectStageList.length != 0) return "finish";
       else return "wait";
     },
     projectReadyStatus() {
@@ -957,9 +947,9 @@ export default {
   },
   mounted() {
     this.selectProjectList();
-    this.selectDepTreeList();
     this.selectParamValueList({ paramKey: "category" });
     this.selectVendorList();
+    this.selectAllDepEmpList(); //业主的所有员工
   }
 };
 </script>

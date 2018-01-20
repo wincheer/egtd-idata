@@ -66,7 +66,7 @@
     delete from document
     where 1=1
 	<trim prefix=" and (" suffix=")" suffixOverrides="and">
-		<if test="documentName != null">document_name = #{documentName,jdbcType=VARCHAR} and </if>
+		<if test="name != null">name = #{name,jdbcType=VARCHAR} and </if>
 	    <if test="fileName != null">file_name = #{fileName,jdbcType=VARCHAR} and </if>
 		<if test="belongTo != null">belong_to = #{belongTo,jdbcType=VARCHAR} and </if>
 		<if test="sourceId != null">source_id = #{sourceId,jdbcType=INTEGER} and </if>

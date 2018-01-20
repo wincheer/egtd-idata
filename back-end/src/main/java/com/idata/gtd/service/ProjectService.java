@@ -70,7 +70,8 @@ public class ProjectService {
 
 	public int insertProject(Project row) {
 
-		return projectDao.insertProject(row);
+		projectDao.insertProject(row);
+		return row.getId();
 	}
 
 	public int updateProject(Project row) {

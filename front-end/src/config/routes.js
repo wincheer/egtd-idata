@@ -32,8 +32,8 @@ let routes = [
         name: '项目',
         iconCls: 'el-icon-view',
         children: [
-            { path: '/project', component: DOING, name: '项目总览' ,iconCls: 'el-icon-search',},
-            { path: '/hello42', component: Project, name: '项目详情' ,iconCls:'el-icon-tickets'},
+            { path: '/hello42', component: DOING, name: '项目总览' ,iconCls: 'el-icon-search',},
+            { path: '/project', component: Project, name: '项目进程' ,iconCls:'el-icon-tickets'},
             { path: '/project-init', component: ProjectInit, name: '项目信息维护' ,iconCls:'el-icon-refresh'}
         ]
     },

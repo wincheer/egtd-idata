@@ -12,7 +12,7 @@
     <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
     <result column="start_date" jdbcType="TIMESTAMP" property="startDate" />
     <result column="end_date" jdbcType="TIMESTAMP" property="endDate" />
-    <result column="dep_id" jdbcType="INTEGER" property="depId" />
+    <result column="actor_staff_id" jdbcType="INTEGER" property="actorStaffId" />
     <result column="icon" jdbcType="VARCHAR" property="icon" />
     <result column="amount" jdbcType="INTEGER" property="amount" />
   </resultMap>
@@ -40,7 +40,7 @@
       <if test="createDate != null">create_date,</if>
       <if test="startDate != null">start_date,</if>
       <if test="endDate != null">end_date,</if>
-      <if test="depId != null">dep_id,</if>
+      <if test="actorStaffId != null">actor_staff_id,</if>
       <if test="icon != null">icon,</if>
       <if test="amount != null">amount,</if>
     </trim>
@@ -54,7 +54,7 @@
       <if test="createDate != null">#{createDate,jdbcType=TIMESTAMP},</if>
       <if test="startDate != null">#{startDate,jdbcType=TIMESTAMP},</if>
       <if test="endDate != null">#{endDate,jdbcType=TIMESTAMP},</if>
-      <if test="depId != null">#{depId,jdbcType=INTEGER},</if>
+      <if test="actorStaffId != null">#{actorStaffId,jdbcType=INTEGER},</if>
       <if test="icon != null">#{icon,jdbcType=VARCHAR},</if>
       <if test="amount != null">#{amount,jdbcType=INTEGER},</if>
     </trim>
@@ -71,7 +71,7 @@
       <if test="createDate != null">create_date = #{createDate,jdbcType=TIMESTAMP},</if>
       <if test="startDate != null">start_date = #{startDate,jdbcType=TIMESTAMP},</if>
       <if test="endDate != null">end_date = #{endDate,jdbcType=TIMESTAMP},</if>
-      <if test="depId != null">dep_id = #{depId,jdbcType=INTEGER},</if>
+      <if test="actorStaffId != null">actor_staff_id = #{actorStaffId,jdbcType=INTEGER},</if>
       <if test="icon != null">icon = #{icon,jdbcType=VARCHAR},</if>
       <if test="amount != null">amount = #{amount,jdbcType=INTEGER},</if>
     </set>
