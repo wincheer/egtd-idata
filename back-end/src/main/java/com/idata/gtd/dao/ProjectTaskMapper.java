@@ -7,7 +7,7 @@ public interface ProjectTaskMapper {
 	int deleteProjectTaskByPK(Integer id);
 
 	int insertProjectTask(ProjectTask record);
-
+    
 	ProjectTask selectProjectTaskByPK(Integer id);
 
 	int updateProjectTask(ProjectTask record);

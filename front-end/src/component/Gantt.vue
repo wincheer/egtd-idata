@@ -135,23 +135,26 @@ export default {
         }
       },
       {
-        name: "assigned",
+        name: "actorStaffId",
         label: "责任人",
         width: "60",
         resize: true,
         align: "center",
         template: function(item) {
-          if (!item.users) return "Nobody";
-          return item.users.join(", ");
+          if (!item.actorStaffId) return "Nobody";
+          return item.actorStaffId;
         }
-      },
+      }
       // {
       //   name:"add", width:40
       // }
     ];
 
     gantt.config.autosize = "y";
-    gantt.config.readonly = true;
+    // gantt.config.readonly = true;
+    gantt.templates.task_text=function(start, end, task){
+        return task.text;
+    };
     gantt.init(this.$refs.gantt);
     gantt.parse(this.$props.tasks);
   }

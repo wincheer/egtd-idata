@@ -5,147 +5,175 @@ import java.util.Date;
 public class ProjectTask {
 
 	private Integer id;
-	private Integer stageId;
-	private String taskName;
-	private String taskDesc;
-	private Date fromDate;
-	private Date endDate;
-	private Integer priority;
-	private Integer progress;
-	private Integer state;
-	private Integer assignStaffId;
-	private Integer actorStaffId;
-	private Integer planWorkload;
-	private Integer realWorkload;
-	private Integer isDelay;
-	private String delayReason;
-	private Integer parentId;
+    private String text;
+    private Date start_date;
+    private Date end_date;
+    private Integer parent;
+    private Integer stageId;
+    private String taskDesc;
+    private Integer priority;
+    private Integer progress;
+    private Integer state;
+    private Integer assignStaffId;
+    private Integer actorStaffId;
+    private Integer planWorkload;
+    private Integer realWorkload;
+    private Integer isDelay;
+    private String delayReason;
+    private Integer readonly;
+    private Integer editable;
+    private String type;
 
-	public Integer getId() {
-		return id;
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+
+    public Date getStart_date() {
+		return start_date;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setStart_date(Date start_date) {
+		this.start_date = start_date;
 	}
 
-	public Integer getStageId() {
-		return stageId;
+	public Date getEnd_date() {
+		return end_date;
 	}
 
-	public void setStageId(Integer stageId) {
-		this.stageId = stageId;
+	public void setEnd_date(Date end_date) {
+		this.end_date = end_date;
 	}
 
-	public String getTaskName() {
-		return taskName;
-	}
+	public Integer getParent() {
+        return parent;
+    }
 
-	public void setTaskName(String taskName) {
-		this.taskName = taskName;
-	}
+    public void setParent(Integer parent) {
+        this.parent = parent;
+    }
 
-	public String getTaskDesc() {
-		return taskDesc;
-	}
+    public Integer getStageId() {
+        return stageId;
+    }
 
-	public void setTaskDesc(String taskDesc) {
-		this.taskDesc = taskDesc;
-	}
+    public void setStageId(Integer stageId) {
+        this.stageId = stageId;
+    }
 
-	public Date getFromDate() {
-		return fromDate;
-	}
+    public String getTaskDesc() {
+        return taskDesc;
+    }
 
-	public void setFromDate(Date fromDate) {
-		this.fromDate = fromDate;
-	}
+    public void setTaskDesc(String taskDesc) {
+        this.taskDesc = taskDesc;
+    }
 
-	public Date getEndDate() {
-		return endDate;
-	}
+    public Integer getPriority() {
+        return priority;
+    }
 
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
-	}
+    public void setPriority(Integer priority) {
+        this.priority = priority;
+    }
 
-	public Integer getPriority() {
-		return priority;
-	}
+    public Integer getProgress() {
+        return progress;
+    }
 
-	public void setPriority(Integer priority) {
-		this.priority = priority;
-	}
+    public void setProgress(Integer progress) {
+        this.progress = progress;
+    }
 
-	public Integer getProgress() {
-		return progress;
-	}
+    public Integer getState() {
+        return state;
+    }
 
-	public void setProgress(Integer progress) {
-		this.progress = progress;
-	}
+    public void setState(Integer state) {
+        this.state = state;
+    }
 
-	public Integer getState() {
-		return state;
-	}
+    public Integer getAssignStaffId() {
+        return assignStaffId;
+    }
 
-	public void setState(Integer state) {
-		this.state = state;
-	}
+    public void setAssignStaffId(Integer assignStaffId) {
+        this.assignStaffId = assignStaffId;
+    }
 
-	public Integer getAssignStaffId() {
-		return assignStaffId;
-	}
+    public Integer getActorStaffId() {
+        return actorStaffId;
+    }
 
-	public void setAssignStaffId(Integer assignStaffId) {
-		this.assignStaffId = assignStaffId;
-	}
+    public void setActorStaffId(Integer actorStaffId) {
+        this.actorStaffId = actorStaffId;
+    }
 
-	public Integer getActorStaffId() {
-		return actorStaffId;
-	}
+    public Integer getPlanWorkload() {
+        return planWorkload;
+    }
 
-	public void setActorStaffId(Integer actorStaffId) {
-		this.actorStaffId = actorStaffId;
-	}
+    public void setPlanWorkload(Integer planWorkload) {
+        this.planWorkload = planWorkload;
+    }
 
-	public Integer getPlanWorkload() {
-		return planWorkload;
-	}
+    public Integer getRealWorkload() {
+        return realWorkload;
+    }
 
-	public void setPlanWorkload(Integer planWorkload) {
-		this.planWorkload = planWorkload;
-	}
+    public void setRealWorkload(Integer realWorkload) {
+        this.realWorkload = realWorkload;
+    }
 
-	public Integer getRealWorkload() {
-		return realWorkload;
-	}
+    public Integer getIsDelay() {
+        return isDelay;
+    }
 
-	public void setRealWorkload(Integer realWorkload) {
-		this.realWorkload = realWorkload;
-	}
+    public void setIsDelay(Integer isDelay) {
+        this.isDelay = isDelay;
+    }
 
-	public Integer getIsDelay() {
-		return isDelay;
-	}
+    public String getDelayReason() {
+        return delayReason;
+    }
 
-	public void setIsDelay(Integer isDelay) {
-		this.isDelay = isDelay;
-	}
+    public void setDelayReason(String delayReason) {
+        this.delayReason = delayReason;
+    }
 
-	public String getDelayReason() {
-		return delayReason;
-	}
+    public Integer getReadonly() {
+        return readonly;
+    }
 
-	public void setDelayReason(String delayReason) {
-		this.delayReason = delayReason;
-	}
+    public void setReadonly(Integer readonly) {
+        this.readonly = readonly;
+    }
 
-	public Integer getParentId() {
-		return parentId;
-	}
+    public Integer getEditable() {
+        return editable;
+    }
 
-	public void setParentId(Integer parentId) {
-		this.parentId = parentId;
-	}
+    public void setEditable(Integer editable) {
+        this.editable = editable;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 }

@@ -1,8 +1,6 @@
 <template>
     <section>
       <el-row style="margin-top: 20px;margin-bottom: 10px;">
-        <!-- <el-col></el-col> -->
-        <!-- <el-select v-model="projectObj.category" placeholder="请选择项目"></el-select> -->
         <el-select v-model="selectedProject" placeholder="请选择项目">
           <el-option v-for="item in myProjectList" :key="item.id" :label="item.projectName" :value="item.id" />
         </el-select>
@@ -69,7 +67,8 @@ export default {
             progress: 1.0,
             parent: "1",
             open: true,
-            priority:"1"
+            priority:"1",
+            actorStaffId:'杨文清'
           },
           {
             id: 3,
