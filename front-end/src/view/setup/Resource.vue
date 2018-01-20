@@ -89,8 +89,7 @@
     <el-dialog :title="depObj.id==''?'增加机构':'编辑机构'" :visible.sync="dlgDepEditVis" width="30%">
       <el-form :model="depObj" :rules="depObjRules" ref="depForm" label-width="80px">
         <el-form-item label="上级机构" prop="parentId">
-          <el-cascader :options="depTreeList" :props="{value:'id'}" v-model="parentIds" @change="onParentChange" change-on-select clearable style="width:100%">
-        </el-cascader>
+          <el-cascader :options="depTreeList" :props="{value:'id'}" v-model="parentIds" @change="onParentChange" change-on-select clearable style="width:100%" />
         </el-form-item>
         <el-form-item label="机构名称" prop="depName">
           <el-input type="text" v-model="depObj.depName"></el-input>

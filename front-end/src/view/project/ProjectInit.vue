@@ -12,10 +12,10 @@
       <el-table-column type="index" width="30"></el-table-column>
       <el-table-column prop="projectName" label="项目名称"></el-table-column>
       <el-table-column prop="createDate" label="立项时间" :formatter="fmtDate"></el-table-column>
-      <el-table-column prop="depId" label="所属部门"></el-table-column>
+      <el-table-column prop="depId" label="所属部门" :formatter="fmtDep"></el-table-column>
       <el-table-column prop="createDate" label="启动时间" :formatter="fmtDate"></el-table-column>
       <el-table-column prop="createDate" label="结束时间" :formatter="fmtDate"></el-table-column>
-      <el-table-column label="操作" width="230">
+      <el-table-column label="操作" width="250">
         <template slot-scope="scope">
           <el-dropdown  trigger="click">
             <el-button size="mini" type="primary">编辑<i class="el-icon-arrow-down el-icon--right"></i></el-button>
@@ -26,8 +26,8 @@
               <el-dropdown-item @click.native="openProjectStageList(scope.row)">项目阶段</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
-          <el-button size="mini" type="warning">冻结</el-button>
           <el-button size="mini" type="danger" @click="delProject(scope.row)">删除</el-button>
+          <el-button size="mini" type="warning">提请审批</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -57,8 +57,8 @@
         <el-row>
           <el-col :span="15">
             <el-form-item label="所属部门" prop="depId">
-              <!-- <el-input type="text" placeholder="所属部门" v-model="projectObj.depId"/> -->
               <el-cascader :options="depTreeList" :props="{value:'id'}" v-model="depIds" @change="onDepChange" change-on-select clearable style="width:100%"/>
+              <!-- <el-cascader :options="depTreeList" :props="{value:'id'}" v-model="parentIds" @change="onParentChange" change-on-select clearable style="width:100%" /> -->
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -98,11 +98,11 @@
         </div>
         <el-table :data="projectContractList" highlight-current-row >
           <el-table-column label="合同" prop="contractName"></el-table-column>
-          <el-table-column label="供应商" prop="vendorId"></el-table-column>
+          <el-table-column label="供应商" prop="vendorId" :formatter="fmtVendor"></el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button size="mini" type="primary" @click="openEditProjectContract(scope.row)" >编辑</el-button>
-              <el-button size="mini" type="warning" @click="delProjectContract(scope.row)" >删除</el-button>
+              <el-button size="mini" type="danger" @click="delProjectContract(scope.row)" >删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -210,7 +210,7 @@
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button size="mini" type="primary" @click="openEditProjectStage(scope.row)" >编辑</el-button>
-              <el-button size="mini" type="warning" @click="delProjectStage(scope.row)" >删除</el-button>
+              <el-button size="mini" type="danger" @click="delProjectStage(scope.row)" >删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -272,7 +272,7 @@ import {
   UPDATE_PROJECT_STAFFS,
   SELECT_PROJECT_STAFF_LIST
 } from "@/config/api";
-import {formatDate} from '@/util/date.js';
+import { formatDate } from "@/util/date.js";
 export default {
   props: {},
   data() {
@@ -541,10 +541,12 @@ export default {
       });
     },
     openAddProject() {
+      this.depIds = [];
       this.dlgProjectEditVis = true;
     },
     openEditProject(row) {
       this.projectObj = Object.assign(row);
+      //this.builderParentIdSeq(node);
       this.dlgProjectEditVis = true;
     },
     openProjectContractList(row) {
@@ -900,8 +902,29 @@ export default {
         </span>
       );
     },
-    fmtDate(row, column, cellValue){
-      return formatDate(new Date(cellValue), 'yyyy-MM-dd');
+    fmtDate(row, column, cellValue) {
+      return formatDate(new Date(cellValue), "yyyy-MM-dd");
+    },
+    fmtVendor(row, column, cellValue) {
+      for (var i = 0; i < this.vendorList.length; i++) {
+        if (this.vendorList[i].id === cellValue) {
+          return this.vendorList[i].vendorName;
+        }
+      }
+    },
+    fmtDep(row, column, cellValue) {
+      return this.parseTreeJson(this.depTreeList,cellValue);
+    },
+    parseTreeJson(treeNodes,value) {
+      if (!treeNodes || !treeNodes.length) return;
+
+      for (var i = 0; i < treeNodes.length; i++) {
+        var childs = treeNodes[i].children;
+        if(treeNodes[i].id == value) return treeNodes[i].label;
+        if (childs && childs.length > 0) {
+          this.parseTreeJson(childs);
+        }
+      }
     }
   },
   computed: {
