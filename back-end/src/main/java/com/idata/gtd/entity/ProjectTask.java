@@ -24,6 +24,7 @@ public class ProjectTask {
     private Integer editable;
     private String type;
     private Integer hasSupervisor;
+    private Integer projectId;
 
     public Integer getId() {
         return id;
@@ -184,5 +185,13 @@ public class ProjectTask {
 
 	public void setHasSupervisor(Integer hasSupervisor) {
 		this.hasSupervisor = hasSupervisor;
+	}
+
+	public Integer getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(Integer projectId) {
+		this.projectId = projectId;
 	}
 }

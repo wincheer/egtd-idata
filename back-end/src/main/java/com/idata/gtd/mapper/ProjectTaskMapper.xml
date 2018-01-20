@@ -37,7 +37,7 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
 
-  <insert id="insertProjectTask" parameterType="com.idata.gtd.entity.ProjectTask">
+  <insert id="insertProjectTask" useGeneratedKeys="true" keyProperty="id" parameterType="com.idata.gtd.entity.ProjectTask">
     insert into project_task
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">id,</if>
@@ -114,7 +114,7 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   
-  <select id="selectProjectTaskList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectProjectTaskList0" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     SELECT
 		project_task.*
 	FROM
@@ -123,6 +123,12 @@
 	LEFT JOIN project ON project_stage.project_id = project.id
 	WHERE
 		project.id = #{projectId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectProjectTaskList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select *
+    from project_task
+    where project_id = #{projectId,jdbcType=INTEGER}
   </select>
 
 </mapper>

@@ -23,7 +23,7 @@ import com.idata.gtd.entity.Project;
 import com.idata.gtd.entity.ProjectContract;
 import com.idata.gtd.entity.ProjectGroup;
 import com.idata.gtd.entity.ProjectStaff;
-import com.idata.gtd.entity.ProjectStage;
+import com.idata.gtd.entity.ProjectTask;
 import com.idata.gtd.service.ProjectService;
 
 /**
@@ -138,14 +138,14 @@ public class ProjectAction {
 
 	///////
 	@RequestMapping(value = "/selectProjectStageList", method = RequestMethod.POST)
-	public List<ProjectStage> selectProjectStageList(@RequestBody ProjectStage data) throws Exception {
+	public List<ProjectTask> selectProjectStageList(@RequestBody ProjectTask data) throws Exception {
 
-		List<ProjectStage> projectStageList = projectService.selectProjectStageList(data.getProjectId());
+		List<ProjectTask> projectStageList = projectService.selectProjectStageList(data.getProjectId());
 		return projectStageList;
 	}
 
 	@RequestMapping(value = "/updateProjectStage", method = RequestMethod.POST)
-	public int updateProjectStage(@RequestBody ProjectStage data) throws Exception {
+	public int updateProjectStage(@RequestBody ProjectTask data) throws Exception {
 
 		if (data.getId() == null)
 			return projectService.insertProjectStage(data);
@@ -154,7 +154,7 @@ public class ProjectAction {
 	};
 
 	@RequestMapping(value = "/deleteProjectStage", method = RequestMethod.POST)
-	public int deleteProjectStage(@RequestBody ProjectStage data) {
+	public int deleteProjectStage(@RequestBody ProjectTask data) {
 
 		return projectService.deleteProjectStage(data.getId());
 	};

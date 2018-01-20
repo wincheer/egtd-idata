@@ -17,7 +17,7 @@ import com.idata.gtd.dao.ProjectContractMapper;
 import com.idata.gtd.dao.ProjectGroupMapper;
 import com.idata.gtd.dao.ProjectMapper;
 import com.idata.gtd.dao.ProjectStaffMapper;
-import com.idata.gtd.dao.ProjectStageMapper;
+import com.idata.gtd.dao.ProjectTaskMapper;
 import com.idata.gtd.dao.VendorMapper;
 import com.idata.gtd.entity.Document;
 import com.idata.gtd.entity.Employee;
@@ -25,7 +25,7 @@ import com.idata.gtd.entity.Project;
 import com.idata.gtd.entity.ProjectContract;
 import com.idata.gtd.entity.ProjectGroup;
 import com.idata.gtd.entity.ProjectStaff;
-import com.idata.gtd.entity.ProjectStage;
+import com.idata.gtd.entity.ProjectTask;
 import com.idata.gtd.entity.Vendor;
 
 /**
@@ -47,7 +47,7 @@ public class ProjectService {
 	@Autowired
 	private ProjectGroupMapper projectGroupDao;
 	@Autowired
-	private ProjectStageMapper projectStageDao;
+	private ProjectTaskMapper projectStageDao;
 	@Autowired
 	private ProjectStaffMapper projectStaffDao;
 	@Autowired
@@ -165,26 +165,26 @@ public class ProjectService {
 		return 1;
 	}
 
-	public List<ProjectStage> selectProjectStageList(Integer projectId) {
+	public List<ProjectTask> selectProjectStageList(Integer projectId) {
 
-		return projectStageDao.selectProjectStageList(projectId);
+		return projectStageDao.selectProjectTaskList(projectId);
 	}
 
-	public int insertProjectStage(ProjectStage data) {
+	public int insertProjectStage(ProjectTask data) {
 
-		projectStageDao.insertProjectStage(data);
+		projectStageDao.insertProjectTask(data);
 		return data.getId();
 	}
 
-	public int updateProjectStage(ProjectStage data) {
+	public int updateProjectStage(ProjectTask data) {
 
-		projectStageDao.updateProjectStage(data);
+		projectStageDao.updateProjectTask(data);
 		return data.getId();
 	}
 
 	public int deleteProjectStage(Integer id) {
 
-		return projectStageDao.deleteProjectStageByPK(id);
+		return projectStageDao.deleteProjectTaskByPK(id);
 	}
 
 	public List<ProjectStaff> selectGroupStaffList(Integer groupId) {
