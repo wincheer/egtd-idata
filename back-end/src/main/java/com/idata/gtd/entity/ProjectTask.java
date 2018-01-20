@@ -23,6 +23,7 @@ public class ProjectTask {
     private Integer readonly;
     private Integer editable;
     private String type;
+    private Integer hasSupervisor;
 
     public Integer getId() {
         return id;
@@ -176,4 +177,12 @@ public class ProjectTask {
     public void setType(String type) {
         this.type = type;
     }
+
+	public Integer getHasSupervisor() {
+		return hasSupervisor;
+	}
+
+	public void setHasSupervisor(Integer hasSupervisor) {
+		this.hasSupervisor = hasSupervisor;
+	}
 }

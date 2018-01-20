@@ -205,9 +205,9 @@
           <el-button @click="openAddProjectStage" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加项目阶段</el-button>
         </div>
         <el-table :data="projectStageList" highlight-current-row >
-          <el-table-column label="阶段" prop="stageName"></el-table-column>
-          <el-table-column label="开始日期" prop="startDate" :formatter="fmtDate"></el-table-column>
-          <el-table-column label="结束日期" prop="endDate" :formatter="fmtDate"></el-table-column>
+          <el-table-column label="阶段" prop="text"></el-table-column>
+          <el-table-column label="开始日期" prop="start_date" :formatter="fmtDate"></el-table-column>
+          <el-table-column label="结束日期" prop="end_date" :formatter="fmtDate"></el-table-column>
           <el-table-column label="操作" width="160">
             <template slot-scope="scope">
               <el-button size="mini" type="primary" @click="openEditProjectStage(scope.row)" >编辑</el-button>
@@ -219,14 +219,14 @@
     </el-dialog>
     <el-dialog :title="projectStageObj.id==''?'增加项目阶段':'编辑项目阶段'" :visible.sync="dlgProjectStageEditVis" width="23%" :close-on-click-modal="false">
       <el-form :model="projectStageObj" :rules="projectStageObjRules" ref="projectStageForm" label-width="100px">
-        <el-form-item label="阶段名称" prop="stageName">
-          <el-input type="text" v-model="projectStageObj.stageName" />
+        <el-form-item label="阶段名称" prop="text">
+          <el-input type="text" v-model="projectStageObj.text" />
         </el-form-item>
-        <el-form-item label="启动日期" prop="startDate">
-          <el-date-picker type="date" clearable placeholder="启动日期" v-model="projectStageObj.startDate"/>
+        <el-form-item label="启动日期" prop="start_date">
+          <el-date-picker type="date" clearable placeholder="启动日期" v-model="projectStageObj.start_date"/>
         </el-form-item>
-        <el-form-item label="结束日期" prop="endDate">
-          <el-date-picker type="date" clearable placeholder="结束日期" v-model="projectStageObj.endDate"/>
+        <el-form-item label="结束日期" prop="end_date">
+          <el-date-picker type="date" clearable placeholder="结束日期" v-model="projectStageObj.end_date"/>
         </el-form-item>
         <el-form-item label="监理参与" prop="hasSupervisor">
           <el-switch v-model="projectStageObj.hasSupervisor" active-text="是" inactive-text="否" :active-value="1" :inactive-value="0"></el-switch>
@@ -359,14 +359,14 @@ export default {
       projectStageObj: {
         id: "",
         projectId: "",
-        stageName: "",
-        startDate: "",
-        endDate: "",
+        text: "",
+        start_date: "",
+        end_date: "",
         hasSupervisor: 0,
         actorStaffId: ""
       },
       projectStageObjRules: {
-        stageName: [
+        text: [
           { required: true, message: "请输入项目阶段名称", trigger: "blur" }
         ]
       },
@@ -612,9 +612,9 @@ export default {
       this.projectStageObj = Object.assign({
         id: "",
         projectId: this.selectedProject.id,
-        stageName: "",
-        startDate: "",
-        endDate: "",
+        text: "",
+        start_date: "",
+        end_date: "",
         hasSupervisor: 0,
         actorStaffId: ""
       });

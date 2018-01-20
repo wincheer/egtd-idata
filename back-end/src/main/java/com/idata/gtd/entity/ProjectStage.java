@@ -6,9 +6,9 @@ public class ProjectStage {
 
 	private Integer id;
 	private Integer projectId;
-	private String stageName;
-	private Date startDate;
-	private Date endDate;
+	private String text;
+	private Date start_date;
+	private Date end_date;
 	private Integer hasSupervisor;
 	private Integer isApproval;
 	private Integer progress;
@@ -33,28 +33,28 @@ public class ProjectStage {
 		this.projectId = projectId;
 	}
 
-	public String getStageName() {
-		return stageName;
+	public String getText() {
+		return text;
 	}
 
-	public void setStageName(String stageName) {
-		this.stageName = stageName;
+	public void setText(String text) {
+		this.text = text;
 	}
 
-	public Date getStartDate() {
-		return startDate;
+	public Date getStart_date() {
+		return start_date;
 	}
 
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
+	public void setStart_date(Date start_date) {
+		this.start_date = start_date;
 	}
 
-	public Date getEndDate() {
-		return endDate;
+	public Date getEnd_date() {
+		return end_date;
 	}
 
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
+	public void setEnd_date(Date end_date) {
+		this.end_date = end_date;
 	}
 
 	public Integer getHasSupervisor() {

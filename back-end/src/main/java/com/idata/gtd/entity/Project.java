@@ -22,6 +22,7 @@ public class Project {
 	private Integer actorStaffId;
 	private String icon;
 	private Integer amount;
+	private Integer isApproval;
 
 	public Integer getId() {
 		return id;
@@ -117,5 +118,12 @@ public class Project {
 
 	public void setAmount(Integer amount) {
 		this.amount = amount;
+	}
+	public Integer getIsApproval() {
+		return isApproval;
+	}
+
+	public void setIsApproval(Integer isApproval) {
+		this.isApproval = isApproval;
 	}
 }

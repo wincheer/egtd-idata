@@ -5,11 +5,10 @@
   <resultMap id="BaseResultMap" type="com.idata.gtd.entity.ProjectStage">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="project_id" jdbcType="INTEGER" property="projectId" />
-    <result column="stage_name" jdbcType="VARCHAR" property="stageName" />
-    <result column="start_date" jdbcType="TIMESTAMP" property="startDate" />
-    <result column="end_date" jdbcType="TIMESTAMP" property="endDate" />
+    <result column="text" jdbcType="VARCHAR" property="text" />
+    <result column="start_date" jdbcType="TIMESTAMP" property="start_date" />
+    <result column="end_date" jdbcType="TIMESTAMP" property="end_date" />
     <result column="has_supervisor" jdbcType="INTEGER" property="hasSupervisor" />
-    <result column="is_approval" jdbcType="INTEGER" property="isApproval" />
     <result column="progress" jdbcType="INTEGER" property="progress" />
     <result column="actor_staff_id" jdbcType="INTEGER" property="actorStaffId" />
     <result column="modify_date" jdbcType="TIMESTAMP" property="modifyDate" />
@@ -33,11 +32,10 @@
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">id,</if>
       <if test="projectId != null">project_id,</if>
-      <if test="stageName != null">stage_name,</if>
-      <if test="startDate != null">start_date,</if>
-      <if test="endDate != null">end_date,</if>
+      <if test="text != null">text,</if>
+      <if test="start_date != null">start_date,</if>
+      <if test="end_date != null">end_date,</if>
       <if test="hasSupervisor != null">has_supervisor,</if>
-      <if test="isApproval != null">is_approval,</if>
       <if test="progress != null">progress,</if>
       <if test="actorStaffId != null">actor_staff_id,</if>
       <if test="modifyDate != null">modify_date,</if>
@@ -47,11 +45,10 @@
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">#{id,jdbcType=INTEGER},</if>
       <if test="projectId != null">#{projectId,jdbcType=INTEGER},</if>
-      <if test="stageName != null">#{stageName,jdbcType=VARCHAR},</if>
-      <if test="startDate != null">#{startDate,jdbcType=TIMESTAMP},</if>
-      <if test="endDate != null">#{endDate,jdbcType=TIMESTAMP},</if>
+      <if test="text != null">#{text,jdbcType=VARCHAR},</if>
+      <if test="start_date != null">#{start_date,jdbcType=TIMESTAMP},</if>
+      <if test="end_date != null">#{end_date,jdbcType=TIMESTAMP},</if>
       <if test="hasSupervisor != null">#{hasSupervisor,jdbcType=INTEGER},</if>
-      <if test="isApproval != null">#{isApproval,jdbcType=INTEGER},</if>
       <if test="progress != null">#{progress,jdbcType=INTEGER},</if>
       <if test="actorStaffId != null">#{actorStaffId,jdbcType=INTEGER},</if>
       <if test="modifyDate != null">#{modifyDate,jdbcType=TIMESTAMP},</if>
@@ -64,11 +61,10 @@
     update project_stage
     <set>
       <if test="projectId != null">project_id = #{projectId,jdbcType=INTEGER},</if>
-      <if test="stageName != null">stage_name = #{stageName,jdbcType=VARCHAR},</if>
-      <if test="startDate != null">start_date = #{startDate,jdbcType=TIMESTAMP},</if>
-      <if test="endDate != null">end_date = #{endDate,jdbcType=TIMESTAMP},</if>
+      <if test="text != null">text = #{text,jdbcType=VARCHAR},</if>
+      <if test="start_date != null">start_date = #{start_date,jdbcType=TIMESTAMP},</if>
+      <if test="end_date != null">end_date = #{end_date,jdbcType=TIMESTAMP},</if>
       <if test="hasSupervisor != null">has_supervisor = #{hasSupervisor,jdbcType=INTEGER},</if>
-      <if test="isApproval != null">is_approval = #{isApproval,jdbcType=INTEGER},</if>
       <if test="progress != null">progress = #{progress,jdbcType=INTEGER},</if>
       <if test="actorStaffId != null">actor_staff_id = #{actorStaffId,jdbcType=INTEGER},</if>
       <if test="modifyDate != null">modify_date = #{modifyDate,jdbcType=TIMESTAMP},</if>
