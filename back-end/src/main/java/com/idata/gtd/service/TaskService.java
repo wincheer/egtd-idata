@@ -25,18 +25,8 @@ public class TaskService {
 	public List<ProjectTask> selectProjectTaskList(Integer projectId) {
 
 		// 查询项目阶段，转换为task
-		List<ProjectTask> stageList = taskDao.selectProjectTaskList(projectId);
-//		for (ProjectStage stage : stageList) {
-//			ProjectTask task = new ProjectTask();
-//			task.setId(stage.getId());
-//			task.setParent(0);
-//			task.setText(stage.getStageName());
-//			task.setStart_date(stage.getStartDate());
-//			task.setEnd_date(stage.getEndDate());
-//		}
-		// 查询常规task
-		List<ProjectTask> tsaskList = taskDao.selectProjectTaskList(projectId);
-		return null;
+		List<ProjectTask> taskList = taskDao.selectProjectTaskList(projectId);
+		return taskList;
 	}
 
 }

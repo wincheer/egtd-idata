@@ -817,9 +817,6 @@ export default {
     },
 
     delProjectGroup(node, data) {
-      console.log(
-        "当前记录id = " + data.id + ",projectId = " + this.selectedProject.id
-      );
       var _this = this;
       _this
         .$confirm("确认删除该记录吗?", "提示", {
@@ -867,7 +864,6 @@ export default {
     },
     onProjectGroupChange(data) {
       // 查询当前项目组的员工
-      console.log("=============== " + data.id);
       this.selectGroupStaffList(data.id);
       //填充
       this.projectGroupObj.id = data.id;
@@ -913,7 +909,9 @@ export default {
       }
     },
     fmtDep(row, column, cellValue) {
-      console.log("TODO 格式化责任人");
+      for(var i=0;i<this.allDepEmpList.length;i++){
+        if(this.allDepEmpList[i].id == cellValue) return this.allDepEmpList[i].empName;
+      }
       return cellValue;
     }
   },

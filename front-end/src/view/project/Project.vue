@@ -1,7 +1,7 @@
 <template>
     <section>
       <el-row style="margin-top: 20px;margin-bottom: 10px;">
-        <el-select v-model="selectedProject" placeholder="请选择项目">
+        <el-select v-model="selectedProject" placeholder="请选择项目" @change="onProjectChange">
           <el-option v-for="item in myProjectList" :key="item.id" :label="item.projectName" :value="item.id" />
         </el-select>
         <el-button icon="el-icon-edit" type="primary" plain>编辑任务</el-button>
@@ -263,6 +263,9 @@ export default {
     },
     onLightBoxClose() {
       this.isLightBoxActive = false;
+    },
+    onProjectChange(value){
+      console.log("选中了项目。project_id = " + value);
     }
   },
   mounted() {
