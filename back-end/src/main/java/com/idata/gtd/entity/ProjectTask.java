@@ -9,7 +9,6 @@ public class ProjectTask {
     private Date start_date;
     private Date end_date;
     private Integer parent;
-    private Integer stageId;
     private String taskDesc;
     private Integer priority;
     private Integer progress;
@@ -65,14 +64,6 @@ public class ProjectTask {
 
     public void setParent(Integer parent) {
         this.parent = parent;
-    }
-
-    public Integer getStageId() {
-        return stageId;
-    }
-
-    public void setStageId(Integer stageId) {
-        this.stageId = stageId;
     }
 
     public String getTaskDesc() {
