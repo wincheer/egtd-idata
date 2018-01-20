@@ -27,7 +27,7 @@
             </el-dropdown-menu>
           </el-dropdown>
           <el-button size="mini" type="danger" @click="delProject(scope.row)">删除</el-button>
-          <el-button size="mini" type="warning">提请审批</el-button>
+          <el-button size="mini" type="warning">申请审批</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -207,7 +207,7 @@
           <el-table-column label="阶段" prop="stageName"></el-table-column>
           <el-table-column label="开始日期" prop="startDate" :formatter="fmtDate"></el-table-column>
           <el-table-column label="结束日期" prop="endDate" :formatter="fmtDate"></el-table-column>
-          <el-table-column label="操作">
+          <el-table-column label="操作" width="160">
             <template slot-scope="scope">
               <el-button size="mini" type="primary" @click="openEditProjectStage(scope.row)" >编辑</el-button>
               <el-button size="mini" type="danger" @click="delProjectStage(scope.row)" >删除</el-button>
