@@ -15,6 +15,7 @@ public class ProjectStage {
 	private Integer actorStaffId;
 	private Date modifyDate;
 	private String note;
+	private Integer parent;
 
 	public Integer getId() {
 		return id;
@@ -102,5 +103,13 @@ public class ProjectStage {
 
 	public void setNote(String note) {
 		this.note = note;
+	}
+
+	public Integer getParent() {
+		return parent;
+	}
+
+	public void setParent(Integer parent) {
+		this.parent = parent;
 	}
 }

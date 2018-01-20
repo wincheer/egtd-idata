@@ -1,5 +1,7 @@
 package com.idata.gtd.dao;
 
+import java.util.List;
+
 import com.idata.gtd.entity.ProjectTask;
 
 public interface ProjectTaskMapper {
@@ -11,4 +13,6 @@ public interface ProjectTaskMapper {
 	ProjectTask selectProjectTaskByPK(Integer id);
 
 	int updateProjectTask(ProjectTask record);
+
+	List<ProjectTask> selectProjectTaskList(Integer projectId);
 }

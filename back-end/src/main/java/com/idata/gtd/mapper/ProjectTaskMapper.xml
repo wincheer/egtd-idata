@@ -105,5 +105,16 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <select id="selectProjectTaskList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT
+		project_task.*
+	FROM
+		project_task
+	LEFT JOIN project_stage ON project_task.stage_id = project_stage.id
+	LEFT JOIN project ON project_stage.project_id = project.id
+	WHERE
+		project.id = #{projectId,jdbcType=INTEGER}
+  </select>
 
 </mapper>
