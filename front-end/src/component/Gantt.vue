@@ -93,13 +93,19 @@ export default {
     //配合样式表，自定义任务的外观（根据任务类型）--甚至可以根据条件来动态改变外观
     gantt.templates.task_class = function(start, end, task) {
       switch (task.priority) {
-        case "1":
+        case 100:
           return "high";
           break;
-        case "2":
+        case 80:
+          return "high";
+          break;
+        case 60:
           return "medium";
           break;
-        case "3":
+        case 40:
+          return "low";
+          break;
+        case 20:
           return "low";
           break;
       }
@@ -114,18 +120,25 @@ export default {
       {
         name: "wbs",
         label: "WBS",
-        width: 60,
+        width: 50,
         resize: true,
         template: gantt.getWBSCode
       },
       {
         name: "text",
         label: "任务名称",
-        width: "230",
+        width: "240",
         resize: true,
         tree: true,
         width: "*",
         template: this.myFunc
+      },
+      {
+        name: "start_date",
+        label: "开始日期",
+        width: "80",
+        resize: true,
+        align: "center",
       },
       {
         name: "progress",
@@ -139,17 +152,6 @@ export default {
           return Math.round(item.progress * 100) + "%";
         }
       },
-      {
-        name: "actorStaffId",
-        label: "责任人",
-        width: "60",
-        resize: true,
-        align: "center",
-        template: function(item) {
-          if (!item.actorStaffId) return "Nobody";
-          return item.actorStaffId;
-        }
-      }
       // {
       //   name:"add", width:40
       // }

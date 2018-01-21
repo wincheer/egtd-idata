@@ -4,8 +4,8 @@
         <el-select v-model="selectedProject" placeholder="请选择项目" @change="onProjectChange" value-key="id">
           <el-option v-for="item in myProjectList" :key="item.id" :label="item.projectName" :value="item" />
         </el-select>
-        <el-button icon="el-icon-edit" type="primary" plain @click="openTastEdit" :disabled="selectedTask.text==undefined"> 编辑任务</el-button>
-        <el-button icon="el-icon-share" type="primary" plain @click="openTastAdd" :disabled="selectedTask.text==undefined">分配子任务</el-button>
+        <el-button icon="el-icon-edit" type="primary" plain @click="openTastEdit" :disabled="caniedit"> 编辑任务</el-button>
+        <el-button icon="el-icon-share" type="primary" plain @click="openTastAdd" :disabled="caniedit">分配子任务</el-button>
       </el-row>
       <el-row>
         <gantt :tasks="tasks" @task-selected="onSelectTask" @task-unselected="onUnelectTask"></gantt>
@@ -16,12 +16,12 @@
           <el-row :gutter="10">
             <el-col :span="12">
               <el-form-item label="任务名称" prop="text">
-                <el-input v-model="taskObj.text" placeholder="新任务"></el-input>
+                <el-input v-model="taskObj.text" placeholder="新任务" :disabled="this.taskMode=='edit'"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="工作量" prop="planWorkload">
-                <el-input-number v-model="selectedTask.planWorkload" :min="0" :max="1000" style="width:160px"></el-input-number> 天
+                <el-input-number v-model="taskObj.planWorkload" :disabled="this.taskMode=='edit'" :min="0" :max="1000" style="width:160px"></el-input-number> 天
               </el-form-item>
             </el-col>
           </el-row>
@@ -34,42 +34,42 @@
           <el-row :gutter="10">
             <el-col :span="12">
               <el-form-item label="开始日期" prop="start_date">
-                <el-date-picker v-model="taskObj.start_date" placeholder="选择开始日期"></el-date-picker>
+                <el-date-picker v-model="taskObj.start_date" :disabled="this.taskMode=='edit'" placeholder="选择开始日期"></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="结束日期" prop="end_date">
-                <el-date-picker v-model="taskObj.end_date" placeholder="选择结束日期"></el-date-picker>
+                <el-date-picker v-model="taskObj.end_date" :disabled="this.taskMode=='edit'" placeholder="选择结束日期"></el-date-picker>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row :gutter="10">
             <el-col :span="12">
               <el-form-item label="任务分配" prop="assignStaffId">
-                <el-select v-model="taskObj.assignStaffId" clearable placeholder="请选择">
+                <el-select v-model="taskObj.assignStaffId" disabled clearable placeholder="请选择">
                   <el-option v-for="item in projectStaffList" :key="item.id" :label="item.empName" :value="item.id" />
                 </el-select>
             </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="任务执行"  prop="actorStaffId">
-                <el-select v-model="taskObj.actorStaffId" clearable placeholder="请选择">
+                <el-select v-model="taskObj.actorStaffId" clearable placeholder="请选择"  :disabled="this.taskMode=='edit'">
                   <el-option v-for="item in projectStaffList" :key="item.id" :label="item.empName" :value="item.id" />
                 </el-select>
             </el-form-item>
             </el-col>
           </el-row>
           <el-form-item label="优先级" prop="priority">
-            <el-radio-group v-model="taskObj.priority">
-              <el-radio-button label="1">最高</el-radio-button>
-              <el-radio-button label="1">较高</el-radio-button>
-              <el-radio-button label="2">普通</el-radio-button>
-              <el-radio-button label="3">较低</el-radio-button>
-              <el-radio-button label="3">最低</el-radio-button>
+            <el-radio-group v-model="taskObj.priority"  :disabled="this.taskMode=='edit'">
+              <el-radio-button label="100">最高</el-radio-button>
+              <el-radio-button label="80">较高</el-radio-button>
+              <el-radio-button label="60">普通</el-radio-button>
+              <el-radio-button label="40">较低</el-radio-button>
+              <el-radio-button label="20">最低</el-radio-button>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="当前进度"  prop="progress">
-            <el-slider v-model="taskObj.progress" :min="0" :max="1" :step="0.2" show-stops style="width:90%"></el-slider>
+          <el-form-item label="当前进度"  prop="progress" v-show="this.taskMode=='edit'">
+            <el-slider v-model="taskObj.progress" :min="0" :max="1" :step="0.2" show-stops style="margin-left: 5px;"></el-slider>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -109,7 +109,7 @@ export default {
         assignStaffId: "",
         actorStaffId: "",
         progress: 0,
-        priority: "",
+        priority: 60,
         state: "", //隐藏字段。任务状态：未开始，进行中，已完成待确认，已完成
         planWorkload: "", //工作量
         realWorkload: "", // 隐藏字段，实际工作量
@@ -135,8 +135,10 @@ export default {
       selectedProject: {},
       selectedTask: {},
       dlgTaskEditVis: false,
-      projectStaffList:[],
-      groupStaffList:[]
+      projectStaffList: [],
+      groupStaffList: [],
+
+      taskMode: "" //任务模式编辑 edit 或者分配子任务 asign,与登录者身份(whoami)配合用来检测可编辑状态
       //isLightBoxActive: false
     };
   },
@@ -181,17 +183,17 @@ export default {
         }
       });
     },
-    selectProjectStaffList(projectId){
+    selectProjectStaffList(projectId) {
       var _this = this;
-      SELECT_PROJECT_EMPLOYEE_LIST({id:projectId}).then(res=>{
+      SELECT_PROJECT_EMPLOYEE_LIST({ id: projectId }).then(res => {
         _this.projectStaffList = res;
-      })
+      });
     },
-    selectGroupStaffList(projectId,groupId){
+    selectGroupStaffList(projectId, groupId) {
       var _this = this;
-      SELECT_GROUP_STAFF_LIST({id:projectId}).then(res=>{
+      SELECT_GROUP_STAFF_LIST({ id: projectId }).then(res => {
         _this.groupStaffList = res;
-      })
+      });
     },
     fmtDate(timestamp) {
       return formatDate(new Date(timestamp), "yyyy-MM-dd");
@@ -205,15 +207,16 @@ export default {
     onSelectTask(task) {
       this.selectedTask = task;
     },
-    onUnelectTask(task) {
-      this.selectedTask = {};
-    },
     openTastEdit() {
+      this.taskMode = "edit";
+
       this.taskObj = Object.assign(this.selectedTask);
       this.taskObj.assignStaffId = this.$store.state.loginUser.id;
       this.dlgTaskEditVis = true;
     },
     openTastAdd() {
+      this.taskMode = "asign";
+
       this.taskObj = {
         projectId: this.selectedProject.id,
         id: "",
@@ -225,7 +228,7 @@ export default {
         assignStaffId: this.$store.state.loginUser.id,
         actorStaffId: "",
         progress: 0,
-        priority: "",
+        priority: 60,
         state: 0, //隐藏字段。任务状态：未开始0，进行中1，已完成待确认2，已完成3
         planWorkload: "", //工作量
         realWorkload: "", // 隐藏字段，实际工作量
@@ -255,6 +258,25 @@ export default {
           });
         }
       });
+    }
+  },
+  computed: {
+    caniedit() {
+      //我可以编辑吗
+      return !(
+        this.selectedTask.assignStaffId === this.$store.state.loginUser.id ||
+        this.selectedTask.actorStaffId === this.$store.state.loginUser.id
+      );
+    },
+    whoami() {
+      //我是谁 - 任务发布者 asigner ? 任务接受者 actor?
+      if (this.selectedTask.assignStaffId === this.$store.state.loginUser.id)
+        return "asigner";
+      else if (
+        this.selectedTask.actorStaffId === this.$store.state.loginUser.id
+      )
+        return "actor";
+      else return "player";
     }
   },
   mounted() {
