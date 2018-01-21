@@ -57,7 +57,6 @@ export default {
   data() {
     return {
       tasks: {
-        //data: [{id:1,text:'Empty Project',start_date:'2018-01-01',end_date:'2018-01-05'}],
         data: [],
         links: []
       },
@@ -79,9 +78,19 @@ export default {
           });
         else {
           _this.myProjectList = res;
-          //if (res.length) this.selectedProject = _this.myProjectList[0];
+          if (res.length) {
+            this.selectedProject = _this.myProjectList[0];
+            this.selectProjectTaskList(this.selectedProject)
+          }
         }
       });
+    },
+    fillTaskData(taskDataList){
+      for (var i = 0; i < taskDataList.length; i++) {
+        taskDataList[i].start_date = this.fmtDate(taskDataList[i].start_date);
+        taskDataList[i].end_date = this.fmtDate(taskDataList[i].end_date);
+      }
+      this.tasks.data = taskDataList;
     },
     selectProjectTaskList(project) {
       var _this = this;
@@ -92,17 +101,7 @@ export default {
             type: "error"
           });
         else {
-          for (var i = 0; i < res.length; i++) {
-            res[i].start_date = _this.fmtDate(res[i].start_date);
-            res[i].end_date = _this.fmtDate(res[i].end_date);
-            res[i].readonly = false;
-            res[i].editable = true;
-            delete res[i].readonly;
-            delete res[i].editable;
-            delete res[i].type;
-          }
-          
-          _this.tasks.data = res;
+          this.fillTaskData(res);
         }
       });
     },

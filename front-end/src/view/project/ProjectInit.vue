@@ -299,6 +299,12 @@ export default {
       projectObjRules: {
         projectName: [
           { required: true, message: "请输入项目名称", trigger: "blur" }
+        ],
+        startDate: [
+          { required: true, message: "请输入项目开始时间", trigger: "blur" }
+        ],
+        endDate: [
+          { required: true, message: "请输入项目结束时间", trigger: "blur" }
         ]
       },
       projectContractObj: {
@@ -344,15 +350,6 @@ export default {
         staffMobile: "",
         password: ""
       },
-      projectStaffObjRules: {
-        password: [
-          {
-            required: true,
-            message: "请输入项目组成员初始密码",
-            trigger: "blur"
-          }
-        ]
-      },
       availableStaffList: [],
       selectedProjectStaffs: [],
 
@@ -368,6 +365,12 @@ export default {
       projectStageObjRules: {
         text: [
           { required: true, message: "请输入项目阶段名称", trigger: "blur" }
+        ],
+        start_date: [
+          { required: true, message: "请输入启动时间", trigger: "blur" }
+        ],
+        end_date: [
+          { required: true, message: "请输入结束时间", trigger: "blur" }
         ]
       },
 
