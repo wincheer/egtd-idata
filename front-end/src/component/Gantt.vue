@@ -72,7 +72,8 @@ export default {
       this.$emit("lightbox-close");
     });
 
-    gantt.config.xml_date = "%Y-%m-%d %H:%i";
+    // gantt.config.xml_date = "%Y-%m-%d %H:%i";
+    gantt.config.xml_date = "%Y-%m-%d";
 
     //配合样式表，突出显示非工作日
     gantt.templates.scale_cell_class = function(date) {
@@ -152,11 +153,17 @@ export default {
 
     gantt.config.autosize = "y";
     // gantt.config.readonly = true;
-    gantt.templates.task_text=function(start, end, task){
-        return task.text;
-    };
+    gantt.config.root_id = 0; 
     gantt.init(this.$refs.gantt);
     gantt.parse(this.$props.tasks);
+  },
+  watch: {
+    tasks: {
+        handler: function () {
+          gantt.parse(this.$props.tasks);
+        },
+        deep: true
+    }
   }
 };
 </script>

@@ -1,8 +1,8 @@
 <template>
     <section>
       <el-row style="margin-top: 20px;margin-bottom: 10px;">
-        <el-select v-model="selectedProject" placeholder="请选择项目" @change="onProjectChange">
-          <el-option v-for="item in myProjectList" :key="item.id" :label="item.projectName" :value="item.id" />
+        <el-select v-model="selectedProject" placeholder="请选择项目" @change="onProjectChange" value-key="id">
+          <el-option v-for="item in myProjectList" :key="item.id" :label="item.projectName" :value="item" />
         </el-select>
         <el-button icon="el-icon-edit" type="primary" plain>编辑任务</el-button>
         <el-button icon="el-icon-share" type="primary" plain>分配子任务</el-button>
@@ -50,190 +50,25 @@
 
 <script>
 import Gantt from "@/component/Gantt.vue";
-import {SELECT_MY_PROJECT_LIST} from "@/config/api";
+import { SELECT_MY_PROJECT_LIST, SELECT_PROJECT_TASK_LIST } from "@/config/api";
+import { formatDate } from "@/util/date.js";
 export default {
   components: { Gantt },
   data() {
     return {
       tasks: {
-        data: [
-          { id: 1, text: "黄浦区公安分局视频项目", start_date: "2015-04-01", open: true },
-          {
-            id: 2,
-            text: "项目启动",
-            start_date: "2015-04-01",
-            duration: "1",
-            order: "10",
-            progress: 1.0,
-            parent: "1",
-            open: true,
-            priority:"1",
-            actorStaffId:'杨文清'
-          },
-          {
-            id: 3,
-            text: "前期调研",
-            start_date: "2015-04-02",
-            duration: "8",
-            order: "20",
-            parent: "1",
-            progress: 1.0,
-            open: true,
-            priority: "2"
-          },
-
-          {
-            id: 4,
-            text: "立项资金落实",
-            start_date: "2015-04-02",
-            duration: "20",
-            order: "30",
-            parent: "1",
-            progress: 1.0,
-            open: true
-          },
-          {
-            id: 5,
-            text: "设计/监理单位",
-            start_date: "2015-04-10",
-            duration: "10",
-            order: "30",
-            parent: "1",
-            progress: 1.0,
-            open: false
-          },
-          {
-            id: 501,
-            text: "招标采购",
-            start_date: "2015-04-10",
-            duration: "7",
-            order: "30",
-            parent: "5",
-            progress: 1.0,
-            open: true
-          },
-          {
-            id: 502,
-            text: "合同签订",
-            start_date: "2015-04-17",
-            duration: "3",
-            order: "30",
-            parent: "5",
-            progress: 1.0,
-            open: true
-          },
-          {
-            id: 6,
-            text: "初步设计评审",
-            start_date: "2015-04-20",
-            duration: "2",
-            order: "30",
-            parent: "1",
-            progress: 1.0,
-            open: true
-          },
-          {
-            id: 7,
-            text: "承建（运维）单位",
-            start_date: "2015-04-22",
-            duration: "6",
-            order: "30",
-            parent: "1",
-            progress: 1.0,
-            open: false
-          },
-          {
-            id: 701,
-            text: "招标采购",
-            start_date: "2015-04-22",
-            duration: "5",
-            order: "30",
-            parent: "7",
-            progress: 1.0,
-            open: true
-          },
-          {
-            id: 702,
-            text: "合同签订",
-            start_date: "2015-04-27",
-            duration: "1",
-            order: "30",
-            parent: "7",
-            progress: 1.0,
-            open: true
-          },
-          {
-            id: 8,
-            text: "深化设计评审",
-            start_date: "2015-04-28",
-            duration: "2",
-            order: "30",
-            parent: "1",
-            progress: 1.0,
-            open: true
-          },
-          {
-            id: 9,
-            text: "施工建设",
-            start_date: "2015-05-01",
-            duration: "30",
-            order: "30",
-            parent: "1",
-            progress: 0.8,
-            open: true
-          },
-          {
-            id: 10,
-            text: "用户验收",
-            start_date: "2015-06-01",
-            duration: "5",
-            order: "30",
-            parent: "1",
-            progress: 0.0,
-            open: true
-          },
-          {
-            id: 11,
-            text: "第三方检测",
-            start_date: "2015-06-06",
-            duration: "3",
-            order: "30",
-            parent: "1",
-            progress: 0.0,
-            open: true
-          },
-          {
-            id: 12,
-            text: "技防验收",
-            start_date: "2015-06-09",
-            duration: "2",
-            order: "30",
-            parent: "1",
-            progress: 0.0,
-            open: true
-          },
-          {
-            id: 13,
-            text: "终验",
-            start_date: "2015-06-11",
-            duration: "6",
-            order: "30",
-            parent: "1",
-            progress: 0.0,
-            open: true
-          }
-        ],
+        data: [{id:1,text:'Empty Project',start_date:'2018-01-01',end_date:'2018-01-05'}],
         links: []
       },
-      myProjectList:[],
+      myProjectList: [],
       selectedProject: {},
       selectedTask: {},
       lightBoxVisible: false,
-      isLightBoxActive:false
+      isLightBoxActive: false
     };
   },
   methods: {
-    selectMyProjectList(staffCode){
+    selectMyProjectList(staffCode) {
       var _this = this;
       SELECT_MY_PROJECT_LIST({ code: staffCode }).then(res => {
         if (!Array.isArray(res))
@@ -243,9 +78,38 @@ export default {
           });
         else {
           _this.myProjectList = res;
-          if(res.length) this.selectedProject = _this.myProjectList[0];
+          //if (res.length) this.selectedProject = _this.myProjectList[0];
         }
       });
+    },
+    selectProjectTaskList(project) {
+      var _this = this;
+      SELECT_PROJECT_TASK_LIST({ id: project.id }).then(res => {
+        if (!Array.isArray(res))
+          _this.$message({
+            message: "获取项目任务失败，请联系系统管理员。",
+            type: "error"
+          });
+        else {
+          var root = {id:0,text:project.projectName,start_date: '2018-01-01',duration :5};
+          // res.push(root);
+          // for (var i = 0; i < res.length; i++) {
+          //   res[i].start_date = _this.fmtDate(res[i].start_date);
+          //   res[i].end_date = _this.fmtDate(res[i].end_date);
+          // }
+          var tasks = {
+            data:[
+              {id:1, text:project.projectName, start_date:"2018-01-01", duration:10, open: true},
+              {id:2, text:"Task #1", start_date:"2018-01-01", duration:5, parent:1},
+              {id:3, text:"Task #2", start_date:"2018-01-07", duration:8, parent:1}
+            ]
+          };
+          _this.tasks = tasks;
+        }
+      });
+    },
+    fmtDate(timestamp) {
+      return formatDate(new Date(timestamp), "yyyy-MM-dd");
     },
     onSelectTask(task) {
       this.selectedTask = task;
@@ -257,15 +121,15 @@ export default {
     },
     onLightBoxOpen(id, task) {
       this.isLightBoxActive = true;
-      
+
       this.selectedTask = task;
       this.lightBoxVisible = true;
     },
     onLightBoxClose() {
       this.isLightBoxActive = false;
     },
-    onProjectChange(value){
-      console.log("选中了项目。project_id = " + value);
+    onProjectChange(project) {
+      if (project) this.selectProjectTaskList(project);
     }
   },
   mounted() {
