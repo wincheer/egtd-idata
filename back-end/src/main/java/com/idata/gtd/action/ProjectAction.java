@@ -19,6 +19,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.idata.gtd.common.TreeNode;
 import com.idata.gtd.common.Utils;
+import com.idata.gtd.entity.Employee;
 import com.idata.gtd.entity.Project;
 import com.idata.gtd.entity.ProjectContract;
 import com.idata.gtd.entity.ProjectGroup;
@@ -176,10 +177,10 @@ public class ProjectAction {
 		return employeeList;
 	}
 	//项目中已经分配的人员
-	@RequestMapping(value = "/selectProjectStaffList", method = RequestMethod.POST)
-	public List<ProjectStaff> selectProjectStaffList(@RequestBody Project data) throws Exception {
+	@RequestMapping(value = "/selectProjectEmployeeList", method = RequestMethod.POST)
+	public List<Employee> selectProjectEmployeeList(@RequestBody Project data) throws Exception {
 
-		List<ProjectStaff> staffList = projectService.selectProjectStaffList(data.getId());
+		List<Employee> staffList = projectService.selectProjectEmployeeList(data.getId());
 		return staffList;
 	}
 	

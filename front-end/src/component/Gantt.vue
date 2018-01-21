@@ -32,6 +32,10 @@ export default {
       let task = gantt.getTask(id);
       this.$emit("task-selected", task);
     });
+    gantt.attachEvent("onTaskUnselected", id => {
+      let task = gantt.getTask(id);
+      this.$emit("task-unselected", task);
+    });
 
     gantt.attachEvent("onAfterTaskAdd", (id, task) => {
       this.$emit("task-updated", id, "inserted", task);

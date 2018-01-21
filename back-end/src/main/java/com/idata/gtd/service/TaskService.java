@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.idata.gtd.dao.ProjectTaskMapper;
 import com.idata.gtd.entity.ProjectTask;
@@ -27,6 +28,28 @@ public class TaskService {
 		// 查询项目阶段，转换为task
 		List<ProjectTask> taskList = taskDao.selectProjectTaskList(projectId);
 		return taskList;
+	}
+
+	public int insertProjectTask(ProjectTask task) {
+		
+		taskDao.insertProjectTask(task);
+		return task.getId();
+	}
+
+	public int updateProjectTask(ProjectTask task) {
+		
+		taskDao.updateProjectTask(task);
+		return task.getId();
+	}
+
+	public int insertProjectTask(MultipartFile file, ProjectTask model) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int updateProjectTask(MultipartFile file, ProjectTask model) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

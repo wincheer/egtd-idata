@@ -55,12 +55,12 @@ export const UPDATE_PROJECT_STAGE = (params) => { return axios.post(`${base}/upd
 export const DELETE_PROJECT_STAGE = (params) => { return axios.post(`${base}/deleteProjectStage`, params).then(res => res.data); };
 export const SELECT_GROUP_STAFF_LIST = (params) => { return axios.post(`${base}/selectGroupStaffList`,params).then(res => res.data); };
 export const SELECT_AVAILABLE_PROJECT_STAFF_LIST = (params) => { return axios.post(`${base}/selectAvailableProjectStaffList`,params).then(res => res.data); };
-export const SELECT_PROJECT_STAFF_LIST = (params) => { return axios.post(`${base}/selectProjectStaffList`,params).then(res => res.data); };
+export const SELECT_PROJECT_EMPLOYEE_LIST = (params) => { return axios.post(`${base}/selectProjectEmployeeList`,params).then(res => res.data); };
 export const UPDATE_PROJECT_STAFFS = (params) => { return axios.post(`${base}/updateProjectStaffs`,params).then(res => res.data); };
 
 // 项目任务
 export const SELECT_PROJECT_TASK_LIST = (params) => { return axios.post(`${base}/selectProjectTaskList`,params).then(res => res.data); };
-
+export const UPDATE_PROJECT_TASKE = (params) => { return axios.post(`${base}/updateProjectTask`, params).then(res => res.data); };
 //文档附件
 export const SELECT_DOCUMENT_LIST = (params) => { return axios.post(`${base}/selectDocumentList`,params).then(res => res.data); };
 export const UPDATE_DOCUMENT = (params) => { return axios.post(`${base}/updateDocument`,params).then(res => res.data); };

@@ -20,5 +20,4 @@ public interface ProjectStaffMapper {
 
 	List<ProjectStaff> selectGroupStaffList(Integer groupId);
 	
-	List<ProjectStaff> selectProjectStaffList(Integer projectId);
 }

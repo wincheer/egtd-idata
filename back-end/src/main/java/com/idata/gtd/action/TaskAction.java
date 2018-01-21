@@ -1,6 +1,7 @@
 package com.idata.gtd.action;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,8 +10,12 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.idata.gtd.entity.Project;
 import com.idata.gtd.entity.ProjectTask;
 import com.idata.gtd.service.TaskService;
@@ -37,5 +42,31 @@ public class TaskAction {
 		List<ProjectTask> taskList = taskService.selectProjectTaskList(data.getId());
 		return taskList;
 	}
+	
+	@RequestMapping(value = "/updateProjectTask", method = RequestMethod.POST)
+	public int updateProjectTask(@RequestBody ProjectTask task) {
+
+		if (task.getId() == null)
+			return taskService.insertProjectTask(task);
+		else
+			return taskService.updateProjectTask(task);
+	};
+	
+	/////
+	@RequestMapping(value = "/updateProjectTaskWithFile", method = RequestMethod.POST)
+	public int updateProjectTaskWithFile(@RequestParam Map<String,Object> data, @RequestParam MultipartFile file) throws Exception {
+
+		logger.info("合同上传的附件 = " + file.getOriginalFilename());
+		Gson gson = new GsonBuilder().create();
+		ProjectTask model = gson.fromJson(data.toString(), ProjectTask.class);
+		
+		if (model.getId() == 0){
+			model.setId(null);
+			return taskService.insertProjectTask(file, model);
+		}
+		else
+			return taskService.updateProjectTask(file, model);
+
+	};
 
 }

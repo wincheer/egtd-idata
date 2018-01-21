@@ -31,4 +31,6 @@ public interface EmployeeMapper {
 	int insertVendorEmployee(Employee vendorEmp);
 
 	List<Employee> selectVendorEmployeeListByProject(Integer projectId); 
+	
+	List<Employee> selectProjectEmployeeList(Integer projectId);
 }

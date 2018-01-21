@@ -285,9 +285,9 @@ public class ProjectService {
 		return 1;
 	}
 
-	public List<ProjectStaff> selectProjectStaffList(Integer projectId) {
+	public List<Employee> selectProjectEmployeeList(Integer projectId) {
 
-		return projectStaffDao.selectProjectStaffList(projectId);
+		return empDao.selectProjectEmployeeList(projectId);
 	}
 
 	public List<Project> selectMyProjectList(String staffCode) {

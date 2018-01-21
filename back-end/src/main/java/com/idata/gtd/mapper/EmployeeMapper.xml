@@ -117,5 +117,17 @@
 	WHERE
 		left(employee.code,1) ='s' and project.id = #{projectId,jdbcType=INTEGER}
   </select>
+  
+  <select id="selectProjectEmployeeList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT DISTINCT
+		employee.*
+	FROM
+		employee
+	LEFT JOIN project_staff ON employee.id = project_staff.emp_id
+	LEFT JOIN project_group ON project_staff.group_id = project_group.id
+	LEFT JOIN project ON project_group.project_id = project.id
+	WHERE
+		project.id = #{projectId,jdbcType=INTEGER}
+  </select>
 
 </mapper>

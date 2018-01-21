@@ -183,7 +183,7 @@
       </el-form>
     </el-dialog>
     <el-dialog title="维护项目组成员" :visible.sync="dlgProjectStaffEditVis" width="20%" :close-on-click-modal="false">
-      <el-form :model="projectStaffObj" :rules="projectStaffObjRules" ref="projectStaffObjForm" label-width="80px">
+      <el-form :model="projectStaffObj" ref="projectStaffObjForm" label-width="80px">
         <el-form-item label="机构员工">
             <el-select v-model="selectedProjectStaffs" value-key="code" filterable multiple clearable placeholder="请选择">
               <el-option-group v-for="group in availableStaffList" :key="group.branch" :label="group.branch">
@@ -233,7 +233,7 @@
         </el-form-item>
         <el-form-item label="责任人" prop="category">
           <el-select v-model="projectStageObj.actorStaffId" placeholder="请选择" clearable>
-            <el-option v-for="item in projectStaffList" :key="item.id" :label="item.staffName" :value="item.id" />
+            <el-option v-for="item in projectStaffList" :key="item.id" :label="item.empName" :value="item.id" />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -270,7 +270,7 @@ import {
   SELECT_GROUP_STAFF_LIST,
   SELECT_AVAILABLE_PROJECT_STAFF_LIST,
   UPDATE_PROJECT_STAFFS,
-  SELECT_PROJECT_STAFF_LIST
+  SELECT_PROJECT_EMPLOYEE_LIST
 } from "@/config/api";
 import { formatDate } from "@/util/date.js";
 export default {
@@ -531,7 +531,7 @@ export default {
     },
     selectProjectStaffList(projectId) {
       var _this = this;
-      SELECT_PROJECT_STAFF_LIST({ id: projectId }).then(res => {
+      SELECT_PROJECT_EMPLOYEE_LIST({ id: projectId }).then(res => {
         if (!Array.isArray(res))
           _this.$message({
             message: "获取项目组成员失败，请联系系统管理员。",

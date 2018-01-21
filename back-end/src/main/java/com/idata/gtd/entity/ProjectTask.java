@@ -11,7 +11,7 @@ public class ProjectTask {
     private Integer parent;
     private String taskDesc;
     private Integer priority;
-    private Integer progress;
+    private Float progress;
     private Integer state;
     private Integer assignStaffId;
     private Integer actorStaffId;
@@ -82,11 +82,11 @@ public class ProjectTask {
         this.priority = priority;
     }
 
-    public Integer getProgress() {
+    public Float getProgress() {
         return progress;
     }
 
-    public void setProgress(Integer progress) {
+    public void setProgress(Float progress) {
         this.progress = progress;
     }
 
