@@ -57,7 +57,8 @@ export default {
   data() {
     return {
       tasks: {
-        data: [{id:1,text:'Empty Project',start_date:'2018-01-01',end_date:'2018-01-05'}],
+        //data: [{id:1,text:'Empty Project',start_date:'2018-01-01',end_date:'2018-01-05'}],
+        data: [],
         links: []
       },
       myProjectList: [],
@@ -91,20 +92,17 @@ export default {
             type: "error"
           });
         else {
-          var root = {id:0,text:project.projectName,start_date: '2018-01-01',duration :5};
-          // res.push(root);
-          // for (var i = 0; i < res.length; i++) {
-          //   res[i].start_date = _this.fmtDate(res[i].start_date);
-          //   res[i].end_date = _this.fmtDate(res[i].end_date);
-          // }
-          var tasks = {
-            data:[
-              {id:1, text:project.projectName, start_date:"2018-01-01", duration:10, open: true},
-              {id:2, text:"Task #1", start_date:"2018-01-01", duration:5, parent:1},
-              {id:3, text:"Task #2", start_date:"2018-01-07", duration:8, parent:1}
-            ]
-          };
-          _this.tasks = tasks;
+          for (var i = 0; i < res.length; i++) {
+            res[i].start_date = _this.fmtDate(res[i].start_date);
+            res[i].end_date = _this.fmtDate(res[i].end_date);
+            res[i].readonly = false;
+            res[i].editable = true;
+            delete res[i].readonly;
+            delete res[i].editable;
+            delete res[i].type;
+          }
+          
+          _this.tasks.data = res;
         }
       });
     },
@@ -134,6 +132,7 @@ export default {
   },
   mounted() {
     this.selectMyProjectList(this.$store.state.loginUser.code);
+    this.tasks = {data:[],links:[]};
   }
 };
 </script>

@@ -160,6 +160,7 @@ export default {
   watch: {
     tasks: {
         handler: function () {
+          gantt.clearAll(); 
           gantt.parse(this.$props.tasks);
         },
         deep: true
