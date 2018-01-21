@@ -74,15 +74,24 @@ public class DepartmentAction {
 	public int updateDepEmp(@RequestBody Employee depEmp) {
 
 		if (depEmp.getId() == null)
-			return depService.insertDepartmentEmployee(depEmp);
+			return depService.insertEmployee(depEmp);
 		else
-			return depService.updateDepartmentEmployee(depEmp);
+			return depService.updateEmployee(depEmp);
 	};
 	
 	@RequestMapping(value = "/deleteDepEmp", method = RequestMethod.POST)
 	public int deleteDepEmp(@RequestBody Employee depEmp) {
 
 		return depService.deleteDepartmentEmployee(depEmp.getId());
+	};
+	
+	@RequestMapping(value = "/updateEmployee", method = RequestMethod.POST)
+	public int updateEmployee(@RequestBody Employee emp) {
+
+		if (emp.getId() == null)
+			return depService.insertEmployee(emp);
+		else
+			return depService.updateEmployee(emp);
 	};
 
 }

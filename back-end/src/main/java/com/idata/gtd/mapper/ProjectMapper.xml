@@ -87,14 +87,15 @@
   </select>
   
   <select id="selectMyProjectList" parameterType="java.lang.String" resultMap="BaseResultMap">
-    SELECT
-		project.* 
+	SELECT DISTINCT
+		project.*
 	FROM
-		project
-	INNER JOIN project_group ON project.id = project_group.project_id
-	INNER JOIN project_staff ON project_group.id = project_staff.group_id
+	project
+	LEFT JOIN project_group ON project_group.project_id = project.id
+	LEFT JOIN project_staff ON project_staff.group_id = project_group.id
+	INNER JOIN employee ON project_staff.emp_id = employee.id
 	WHERE
-		project_staff.`code` = #{stafffCode,jdbcType=VARCHAR}
+		employee.code = #{empCode,jdbcType=INTEGER}
   </select>
 
 </mapper>

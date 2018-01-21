@@ -58,7 +58,6 @@ public class ProjectService {
 	@Autowired
 	private VendorMapper vendorDao;
 
-
 	public List<Project> selectProjectList() {
 
 		logger.info("查询项目");
@@ -275,7 +274,7 @@ public class ProjectService {
 				staff.setCode("o" + staff.getEmpId());
 
 			projectStaffDao.insertStaff(staff);
-			
+
 			Employee employee = new Employee();
 			employee.setId(staff.getEmpId());
 			employee.setCode(staff.getCode());
@@ -290,12 +289,12 @@ public class ProjectService {
 		return empDao.selectProjectEmployeeList(projectId);
 	}
 
-	public List<Project> selectMyProjectList(String staffCode) {
+	public List<Project> selectMyProjectList(String empCode) {
 
-		if (staffCode.trim().toUpperCase().equals("O0")) //超级用户的唯一标记是o0 (欧零)
+		if (empCode.equals("o0")) // 超级用户的唯一标记是o0 (欧零)
 			return projectDao.selectProjectList();
 		else
-			return projectDao.selectMyProjectList(staffCode);
+			return projectDao.selectMyProjectList(empCode);
 	}
 
 }

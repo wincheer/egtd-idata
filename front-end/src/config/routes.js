@@ -6,6 +6,7 @@ import Calendar from '@/view/gtd/Calendar.vue'
 import ParamConfig from '@/view/setup/ParamConfig.vue'
 import Resource from '@/view/setup/Resource.vue'
 import Template from '@/view/setup/Template.vue'
+import DashBoard from '@/view/gtd/DashBoard.vue'
 
 import Foo from '@/view/Foo.vue'
 import DOING from '@/view/Doing.vue'
@@ -22,8 +23,9 @@ let routes = [
         name: '我的工作台',
         iconCls: 'el-icon-location',
         children: [
-            { path: '/todo', component: DOING, name: '待办事项列表' ,iconCls:'el-icon-time'},
-            { path: '/todo2', component: Calendar, name: '工作日历' ,iconCls:'el-icon-date'}
+            // { path: '/todo', component: DOING, name: '待办事项列表' ,iconCls:'el-icon-time'},
+            // { path: '/todo2', component: Calendar, name: '工作日历' ,iconCls:'el-icon-date'},
+            { path: '/dashboard', component: DashBoard, name: '工作台' ,iconCls: 'el-icon-time',},
         ]
     },
     {
@@ -32,8 +34,7 @@ let routes = [
         name: '项目',
         iconCls: 'el-icon-view',
         children: [
-            { path: '/hello42', component: DOING, name: '项目总览' ,iconCls: 'el-icon-search',},
-            { path: '/project', component: Project, name: '项目进程' ,iconCls:'el-icon-tickets'},
+            { path: '/project', component: Project, name: '项目进程' ,iconCls:'el-icon-date'},
             { path: '/project-init', component: ProjectInit, name: '项目信息维护' ,iconCls:'el-icon-refresh'}
         ]
     },

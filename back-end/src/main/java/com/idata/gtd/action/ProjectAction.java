@@ -191,7 +191,7 @@ public class ProjectAction {
 	}
 	
 	@RequestMapping(value = "/selectMyProjectList", method = RequestMethod.POST)
-	public List<Project> selectMyProjectList(@RequestBody ProjectStaff data) throws Exception {
+	public List<Project> selectMyProjectList(@RequestBody Employee data) throws Exception {
 
 		List<Project> myProjectList = projectService.selectMyProjectList(data.getCode());
 		return myProjectList;

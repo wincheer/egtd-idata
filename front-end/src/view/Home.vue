@@ -1,5 +1,6 @@
 <template>
-    <el-row class="container">
+    <section>
+      <el-row class="container">
         <el-col :span="24" class="header">
             <el-col :span="10" class="logo" :class="isCollapse?'logo-collapse-width':'logo-width'">
                 {{isCollapse?'':this.appName}}
@@ -15,7 +16,7 @@
                         <img :src="this.sysUserAvatar" /> {{this.$store.state.loginUser.empName}}
                     </span>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item>修改密码</el-dropdown-item>
+                        <el-dropdown-item @click.native="pwdFormVisible = true">修改密码</el-dropdown-item>
                         <el-dropdown-item divided @click.native="logout">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
@@ -55,18 +56,50 @@
                 </div>
             </section>
         </el-col>
-    </el-row>
+      </el-row>
+
+      <el-dialog title="修改密码" :close-on-click-modal="false" :visible.sync="pwdFormVisible" width="20%">
+        <el-form :model="pwdObj" :rules="pwdObjRules" label-width="100px" ref="pwdForm">
+          <el-form-item label="原密码：" prop="oldPwd">
+            <el-input type="password" v-model="pwdObj.oldPwd" style="width:90%"></el-input>
+          </el-form-item>
+          <el-form-item label="新密码：" prop="newPwd">
+            <el-input v-model="pwdObj.newPwd" style="width:90%"></el-input>
+          </el-form-item>
+          <el-form-item label="重输新密码：" prop="newSecPwd">
+            <el-input v-model="pwdObj.newSecPwd" style="width:90%"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click.native="pwdFormVisible = false">取消</el-button>
+          <el-button type="primary" @click="updatePwd">提交</el-button>
+        </div>
+      </el-dialog>
+    </section>
+    
 </template>
 
 <script>
 import avatar from "@/assets/logo.png";
+import { UPDATE_EMPLOYEE } from "../config/api";
 export default {
   data() {
     return {
       appName: "eGTD - iData",
       loginUser: {},
       isCollapse: false,
-      sysUserAvatar: avatar
+      sysUserAvatar: avatar,
+
+      pwdFormVisible: false,
+      pwdObj: {
+        oldPwd: "",
+        newPwd: "",
+        newSecPwd: ""
+      },
+      pwdObjRules: {
+        oldPwd: [{ required: true, message: "请输入原密码", trigger: "blur" }],
+        newPwd: [{ required: true, message: "请输入新密码", trigger: "blur" }]
+      }
     };
   },
   methods: {
@@ -83,6 +116,35 @@ export default {
           this.$router.push("/login");
         })
         .catch(() => {});
+    },
+    updatePwd: function() {
+      var _this = this;
+      _this.$refs.pwdForm.validate(valid => {
+        if (valid) {
+          if (_this.pwdObj.oldPwd != _this.$store.state.loginUser.password) {
+            _this.$message({message: "原密码错误，重新输入！",type: "error"});
+          } else {
+            if (_this.pwdObj.newPwd != _this.pwdObj.newSecPwd) {
+              _this.$message({message: "新密码两次输入的不一致，重新输入！",type: "warning"});
+            } else {
+              let para = {
+                id: _this.$store.state.loginUser.id,
+                password: _this.pwdObj.newPwd
+              };
+              UPDATE_EMPLOYEE(para).then(res => {
+                _this.$message({message: "更新密码成功，下次请用新密码登录",type: "success"});
+                // _this.loginUser.password = _this.pwdObj.newPwd;
+                // // _this.$store.commit("setLoginUser", _this.loginUser);
+                // sessionStorage.setItem("loginUser", JSON.stringify(_this.loginUser));
+                _this.pwdObj = {oldPwd: "",newPwd: "",newSecPwd: ""};
+                _this.pwdFormVisible = false;
+              });
+            }
+          }
+        } else {
+          return false;
+        }
+      });
     }
   },
   mounted() {}

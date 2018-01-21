@@ -49,7 +49,7 @@ export default {
             } else {
               _this.$store.commit("setLoginUser", data);
               sessionStorage.setItem("loginUser", JSON.stringify(data));
-              _this.$router.push({ path: "/todo" });
+              _this.$router.push({ path: "/dashboard" });
             }
           });
         }

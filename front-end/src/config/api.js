@@ -26,6 +26,7 @@ export const DELETE_VENDOR = (params) => { return axios.post(`${base}/deleteVend
 export const SELECT_VENDOR_EMP_LIST = (params) => { return axios.post(`${base}/selectVendorEmpList`, params).then(res => res.data); };
 export const UPDATE_VENDOR_EMP = (params) => { return axios.post(`${base}/updateVendorEmp`, params).then(res => res.data); };
 export const DELETE_VENDOR_EMP = (params) => { return axios.post(`${base}/deleteVendorEmp`, params).then(res => res.data); };
+export const UPDATE_EMPLOYEE = (params) => { return axios.post(`${base}/updateEmployee`, params).then(res => res.data); };
 
 //模板管理
 export const SELECT_TPL_PROJECT_LIST = () => { return axios.post(`${base}/selectTplProjectList`).then(res => res.data); };

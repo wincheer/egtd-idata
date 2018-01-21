@@ -141,9 +141,9 @@ export default {
     };
   },
   methods: {
-    selectMyProjectList(staffCode) {
+    selectMyProjectList(empCode) {
       var _this = this;
-      SELECT_MY_PROJECT_LIST({ code: staffCode }).then(res => {
+      SELECT_MY_PROJECT_LIST({ code: empCode }).then(res => {
         if (!Array.isArray(res))
           _this.$message({
             message: "获取我的项目列表失败，请联系系统管理员。",

@@ -60,7 +60,7 @@ public class DepartmentService {
 		return empDao.selectDepartmentEmployeeList(depId);
 	}
 
-	public int insertDepartmentEmployee(Employee depEmp) {
+	public int insertEmployee(Employee depEmp) {
 
 		depEmp.setCode("o");
 		depEmp.setPassword("123456");
@@ -68,7 +68,7 @@ public class DepartmentService {
 		return depEmp.getId();
 	}
 
-	public int updateDepartmentEmployee(Employee depEmp) {
+	public int updateEmployee(Employee depEmp) {
 
 		return empDao.updateEmployee(depEmp);
 	}
