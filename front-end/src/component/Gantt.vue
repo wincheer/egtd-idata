@@ -160,6 +160,7 @@ export default {
     gantt.config.autosize = "y";
     gantt.config.readonly = true;
     gantt.config.root_id = 0; 
+    gantt.config.open_tree_initially = true; //展开全部
     gantt.init(this.$refs.gantt);
     gantt.parse(this.$props.tasks);
   },

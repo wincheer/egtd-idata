@@ -13,7 +13,8 @@
             <el-col :span="4" class="userinfo">
                 <el-dropdown trigger="hover">
                     <span class="el-dropdown-link userinfo-inner">
-                        <img :src="this.sysUserAvatar" /> {{this.$store.state.loginUser.empName}}
+                        <img :src="this.sysUserAvatar" /> {{this.$store.state.loginUser.empName}} 
+                        <!-- <el-badge :value="12"></el-badge> -->
                     </span>
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item @click.native="pwdFormVisible = true">修改密码</el-dropdown-item>
