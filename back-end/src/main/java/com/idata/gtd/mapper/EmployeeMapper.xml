@@ -129,5 +129,12 @@
 	WHERE
 		project.id = #{projectId,jdbcType=INTEGER}
   </select>
+  
+  <select id="selectEmployeeList"  resultMap="BaseResultMap">
+    SELECT DISTINCT
+		employee.*
+	FROM
+		employee
+  </select>
 
 </mapper>

@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.idata.gtd.entity.Employee;
 import com.idata.gtd.entity.Project;
 import com.idata.gtd.entity.ProjectTask;
 import com.idata.gtd.service.TaskService;
@@ -68,5 +69,32 @@ public class TaskAction {
 			return taskService.updateProjectTask(file, model);
 
 	};
+	
+	@RequestMapping(value = "/selectMyTaskList", method = RequestMethod.POST)
+	public List<ProjectTask> selectProjectTaskList(@RequestBody Employee data) {
+
+		logger.info("查询用户的任务列表，用户：" + data.getId()); 
+		
+		List<ProjectTask> taskList = taskService.selectMyTaskList(data.getId());
+		return taskList;
+	}
+	@RequestMapping(value = "/selectMyTaskListIn", method = RequestMethod.POST)
+	public List<ProjectTask> selectMyTaskListIn(@RequestBody Employee data) {
+
+		logger.info("查询用户的任务列表，用户：" + data.getId()); 
+		
+		List<ProjectTask> taskList = taskService.selectMyTaskListIn(data.getId());
+		return taskList;
+	}
+	@RequestMapping(value = "/selectMyTaskListOut", method = RequestMethod.POST)
+	public List<ProjectTask> selectMyTaskListOut(@RequestBody Employee data) {
+
+		logger.info("查询用户的任务列表，用户：" + data.getId()); 
+		
+		List<ProjectTask> taskList = taskService.selectMyTaskListOut(data.getId());
+		return taskList;
+	}
+	
+	
 
 }

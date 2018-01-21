@@ -52,4 +52,17 @@ public class TaskService {
 		return 0;
 	}
 
+	public List<ProjectTask> selectMyTaskList(Integer empId) {
+		
+		return taskDao.selectMyTaskList(empId);
+	}
+
+	public List<ProjectTask> selectMyTaskListIn(Integer empId) {
+		return taskDao.selectMyTaskListIn(empId);
+	}
+
+	public List<ProjectTask> selectMyTaskListOut(Integer empId) {
+		return taskDao.selectMyTaskListOut(empId);
+	}
+
 }

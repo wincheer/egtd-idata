@@ -15,4 +15,10 @@ public interface ProjectTaskMapper {
 	int updateProjectTask(ProjectTask record);
 
 	List<ProjectTask> selectProjectTaskList(Integer projectId);
+
+	List<ProjectTask> selectMyTaskList(Integer empId);
+
+	List<ProjectTask> selectMyTaskListIn(Integer empId);
+
+	List<ProjectTask> selectMyTaskListOut(Integer empId); 
 }

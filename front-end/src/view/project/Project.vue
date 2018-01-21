@@ -8,7 +8,7 @@
         <el-button icon="el-icon-share" type="primary" plain @click="openTastAdd" :disabled="caniedit">分配子任务</el-button>
       </el-row>
       <el-row>
-        <gantt :tasks="tasks" @task-selected="onSelectTask" @task-unselected="onUnelectTask"></gantt>
+        <gantt :tasks="tasks" @task-selected="onSelectTask"></gantt>
       </el-row>
       <!--任务编辑对话框-->
       <el-dialog :title="'项目任务：'+selectedTask.text" :visible.sync="dlgTaskEditVis" width="35%" :close-on-click-modal="false">

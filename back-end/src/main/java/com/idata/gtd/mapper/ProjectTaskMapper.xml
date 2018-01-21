@@ -114,5 +114,21 @@
     select * from project_task
     where project_id = #{projectId,jdbcType=INTEGER}
   </select>
+  
+  <select id="selectMyTaskList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select * 
+    from project_task
+    where actor_staff_id = #{empId,jdbcType=INTEGER} OR assign_staff_id = #{empId,jdbcType=INTEGER}
+  </select>
+  <select id="selectMyTaskListIn" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select * 
+    from project_task
+    where actor_staff_id = #{empId,jdbcType=INTEGER}
+  </select>
+  <select id="selectMyTaskListOut" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select * 
+    from project_task
+    where assign_staff_id = #{empId,jdbcType=INTEGER}
+  </select>
 
 </mapper>

@@ -297,4 +297,9 @@ public class ProjectService {
 			return projectDao.selectMyProjectList(empCode);
 	}
 
+	public List<Employee> selectEmployeeList() {
+
+		return empDao.selectEmployeeList();
+	}
+
 }
