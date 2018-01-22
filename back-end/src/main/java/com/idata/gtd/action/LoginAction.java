@@ -26,13 +26,6 @@ public class LoginAction {
 	@Autowired
 	private LogService logService;
 
-	// @RequestMapping(value = "/login", method = RequestMethod.POST)
-	// public ProjectStaff login(@RequestBody ProjectStaff staff) {
-	//
-	// ProjectStaff loginUser = loginService.login(staff);
-	// return loginUser;
-	// }
-
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public Employee login(@RequestBody Map<String, Object> param) {
 
