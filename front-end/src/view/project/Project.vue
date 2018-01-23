@@ -4,29 +4,29 @@
         <el-select v-model="selectedProject" placeholder="请选择项目" @change="onProjectChange" value-key="id">
           <el-option v-for="item in myProjectList" :key="item.id" :label="item.projectName" :value="item" />
         </el-select>
-        <el-button icon="el-icon-edit" type="primary" plain @click="openTastEdit" :disabled="caniedit"> 编辑任务</el-button>
-        <el-button icon="el-icon-share" type="primary" plain @click="openTastAdd" :disabled="caniedit">分配子任务</el-button>
+        <el-button icon="el-icon-edit" type="primary" plain @click="openTastEdit" :disabled="caniOpen"> 编辑任务</el-button>
+        <el-button icon="el-icon-share" type="primary" plain @click="openTastAdd" :disabled="caniOpen">分配子任务</el-button>
       </el-row>
       <el-row>
         <gantt :tasks="tasks" @task-selected="onSelectTask"></gantt>
       </el-row>
       <!--任务编辑对话框-->
-      <el-dialog :title="'项目任务：'+selectedTask.text" :visible.sync="dlgTaskEditVis" width="35%" :close-on-click-modal="false">
+      <el-dialog :title="'任务：' + selectedTask.text" :visible.sync="dlgTaskEditVis" width="35%" :close-on-click-modal="false">
         <el-form :model="taskObj" :rules="taskObjRules" ref="taskForm" label-width="80px" label-position="right"> 
           <el-row :gutter="10">
             <el-col :span="12">
               <el-form-item label="任务名称" prop="text">
-                <el-input v-model="taskObj.text" placeholder="新任务" :disabled="this.taskMode=='edit'"></el-input>
+                <el-input v-model="taskObj.text" placeholder="新任务" :disabled="whoami!='asigner'"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="工作量" prop="planWorkload">
-                <el-input-number v-model="taskObj.planWorkload" :disabled="this.taskMode=='edit'" :min="0" :max="1000" style="width:160px"></el-input-number> 天
+              <el-form-item label="计划工时" prop="planWorkload">
+                <el-input-number v-model="taskObj.planWorkload" :disabled="whoami!='asigner'" :min="0" :max="1000" style="width:160px"></el-input-number> 小时
               </el-form-item>
             </el-col>
           </el-row>
           <el-form-item label="任务描述"  style="margin-right: 10px;" prop="taskDesc">
-            <el-input v-model="taskObj.taskDesc" placeholder="填写任务要求" type="textarea"></el-input>
+            <el-input v-model="taskObj.taskDesc" :disabled="whoami!='asigner'" placeholder="填写任务要求" type="textarea"></el-input>
             <!-- <el-upload ref="upload" action="any" :http-request="updateProjectContract" :on-change="onFileChange" :on-remove="onFileRemove" :auto-upload="false" :limit="1" :file-list="contractFileList">
               <el-button slot="trigger" size="mini">添加附件 ...</el-button>
             </el-upload> -->
@@ -34,33 +34,33 @@
           <el-row :gutter="10">
             <el-col :span="12">
               <el-form-item label="开始日期" prop="start_date">
-                <el-date-picker v-model="taskObj.start_date" :disabled="this.taskMode=='edit'" placeholder="选择开始日期"></el-date-picker>
+                <el-date-picker v-model="taskObj.start_date" :disabled="whoami!='asigner'" placeholder="选择开始日期"></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="结束日期" prop="end_date">
-                <el-date-picker v-model="taskObj.end_date" :disabled="this.taskMode=='edit'" placeholder="选择结束日期"></el-date-picker>
+                <el-date-picker v-model="taskObj.end_date" :disabled="whoami!='asigner'" placeholder="选择结束日期"></el-date-picker>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row :gutter="10">
             <el-col :span="12">
-              <el-form-item label="任务分配" prop="assignStaffId">
+              <el-form-item label="创建人" prop="assignStaffId">
                 <el-select v-model="taskObj.assignStaffId" disabled clearable placeholder="请选择">
                   <el-option v-for="item in projectStaffList" :key="item.id" :label="item.empName" :value="item.id" />
                 </el-select>
             </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="任务执行"  prop="actorStaffId">
-                <el-select v-model="taskObj.actorStaffId" clearable placeholder="请选择"  :disabled="this.taskMode=='edit'">
+              <el-form-item label="接收人"  prop="actorStaffId">
+                <el-select v-model="taskObj.actorStaffId" clearable placeholder="请选择"  :disabled="whoami=='actor'">
                   <el-option v-for="item in projectStaffList" :key="item.id" :label="item.empName" :value="item.id" />
                 </el-select>
             </el-form-item>
             </el-col>
           </el-row>
           <el-form-item label="优先级" prop="priority">
-            <el-radio-group v-model="taskObj.priority"  :disabled="this.taskMode=='edit'">
+            <el-radio-group v-model="taskObj.priority"  :disabled="whoami=='actor'">
               <el-radio-button label="100">最高</el-radio-button>
               <el-radio-button label="80">较高</el-radio-button>
               <el-radio-button label="60">普通</el-radio-button>
@@ -68,8 +68,8 @@
               <el-radio-button label="20">最低</el-radio-button>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="当前进度"  prop="progress" v-show="this.taskMode=='edit'">
-            <el-slider v-model="taskObj.progress" :min="0" :max="1" :step="0.2" show-stops style="margin-left: 5px;"></el-slider>
+          <el-form-item label="当前进度"  prop="progress" v-show="this.taskMode=='update'">
+            <el-slider v-model="taskObj.progress" :min="0" :max="1" :step="0.2" :disabled="whoami!='actor'" show-stops style="margin-left: 5px;"></el-slider>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -208,14 +208,14 @@ export default {
       this.selectedTask = task;
     },
     openTastEdit() {
-      this.taskMode = "edit";
+      this.taskMode = "update";
 
       this.taskObj = Object.assign(this.selectedTask);
-      this.taskObj.assignStaffId = this.$store.state.loginUser.id;
+      //this.taskObj.assignStaffId = this.$store.state.loginUser.id;
       this.dlgTaskEditVis = true;
     },
     openTastAdd() {
-      this.taskMode = "asign";
+      this.taskMode = "add";
 
       this.taskObj = {
         projectId: this.selectedProject.id,
@@ -261,8 +261,8 @@ export default {
     }
   },
   computed: {
-    caniedit() {
-      //我可以编辑吗
+    caniOpen() {
+      //我可以打开吗
       return !(
         this.selectedTask.assignStaffId === this.$store.state.loginUser.id ||
         this.selectedTask.actorStaffId === this.$store.state.loginUser.id
@@ -270,14 +270,18 @@ export default {
     },
     whoami() {
       //我是谁 - 任务发布者 asigner ? 任务接受者 actor?
-      if (this.selectedTask.assignStaffId === this.$store.state.loginUser.id)
-        return "asigner";
-      else if (
-        this.selectedTask.actorStaffId === this.$store.state.loginUser.id
-      )
-        return "actor";
-      else return "player";
-    }
+      var myRole = "player" //默认是无关者（非任务直接参与人）
+      if(this.taskMode=="update"){
+        if (this.selectedTask.assignStaffId === this.$store.state.loginUser.id)
+          myRole =  "asigner"
+        if (this.selectedTask.actorStaffId === this.$store.state.loginUser.id)
+          myRole =  "actor";
+      }
+      else{
+          myRole =  "asigner";
+      }
+      return myRole;
+    },
   },
   mounted() {
     this.selectMyProjectList(this.$store.state.loginUser.code);
