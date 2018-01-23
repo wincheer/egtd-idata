@@ -257,7 +257,7 @@ public class ProjectService {
 		List<Map<String, Object>> _staffList = (List<Map<String, Object>>) map.get("staffList");
 		@SuppressWarnings("unused")
 		List<ProjectStaff> staffList = new ArrayList<ProjectStaff>();
-		// 添加所有成员
+		// 添加所有成员 TODO 改为批量插入，顺便修改ProjectStaff的名称和结构
 		for (Map<String, Object> _map : _staffList) {
 			ProjectStaff staff = new ProjectStaff();
 			staff.setGroupId(groupId);
