@@ -61,12 +61,14 @@ public class TaskAction {
 		Gson gson = new GsonBuilder().create();
 		ProjectTask model = gson.fromJson(data.toString(), ProjectTask.class);
 		
-		if (model.getId() == 0){
-			model.setId(null);
-			return taskService.insertProjectTask(file, model);
-		}
-		else
-			return taskService.updateProjectTask(file, model);
+//		if (model.getId() == 0){
+//			model.setId(null);
+//			return taskService.insertProjectTaskWithFile(file, model);
+//		}
+//		else
+//			return taskService.updateProjectTaskWithFile(file, model);
+		
+		return 0;
 
 	};
 	
