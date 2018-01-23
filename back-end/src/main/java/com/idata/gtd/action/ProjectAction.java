@@ -162,10 +162,16 @@ public class ProjectAction {
 	
 	///////////
 	//项目组人员
-	@RequestMapping(value = "/selectGroupStaffList", method = RequestMethod.POST)
-	public List<ProjectStaff> selectGroupStaffList(@RequestBody ProjectStaff data) throws Exception {
+//	@RequestMapping(value = "/selectGroupStaffList", method = RequestMethod.POST)
+//	public List<ProjectStaff> selectGroupStaffList(@RequestBody ProjectStaff data) throws Exception {
+//
+//		List<ProjectStaff> projectStaffList = projectService.selectGroupStaffList(data.getGroupId());
+//		return projectStaffList;
+//	}
+	@RequestMapping(value = "/selectGroupEmpList", method = RequestMethod.POST)
+	public List<Employee> selectGroupEmpList(@RequestBody ProjectStaff data) throws Exception {
 
-		List<ProjectStaff> projectStaffList = projectService.selectGroupStaffList(data.getGroupId());
+		List<Employee> projectStaffList = projectService.selectGroupEmpList(data.getGroupId());
 		return projectStaffList;
 	}
 	

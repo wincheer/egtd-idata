@@ -87,7 +87,7 @@ import {
   SELECT_PROJECT_TASK_LIST,
   UPDATE_PROJECT_TASKE,
   SELECT_PROJECT_EMPLOYEE_LIST,
-  SELECT_GROUP_STAFF_LIST
+  SELECT_GROUP_EMP_LIST
 } from "@/config/api";
 import { formatDate } from "@/util/date.js";
 export default {
@@ -136,7 +136,6 @@ export default {
       selectedTask: {},
       dlgTaskEditVis: false,
       projectStaffList: [],
-      groupStaffList: [],
 
       taskMode: "" //任务模式编辑 edit 或者分配子任务 asign,与登录者身份(whoami)配合用来检测可编辑状态
       //isLightBoxActive: false
@@ -157,7 +156,6 @@ export default {
             _this.selectedProject = _this.myProjectList[0];
             _this.selectTaskList(_this.selectedProject);
             _this.selectProjectStaffList(_this.selectedProject.id);
-            // this.selectGroupStaffList(this.selectedProject.id,this.$store.state.loginUser.id);
           }
         }
       });
@@ -187,12 +185,6 @@ export default {
       var _this = this;
       SELECT_PROJECT_EMPLOYEE_LIST({ id: projectId }).then(res => {
         _this.projectStaffList = res;
-      });
-    },
-    selectGroupStaffList(projectId, groupId) {
-      var _this = this;
-      SELECT_GROUP_STAFF_LIST({ id: projectId }).then(res => {
-        _this.groupStaffList = res;
       });
     },
     fmtDate(timestamp) {

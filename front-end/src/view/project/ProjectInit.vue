@@ -158,8 +158,8 @@
               <el-button @click="openAddProjectStaff" :disabled="projectGroupObj.id == ''" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">维护项目组成员</el-button>
             </div>
             <el-table :data="groupStaffList">
-              <el-table-column label="姓名" prop="staffName"></el-table-column>
-              <el-table-column label="电话" prop="staffMobile"></el-table-column>
+              <el-table-column label="姓名" prop="empName"></el-table-column>
+              <el-table-column label="电话" prop="empMobile"></el-table-column>
             </el-table>
           </el-card>
         </el-col>
@@ -267,7 +267,7 @@ import {
   SELECT_DOCUMENT_LIST,
   UPDATE_DOCUMENT,
   DELETE_DOCUMENT,
-  SELECT_GROUP_STAFF_LIST,
+  SELECT_GROUP_EMP_LIST,
   SELECT_AVAILABLE_PROJECT_STAFF_LIST,
   UPDATE_PROJECT_STAFFS,
   SELECT_PROJECT_EMPLOYEE_LIST
@@ -517,7 +517,7 @@ export default {
     },
     selectGroupStaffList(projectGroupId) {
       var _this = this;
-      SELECT_GROUP_STAFF_LIST({ groupId: projectGroupId }).then(res => {
+      SELECT_GROUP_EMP_LIST({ groupId: projectGroupId }).then(res => {
         if (!Array.isArray(res))
           _this.$message({
             message: "获取项目组成员失败，请联系系统管理员。",

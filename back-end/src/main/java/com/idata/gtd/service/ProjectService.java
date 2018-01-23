@@ -186,9 +186,9 @@ public class ProjectService {
 		return projectStageDao.deleteProjectTaskByPK(id);
 	}
 
-	public List<ProjectStaff> selectGroupStaffList(Integer groupId) {
+	public List<Employee> selectGroupEmpList(Integer groupId) {
 
-		return projectStaffDao.selectGroupStaffList(groupId);
+		return empDao.selectGroupEmpList(groupId);
 	}
 
 	public List<Map<String, Object>> selectAvailableProjectStaffList(Integer projectId) {

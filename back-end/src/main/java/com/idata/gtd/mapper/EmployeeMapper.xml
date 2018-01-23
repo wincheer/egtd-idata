@@ -136,5 +136,15 @@
 	FROM
 		employee
   </select>
+  
+  <select id="selectGroupEmpList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT
+		employee.*
+	FROM
+		employee
+	LEFT JOIN project_staff ON employee.id = project_staff.emp_id
+	WHERE
+		project_staff.group_id = #{groupId,jdbcType=INTEGER}
+  </select>
 
 </mapper>
