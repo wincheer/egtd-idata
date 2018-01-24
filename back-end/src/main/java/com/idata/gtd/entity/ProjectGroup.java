@@ -6,6 +6,7 @@ public class ProjectGroup {
 	private Integer projectId;
 	private String groupName;
 	private String groupDesc;
+	private String groupRole;
 	private Integer parentId;
 
 	public Integer getId() {
@@ -38,6 +39,14 @@ public class ProjectGroup {
 
 	public void setGroupDesc(String groupDesc) {
 		this.groupDesc = groupDesc;
+	}
+
+	public String getGroupRole() {
+		return groupRole;
+	}
+
+	public void setGroupRole(String groupRole) {
+		this.groupRole = groupRole;
 	}
 
 	public Integer getParentId() {

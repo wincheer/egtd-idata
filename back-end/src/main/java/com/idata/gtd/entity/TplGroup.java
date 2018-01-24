@@ -5,6 +5,7 @@ public class TplGroup {
 	private Integer id;
 	private Integer tplId;
 	private String groupName;
+	private String groupRole;
 	private Integer parentId;
 
 	public Integer getId() {
@@ -25,6 +26,14 @@ public class TplGroup {
 
 	public String getGroupName() {
 		return groupName;
+	}
+
+	public String getGroupRole() {
+		return groupRole;
+	}
+
+	public void setGroupRole(String groupRole) {
+		this.groupRole = groupRole;
 	}
 
 	public void setGroupName(String groupName) {

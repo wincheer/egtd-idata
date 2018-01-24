@@ -12,7 +12,7 @@
       <el-table-column type="index" width="30"></el-table-column>
       <el-table-column prop="projectName" label="项目名称"></el-table-column>
       <el-table-column prop="createDate" label="立项时间" :formatter="fmtDate"></el-table-column>
-      <el-table-column prop="actorStaffId" label="责任人" :formatter="fmtDep"></el-table-column>
+      <el-table-column prop="actorStaffId" label="责任人" :formatter="fmtEmp"></el-table-column>
       <el-table-column prop="createDate" label="启动时间" :formatter="fmtDate"></el-table-column>
       <el-table-column prop="createDate" label="结束时间" :formatter="fmtDate"></el-table-column>
       <el-table-column label="操作" width="250">
@@ -32,7 +32,7 @@
       </el-table-column>
     </el-table>
     <!-- 编辑框 -->
-    <el-dialog :title="projectObj.id==''?'增加项目':'编辑项目'" :visible.sync="dlgProjectEditVis" width="40%" :close-on-click-modal="false">
+    <el-dialog :title="projectObj.id==''?'新建项目':'编辑项目'" :visible.sync="dlgProjectEditVis" width="40%" :close-on-click-modal="false">
       <el-form :model="projectObj" :rules="projectObjRules" ref="projectForm" label-width="80px">
         <el-row>
           <el-col :span="15">
@@ -56,8 +56,8 @@
         </el-form-item>
         <el-row>
           <el-col :span="15">
-            <el-form-item label="责任人" prop="actorStaffId">
-              <el-select v-model="projectObj.actorStaffId" placeholder="请选择">
+            <el-form-item label="项目经理" prop="actorStaffId">
+              <el-select v-model="projectObj.actorStaffId" placeholder="请选择甲方项目经理">
                 <el-option v-for="item in allDepEmpList" :key="item.id" :label="item.empName" :value="item.id" />
               </el-select>
             </el-form-item>
@@ -911,7 +911,7 @@ export default {
         }
       }
     },
-    fmtDep(row, column, cellValue) {
+    fmtEmp(row, column, cellValue) {
       for(var i=0;i<this.allDepEmpList.length;i++){
         if(this.allDepEmpList[i].id == cellValue) return this.allDepEmpList[i].empName;
       }

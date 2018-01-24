@@ -94,6 +94,7 @@
     select *
     from employee
     where left(code,1) ='o' and code != 'o0'
+    order by org_id
   </select>
   
   <delete id="deleteVendorEmps" parameterType="java.lang.Integer">

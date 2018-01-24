@@ -23,6 +23,7 @@ public class Project {
 	private String icon;
 	private Integer amount;
 	private Integer isApproval;
+	private Integer depId;
 
 	public Integer getId() {
 		return id;
@@ -125,5 +126,13 @@ public class Project {
 
 	public void setIsApproval(Integer isApproval) {
 		this.isApproval = isApproval;
+	}
+	
+	public Integer getDepId() {
+		return depId;
+	}
+
+	public void setDepId(Integer depId) {
+		this.depId = depId;
 	}
 }

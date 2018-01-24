@@ -47,9 +47,9 @@
                 <el-button @click="openAddVendor" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加供应商</el-button>
               </div>
               <el-table :data="vendorList" highlight-current-row @current-change="onVendorChange">
-                <el-table-column label="名称" prop="vendorName" width="120"></el-table-column>
+                <el-table-column label="名称" prop="vendorName" ></el-table-column>
                 <el-table-column label="全称" prop="vendorFullName"></el-table-column>
-                <el-table-column label="联系人" prop="contactName" width="90"></el-table-column>
+                <el-table-column label="联系人" prop="contactName" ></el-table-column>
                 <el-table-column label="联系电话" prop="contactMobile" width="120"></el-table-column>
                 <el-table-column label="操作" width="100">
                   <template slot-scope="scope">
@@ -67,12 +67,12 @@
                 <el-button @click="openAddVendorEmp" :disabled="vendorEmpObj.orgId==''" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加供应商员工</el-button>
               </div>
               <el-table :data="vendorEmpList">
-                <el-table-column label="姓名" prop="empName" width="90"></el-table-column>
-                <el-table-column label="性别" prop="empGender" width="50" :formatter="fmtGender"></el-table-column>
-                <el-table-column label="电话" prop="empMobile" width="120"></el-table-column>
+                <el-table-column label="姓名" prop="empName" ></el-table-column>
+                <el-table-column label="性别" prop="empGender"  :formatter="fmtGender"></el-table-column>
+                <el-table-column label="电话" prop="empMobile" ></el-table-column>
                 <el-table-column label="邮箱" prop="empEmail"></el-table-column>
-                <el-table-column label="职位" prop="empGrade" width="120"></el-table-column>
-                <el-table-column label="职务" prop="empTitle" width="120"></el-table-column>
+                <el-table-column label="职位" prop="empGrade" ></el-table-column>
+                <el-table-column label="职务" prop="empTitle" ></el-table-column>
                 <el-table-column label="操作" width="100">
                   <template slot-scope="scope">
                     <el-button size="mini" type="text" @click="openEditVendorEmp(scope.row)">编辑</el-button>
