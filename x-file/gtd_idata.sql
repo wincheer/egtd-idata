@@ -2,15 +2,15 @@
 Navicat MySQL Data Transfer
 
 Source Server         : local_mysql
-Source Server Version : 50717
+Source Server Version : 50626
 Source Host           : localhost:3306
 Source Database       : gtd_idata
 
 Target Server Type    : MYSQL
-Target Server Version : 50717
+Target Server Version : 50626
 File Encoding         : 65001
 
-Date: 2018-01-11 17:59:06
+Date: 2018-01-24 14:38:24
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -32,32 +32,13 @@ CREATE TABLE `department` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for department_employe
--- ----------------------------
-DROP TABLE IF EXISTS `department_employe`;
-CREATE TABLE `department_employe` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `dep_id` int(11) DEFAULT NULL,
-  `emp_name` varchar(255) DEFAULT NULL,
-  `emp_gender` varchar(255) DEFAULT NULL,
-  `emp_mobile` varchar(255) DEFAULT NULL,
-  `emp_email` varchar(255) DEFAULT NULL,
-  `emp_title` varchar(255) DEFAULT NULL,
-  `emp_grade` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of department_employe
--- ----------------------------
-
--- ----------------------------
 -- Table structure for document
 -- ----------------------------
 DROP TABLE IF EXISTS `document`;
 CREATE TABLE `document` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `document_name` varchar(255) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `file_name` varchar(255) DEFAULT NULL,
   `belong_to` varchar(255) DEFAULT NULL,
   `source_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -99,21 +80,49 @@ CREATE TABLE `ducument_file` (
 -- ----------------------------
 
 -- ----------------------------
+-- Table structure for employee
+-- ----------------------------
+DROP TABLE IF EXISTS `employee`;
+CREATE TABLE `employee` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `org_id` int(11) DEFAULT NULL,
+  `code` varchar(255) DEFAULT NULL COMMENT '甲方 o_id，乙方s_id',
+  `emp_name` varchar(255) DEFAULT NULL,
+  `emp_gender` varchar(255) DEFAULT NULL,
+  `emp_mobile` varchar(255) DEFAULT NULL,
+  `emp_email` varchar(255) DEFAULT NULL,
+  `emp_title` varchar(255) DEFAULT NULL,
+  `emp_grade` varchar(255) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `index_emp_mobile` (`emp_mobile`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+
+-- ----------------------------
+-- Records of employee
+-- ----------------------------
+INSERT INTO `employee` VALUES ('1', '0', 'o0', '超级用户', '0', '000', 'root@system', 'root', 'roor', '000');
+
+-- ----------------------------
 -- Table structure for log
 -- ----------------------------
 DROP TABLE IF EXISTS `log`;
 CREATE TABLE `log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `actor` varchar(255) DEFAULT NULL,
-  `op_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `op_time` datetime DEFAULT NULL,
   `action` varchar(255) DEFAULT NULL,
   `target` varchar(255) DEFAULT NULL,
+  `detail` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of log
 -- ----------------------------
+INSERT INTO `log` VALUES ('1', '0', '2018-01-24 14:25:49', '登录', '系统', '失败');
+INSERT INTO `log` VALUES ('2', '0', '2018-01-24 14:26:59', '登录', '系统', '失败');
+INSERT INTO `log` VALUES ('3', '1', '2018-01-24 14:28:21', '登录', '系统', '成功');
 
 -- ----------------------------
 -- Table structure for param_key
@@ -122,13 +131,15 @@ DROP TABLE IF EXISTS `param_key`;
 CREATE TABLE `param_key` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `param_key` varchar(255) DEFAULT NULL,
+  `param_key_name` varchar(255) DEFAULT NULL,
   `data_type` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of param_key
 -- ----------------------------
+INSERT INTO `param_key` VALUES ('1', 'category', '项目类型', 'String');
 
 -- ----------------------------
 -- Table structure for param_value
@@ -138,12 +149,15 @@ CREATE TABLE `param_value` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `param_id` int(11) DEFAULT NULL,
   `param_value` varchar(255) DEFAULT NULL,
+  `param_desc` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of param_value
 -- ----------------------------
+INSERT INTO `param_value` VALUES ('1', '1', '1', '软件实施项目');
+INSERT INTO `param_value` VALUES ('2', '1', '2', '土木工程建筑');
 
 -- ----------------------------
 -- Table structure for project
@@ -156,12 +170,13 @@ CREATE TABLE `project` (
   `category` varchar(255) DEFAULT NULL,
   `is_key` int(11) DEFAULT NULL,
   `is_forzen` int(11) DEFAULT NULL,
-  `create_date` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  `start_date` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  `end_date` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  `dep_id` int(11) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `start_date` datetime DEFAULT NULL,
+  `end_date` datetime DEFAULT NULL,
+  `actor_staff_id` int(11) DEFAULT NULL,
   `icon` varchar(255) DEFAULT NULL,
-  `amount` int(255) DEFAULT NULL,
+  `amount` int(11) DEFAULT NULL,
+  `is_approval` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -211,17 +226,17 @@ CREATE TABLE `project_staff` (
   `is_vendor` int(11) DEFAULT NULL,
   `group_id` int(11) DEFAULT NULL,
   `emp_id` int(11) DEFAULT NULL,
+  `code` varchar(255) DEFAULT NULL,
   `staff_name` varchar(255) DEFAULT NULL,
   `staff_email` varchar(255) DEFAULT NULL,
   `staff_mobile` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of project_staff
 -- ----------------------------
-INSERT INTO `project_staff` VALUES ('1', '0', '0', '0', '超级用户', 'root@system', '000', '000');
 
 -- ----------------------------
 -- Table structure for project_stage
@@ -229,15 +244,16 @@ INSERT INTO `project_staff` VALUES ('1', '0', '0', '0', '超级用户', 'root@sy
 DROP TABLE IF EXISTS `project_stage`;
 CREATE TABLE `project_stage` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `stage_name` varchar(255) DEFAULT NULL,
-  `start_date` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  `end_date` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `project_id` int(11) DEFAULT NULL,
+  `text` varchar(255) DEFAULT NULL,
+  `start_date` datetime DEFAULT NULL,
+  `end_date` datetime DEFAULT NULL,
   `has_supervisor` int(11) DEFAULT NULL,
-  `is_approval` int(11) DEFAULT NULL,
   `progress` int(11) DEFAULT NULL,
   `actor_staff_id` int(11) DEFAULT NULL,
   `modify_date` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `note` varchar(255) DEFAULT NULL,
+  `parent` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -266,21 +282,25 @@ CREATE TABLE `project_tag` (
 DROP TABLE IF EXISTS `project_task`;
 CREATE TABLE `project_task` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `stage_id` int(11) DEFAULT NULL,
-  `task_name` varchar(255) DEFAULT NULL,
+  `text` varchar(255) DEFAULT NULL,
+  `start_date` datetime DEFAULT NULL,
+  `end_date` datetime DEFAULT NULL,
+  `parent` int(11) DEFAULT '0',
+  `project_id` int(11) DEFAULT '0',
   `task_desc` varchar(255) DEFAULT NULL,
-  `from_date` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  `end_date` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `priority` int(11) DEFAULT NULL,
-  `progress` int(11) DEFAULT NULL,
-  `state` int(11) DEFAULT NULL COMMENT '未开始0，进行中1，已完成待检查2，完成3',
+  `progress` float(4,2) DEFAULT '0.00',
+  `state` int(11) DEFAULT '0' COMMENT '未开始0，进行中1，已完成2，待检查3，确认完成4',
   `assign_staff_id` int(11) DEFAULT NULL,
   `actor_staff_id` int(255) DEFAULT NULL,
-  `plan_workload` int(11) DEFAULT NULL,
-  `real_workload` int(11) DEFAULT NULL,
-  `is_delay` int(11) DEFAULT NULL,
+  `plan_workload` int(11) DEFAULT '0',
+  `real_workload` int(11) DEFAULT '0',
+  `is_delay` int(11) DEFAULT '0',
   `delay_reason` varchar(255) DEFAULT NULL,
-  `parent_id` int(11) DEFAULT NULL,
+  `readonly` int(11) DEFAULT '0',
+  `editable` int(11) DEFAULT '1',
+  `type` varchar(255) DEFAULT 'task',
+  `has_supervisor` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -382,24 +402,4 @@ CREATE TABLE `vendor` (
 
 -- ----------------------------
 -- Records of vendor
--- ----------------------------
-
--- ----------------------------
--- Table structure for vendor_employee
--- ----------------------------
-DROP TABLE IF EXISTS `vendor_employee`;
-CREATE TABLE `vendor_employee` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `vendor_id` int(11) DEFAULT NULL,
-  `emp_name` varchar(255) DEFAULT NULL,
-  `emp_gender` varchar(255) DEFAULT NULL,
-  `emp_mobile` varchar(255) DEFAULT NULL,
-  `emp_email` varchar(255) DEFAULT NULL,
-  `emp_title` varchar(255) DEFAULT NULL,
-  `emp_grade` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of vendor_employee
 -- ----------------------------
