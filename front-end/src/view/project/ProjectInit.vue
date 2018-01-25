@@ -12,9 +12,10 @@
       <el-table-column type="index" width="30"></el-table-column>
       <el-table-column prop="projectName" label="项目名称"></el-table-column>
       <el-table-column prop="createDate" label="立项时间" :formatter="fmtDate"></el-table-column>
+      <el-table-column prop="depId" label="所属部门"></el-table-column>
       <el-table-column prop="actorStaffId" label="责任人" :formatter="fmtEmp"></el-table-column>
-      <el-table-column prop="createDate" label="启动时间" :formatter="fmtDate"></el-table-column>
-      <el-table-column prop="createDate" label="结束时间" :formatter="fmtDate"></el-table-column>
+      <el-table-column prop="startDate" label="启动时间" :formatter="fmtDate"></el-table-column>
+      <el-table-column prop="endDate" label="结束时间" :formatter="fmtDate"></el-table-column>
       <el-table-column label="操作" width="250">
         <template slot-scope="scope">
           <el-dropdown  trigger="click">
@@ -51,33 +52,45 @@
         <el-form-item label="项目描述" prop="projectDesc">
           <el-input type="textarea" v-model="projectObj.projectDesc"></el-input>
         </el-form-item>
-        <el-form-item label="项目金额" prop="amount">
-          <el-input-number type="text" v-model="projectObj.amount" /> 万元
-        </el-form-item>
         <el-row>
-          <el-col :span="15">
+          <el-col :span="12">
+            <el-form-item label="项目金额" prop="amount">
+              <el-input-number type="text" v-model="projectObj.amount" /> 万元
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="关键项目" prop="isKey">
+              <el-switch v-model="projectObj.isKey" active-text="是" inactive-text="否" :active-value="1" :inactive-value="0"></el-switch>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
             <el-form-item label="项目经理" prop="actorStaffId">
               <el-select v-model="projectObj.actorStaffId" placeholder="请选择甲方项目经理">
                 <el-option v-for="item in allDepEmpList" :key="item.id" :label="item.empName" :value="item.id" />
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item label="关键项目" prop="isKey">
-              <el-switch v-model="projectObj.isKey" active-text="是" inactive-text="否" :active-value="1" :inactive-value="0"></el-switch>
+          <el-col :span="12">
+            <el-form-item label="所属部门" prop="depId">
+              <!-- <el-select v-model="projectObj.depId" placeholder="请选择部门">
+                <el-option v-for="item in allDepEmpList" :key="item.id" :label="item.empName" :value="item.id" />
+              </el-select> -->
+              <el-cascader :options="depTreeList" :props="{value:'id'}" v-model="depIds" @change="onDepChange" change-on-select clearable style="width:100%" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-form-item label="立项时间" prop="createDate">
           <el-date-picker type="date" clearable placeholder="立项时间" v-model="projectObj.createDate"/>
         </el-form-item>
-        <el-row>
-          <el-col :span="10">
+        <el-row >
+          <el-col :span="12">
             <el-form-item label="启动日期" prop="startDate">
               <el-date-picker type="date" clearable placeholder="启动日期" v-model="projectObj.startDate"/>
             </el-form-item>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="12">
             <el-form-item label="结束日期" prop="endDate">
               <el-date-picker type="date" clearable placeholder="结束日期" v-model="projectObj.endDate"/>
             </el-form-item>
@@ -140,9 +153,9 @@
       </el-form>
     </el-dialog>
     <!--项目组-->
-    <el-dialog title="配置项目组" :visible.sync="dlgProjectGroupListVis" width="35%" :close-on-click-modal="false">
-      <el-row :gutter="20">
-        <el-col :span="13">
+    <el-dialog title="配置项目组" :visible.sync="dlgProjectGroupListVis" width="40%" :close-on-click-modal="false">
+      <el-row :gutter="10">
+        <el-col :span="12">
           <el-card>
             <div slot="header" class="clearfix">
               <span>项目组</span>
@@ -151,7 +164,7 @@
             <el-tree :data="projectGroupTreeList" @node-click="onProjectGroupChange" :render-content="renderContent" highlight-current :expand-on-click-node="false" default-expand-all></el-tree>
           </el-card>
         </el-col>
-        <el-col :span="11">
+        <el-col :span="12">
           <el-card>
             <div slot="header" class="clearfix">
               <span>项目组成员</span>
@@ -228,9 +241,9 @@
         <el-form-item label="结束日期" prop="end_date">
           <el-date-picker type="date" clearable placeholder="结束日期" v-model="projectStageObj.end_date"/>
         </el-form-item>
-        <el-form-item label="监理参与" prop="hasSupervisor">
+        <!-- <el-form-item label="监理参与" prop="hasSupervisor">
           <el-switch v-model="projectStageObj.hasSupervisor" active-text="是" inactive-text="否" :active-value="1" :inactive-value="0"></el-switch>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="责任人" prop="category">
           <el-select v-model="projectStageObj.actorStaffId" placeholder="请选择" clearable>
             <el-option v-for="item in projectStaffList" :key="item.id" :label="item.empName" :value="item.id" />
@@ -270,9 +283,11 @@ import {
   SELECT_GROUP_EMP_LIST,
   SELECT_AVAILABLE_PROJECT_STAFF_LIST,
   UPDATE_PROJECT_STAFFS,
-  SELECT_PROJECT_EMPLOYEE_LIST
+  SELECT_PROJECT_EMPLOYEE_LIST,
+  SELECT_DEP_TREE_LIST
 } from "@/config/api";
 import { formatDate } from "@/util/date.js";
+import { builderTreeIdSeq } from "@/util/treeUtil.js";
 export default {
   props: {},
   data() {
@@ -282,6 +297,8 @@ export default {
       // projectGroupStatus:'',
       // projectStageStatus:'',
       allDepEmpList: [],
+      depTreeList: [],
+      depIds:[],
       projectObj: {
         id: "",
         projectName: "",
@@ -397,6 +414,21 @@ export default {
     };
   },
   methods: {
+    selectDepTreeList() {
+      var _this = this;
+      SELECT_DEP_TREE_LIST().then(res => {
+        if (!Array.isArray(res))
+          _this.$message({ message: "获取组织结构失败，请联系系统管理员。", type: "error" });
+        else {
+          _this.depTreeList = res;
+        }
+      });
+    },
+    onDepChange(value) {
+      if (value.length != 0) {
+        this.projectObj.depId = value[value.length - 1];
+      } else this.depObj.parentId = 0;
+    },
     selectAllDepEmpList() {
       var _this = this;
       SELECT_ALL_DEP_EMP_LIST({}).then(res => {
@@ -547,9 +579,10 @@ export default {
     },
     openEditProject(row) {
       this.projectObj = Object.assign(row);
-      //this.builderParentIdSeq(node);
+      this.depIds = builderTreeIdSeq(this.depTreeList,row.depId);//级联选项的数据
       this.dlgProjectEditVis = true;
     },
+
     openProjectContractList(row) {
       this.dlgProjectContractListVis = true;
     },
@@ -902,7 +935,8 @@ export default {
       );
     },
     fmtDate(row, column, cellValue) {
-      return formatDate(new Date(cellValue), "yyyy-MM-dd");
+      if(cellValue == null) return "";
+      else return formatDate(new Date(cellValue), "yyyy-MM-dd");
     },
     fmtVendor(row, column, cellValue) {
       for (var i = 0; i < this.vendorList.length; i++) {
@@ -951,6 +985,7 @@ export default {
     this.selectParamValueList({ paramKey: "category" });
     this.selectVendorList();
     this.selectAllDepEmpList(); //业主的所有员工
+    this.selectDepTreeList(); //业主的所有部门
   }
 };
 </script>
