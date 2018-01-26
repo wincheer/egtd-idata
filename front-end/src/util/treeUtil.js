@@ -1,70 +1,66 @@
-var ids = [];
-export function builderTreeIdSeq(treeList, treeId) {
-    ids = [];
-    var nodeObj = getNode(treeList, treeId)
-    if (nodeObj.parentNode != null) {
-        //ids.unshift(nodeObj.node.parentId); //push末尾添加,unshift开头添加
-        unshiftParentId(nodeObj.parentNode);
+
+export function getNodePath(treeList,nodeId) {
+    const node = getNode(treeList,nodeId);
+    if (!node) return [];
+    const path = [node.id];
+    var parent = getNode(treeList,node.parentId);
+    while (parent) {
+        path.push(parent.id);
+        parent = getNode(treeList,parent.parentId);
     }
-    return ids;
+    return path.reverse();
 }
 
-function unshiftParentId(pnode) {
-    if(pnode){
-        ids.unshift(pnode.parentId);
-        if (pnode.parentNode) {
-            unshiftParentId(pnode.parentNode);
-        }
-    }
-    
+export function getNode(treeList,nodeId){
+    const nodes = getObjects(treeList,"id",nodeId);
+    if(nodes.length == 1) return nodes[0];
 }
 
-
-/**
- * 根据NodeID查找当前节点以及父节点
- */
-var parentNode = null;
-var node = null;
-function getNode(tree, nodeId) {
-
-    //1.第一层 root 深度遍历整个tree
-    for (var i = 0; i < tree.length; i++) {
-        if (node) {
-            break;
-        }
-        var obj = tree[i];
-        //没有就下一个
-        if (!obj || !obj.id) {
-            continue;
-        }
-
-        //2.有节点就开始找，一直递归下去
-        if (obj.id == nodeId) {
-            //找到了与nodeId匹配的节点，结束递归
-            node = obj;
-            break;
-        } else {
-            //3.如果有子节点就开始找
-            if (obj.children) {
-                //4.递归前，记录当前节点，作为parent 父亲
-                parentNode = obj;
-                //递归往下找
-                getNode(obj.children, nodeId);
-            } else {
-                //跳出当前递归，返回上层递归
-                continue;
+//return an array of objects according to key, value, or key and value matching
+function getObjects(obj, key, val) {
+    var objects = [];
+    for (var i in obj) {
+        if (!obj.hasOwnProperty(i)) continue;
+        if (typeof obj[i] == 'object') {
+            objects = objects.concat(getObjects(obj[i], key, val));
+        } else
+            //if key matches and value matches or if key matches and value is not passed (eliminating the case where key matches but passed value does not)
+            if (i == key && obj[i] == val || i == key && val == '') { //
+                objects.push(obj);
+            } else if (obj[i] == val && key == '') {
+                //only add if the object is not already in the array
+                if (objects.lastIndexOf(obj) == -1) {
+                    objects.push(obj);
+                }
             }
+    }
+    return objects;
+}
+
+//return an array of values that match on a certain key
+function getValues(obj, key) {
+    var objects = [];
+    for (var i in obj) {
+        if (!obj.hasOwnProperty(i)) continue;
+        if (typeof obj[i] == 'object') {
+            objects = objects.concat(getValues(obj[i], key));
+        } else if (i == key) {
+            objects.push(obj[i]);
         }
     }
+    return objects;
+}
 
-    //5.如果木有找到父节点，置为null，因为没有父亲  
-    if (!node) {
-        parentNode = null;
+//return an array of keys that match on a certain value
+function getKeys(obj, val) {
+    var objects = [];
+    for (var i in obj) {
+        if (!obj.hasOwnProperty(i)) continue;
+        if (typeof obj[i] == 'object') {
+            objects = objects.concat(getKeys(obj[i], val));
+        } else if (obj[i] == val) {
+            objects.push(i);
+        }
     }
-
-    //6.返回结果obj
-    return {
-        parentNode: parentNode,
-        node: node
-    };
+    return objects;
 }

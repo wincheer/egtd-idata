@@ -193,6 +193,7 @@ import {
   UPDATE_VENDOR_EMP,
   DELETE_VENDOR_EMP
 } from "@/config/api";
+import { getNodePath } from "@/util/treeUtil.js";
 export default {
   data() {
     return {
@@ -424,7 +425,7 @@ export default {
       this.depObj.depName = data.label;
       this.depObj.depDesc = data.desc;
       this.depObj.parentId = data.parentId;
-      this.builderParentIdSeq(node);
+      this.parentIds = getNodePath(this.depTreeList,node.id);
       this.dlgDepEditVis = true;
     },
     openEditDepEmp(row) {
@@ -438,19 +439,6 @@ export default {
     openEditVendorEmp(row) {
       Object.assign(this.vendorEmpObj, row);
       this.dlgVendorEmpEditVis = true;
-    },
-    builderParentIdSeq(node) {
-      this.parentIds = [];
-      if (node.level != 1) {
-        this.parentIds.unshift(node.data.parentId); //push末尾添加,unshift开头添加
-        this.unshiftParentId(node.parent);
-      }
-    },
-    unshiftParentId(pnode) {
-      if (pnode.level != 1) {
-        this.parentIds.unshift(pnode.data.parentId);
-        this.unshiftParentId(pnode.parent);
-      }
     },
     delDep(node, data) {
       var _this = this;

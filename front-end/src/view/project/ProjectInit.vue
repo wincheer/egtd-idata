@@ -12,7 +12,7 @@
       <el-table-column type="index" width="30"></el-table-column>
       <el-table-column prop="projectName" label="项目名称"></el-table-column>
       <el-table-column prop="createDate" label="立项时间" :formatter="fmtDate"></el-table-column>
-      <el-table-column prop="depId" label="所属部门"></el-table-column>
+      <el-table-column prop="depId" label="所属部门"  :formatter="fmtDep"></el-table-column>
       <el-table-column prop="actorStaffId" label="责任人" :formatter="fmtEmp"></el-table-column>
       <el-table-column prop="startDate" label="启动时间" :formatter="fmtDate"></el-table-column>
       <el-table-column prop="endDate" label="结束时间" :formatter="fmtDate"></el-table-column>
@@ -74,9 +74,6 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="所属部门" prop="depId">
-              <!-- <el-select v-model="projectObj.depId" placeholder="请选择部门">
-                <el-option v-for="item in allDepEmpList" :key="item.id" :label="item.empName" :value="item.id" />
-              </el-select> -->
               <el-cascader :options="depTreeList" :props="{value:'id'}" v-model="depIds" @change="onDepChange" change-on-select clearable style="width:100%" />
             </el-form-item>
           </el-col>
@@ -287,7 +284,7 @@ import {
   SELECT_DEP_TREE_LIST
 } from "@/config/api";
 import { formatDate } from "@/util/date.js";
-import { builderTreeIdSeq } from "@/util/treeUtil.js";
+import { getNodePath,getNode } from "@/util/treeUtil.js";
 export default {
   props: {},
   data() {
@@ -579,7 +576,7 @@ export default {
     },
     openEditProject(row) {
       this.projectObj = Object.assign(row);
-      this.depIds = builderTreeIdSeq(this.depTreeList,row.depId);//级联选项的数据
+      this.depIds = getNodePath(this.depTreeList,row.depId);//级联选项的数据
       this.dlgProjectEditVis = true;
     },
 
@@ -950,6 +947,9 @@ export default {
         if(this.allDepEmpList[i].id == cellValue) return this.allDepEmpList[i].empName;
       }
       return cellValue;
+    },
+    fmtDep(row, column, cellValue) {
+      return getNode(this.depTreeList,cellValue).label;
     }
   },
   computed: {
