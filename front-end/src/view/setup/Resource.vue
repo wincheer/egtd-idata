@@ -423,9 +423,9 @@ export default {
     openEditDep(node, data) {
       this.depObj.id = data.id;
       this.depObj.depName = data.label;
-      this.depObj.depDesc = data.desc;
+      this.depObj.depDesc = data.data.depDesc;
       this.depObj.parentId = data.parentId;
-      this.parentIds = getNodePath(this.depTreeList,node.id);
+      this.parentIds = getNodePath(this.depTreeList,data.parentId);
       this.dlgDepEditVis = true;
     },
     openEditDepEmp(row) {

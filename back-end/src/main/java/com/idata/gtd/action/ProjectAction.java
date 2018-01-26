@@ -73,29 +73,28 @@ public class ProjectAction {
 	}
 
 	@RequestMapping(value = "/updateProjectContract", method = RequestMethod.POST)
-	public int updateProjectContract(@RequestParam Map<String,Object> data, @RequestParam MultipartFile file) throws Exception {
+	public int updateProjectContract(@RequestParam Map<String, Object> data, @RequestParam MultipartFile file)
+			throws Exception {
 
 		logger.info("合同上传的附件 = " + file.getOriginalFilename());
 		Gson gson = new GsonBuilder().create();
 		ProjectContract model = gson.fromJson(data.toString(), ProjectContract.class);
-		
-		if (model.getId() == 0){
+
+		if (model.getId() == 0) {
 			model.setId(null);
 			return projectService.insertProjectContract(file, model);
-		}
-		else
+		} else
 			return projectService.updateProjectContract(file, model);
 
 	};
+
 	@RequestMapping(value = "/updateProjectContractNoFile", method = RequestMethod.POST)
 	public int updateProjectContractNoFile(@RequestBody ProjectContract data) throws Exception {
 
-		if (data.getId() == 0)
-		{
+		if (data.getId() == 0) {
 			data.setId(null);
 			return projectService.insertProjectContract(data);
-		}
-		else
+		} else
 			return projectService.updateProjectContract(data);
 	};
 
@@ -111,14 +110,14 @@ public class ProjectAction {
 	public List<TreeNode> selectProjectGroupTreeList(@RequestBody ProjectGroup data) throws Exception {
 
 		List<ProjectGroup> groupList = projectService.selectProjectGroupList(data.getProjectId());
-		
+
 		List<TreeNode> groupTreeNodeList = new ArrayList<TreeNode>();
 		for (ProjectGroup group : groupList) {
-			TreeNode treeNode = new TreeNode(group.getId(), group.getGroupName(), group.getGroupDesc(),group.getParentId());
+			TreeNode treeNode = new TreeNode(group.getId(), group.getGroupName(), group.getParentId(), group);
 			groupTreeNodeList.add(treeNode);
 		}
 		List<TreeNode> groupTreeList = Utils.builderTree(groupTreeNodeList);
-		
+
 		return groupTreeList;
 	}
 
@@ -159,50 +158,55 @@ public class ProjectAction {
 
 		return projectService.deleteProjectStage(data.getId());
 	};
-	
+
 	///////////
-	//项目组人员
-//	@RequestMapping(value = "/selectGroupStaffList", method = RequestMethod.POST)
-//	public List<ProjectStaff> selectGroupStaffList(@RequestBody ProjectStaff data) throws Exception {
-//
-//		List<ProjectStaff> projectStaffList = projectService.selectGroupStaffList(data.getGroupId());
-//		return projectStaffList;
-//	}
+	// 项目组人员
+	// @RequestMapping(value = "/selectGroupStaffList", method =
+	// RequestMethod.POST)
+	// public List<ProjectStaff> selectGroupStaffList(@RequestBody ProjectStaff
+	// data) throws Exception {
+	//
+	// List<ProjectStaff> projectStaffList =
+	// projectService.selectGroupStaffList(data.getGroupId());
+	// return projectStaffList;
+	// }
 	@RequestMapping(value = "/selectGroupEmpList", method = RequestMethod.POST)
 	public List<Employee> selectGroupEmpList(@RequestBody ProjectStaff data) throws Exception {
 
 		List<Employee> projectStaffList = projectService.selectGroupEmpList(data.getGroupId());
 		return projectStaffList;
 	}
-	
-	//项目中所有可用的人员（不一定全部用上） - available
-	@RequestMapping(value = "/selectAvailableProjectStaffList", method = RequestMethod.POST)
-	public List<Map<String,Object>> selectAvailableProjectStaffList(@RequestBody Project data) throws Exception {
 
-		List<Map<String,Object>> employeeList = projectService.selectAvailableProjectStaffList(data.getId());
+	// 项目中所有可用的人员（不一定全部用上） - available
+	@RequestMapping(value = "/selectAvailableProjectStaffList", method = RequestMethod.POST)
+	public List<Map<String, Object>> selectAvailableProjectStaffList(@RequestBody Project data) throws Exception {
+
+		List<Map<String, Object>> employeeList = projectService.selectAvailableProjectStaffList(data.getId());
 		return employeeList;
 	}
-	//项目中已经分配的人员
+
+	// 项目中已经分配的人员
 	@RequestMapping(value = "/selectProjectEmployeeList", method = RequestMethod.POST)
 	public List<Employee> selectProjectEmployeeList(@RequestBody Project data) throws Exception {
 
 		List<Employee> staffList = projectService.selectProjectEmployeeList(data.getId());
 		return staffList;
 	}
-	//项目中已经分配的人员
+
+	// 项目中已经分配的人员
 	@RequestMapping(value = "/selectEmployeeList", method = RequestMethod.POST)
 	public List<Employee> selectEmployeeList() throws Exception {
 
 		List<Employee> staffList = projectService.selectEmployeeList();
 		return staffList;
 	}
-	
+
 	@RequestMapping(value = "/updateProjectStaffs", method = RequestMethod.POST)
-	public int updateProjectStaffs(@RequestBody Map<String,Object> staffListMap) throws Exception {
+	public int updateProjectStaffs(@RequestBody Map<String, Object> staffListMap) throws Exception {
 
 		return projectService.updateProjectStaffs(staffListMap);
 	}
-	
+
 	@RequestMapping(value = "/selectMyProjectList", method = RequestMethod.POST)
 	public List<Project> selectMyProjectList(@RequestBody Employee data) throws Exception {
 

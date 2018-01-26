@@ -61,7 +61,7 @@ public class TemplateAction {
 
 		List<TreeNode> tplStageTreeNodeList = new ArrayList<TreeNode>();
 		for (TplStage stage : tplStageList) {
-			TreeNode treeNode = new TreeNode(stage.getId(), stage.getStageName(), stage.getTplId().toString(), stage.getParentId());
+			TreeNode treeNode = new TreeNode(stage.getId(), stage.getStageName(), stage.getParentId(), stage);
 			tplStageTreeNodeList.add(treeNode);
 		}
 		List<TreeNode> treeList = Utils.builderTree(tplStageTreeNodeList);
@@ -93,7 +93,7 @@ public class TemplateAction {
 
 		List<TreeNode> treeNodeList = new ArrayList<TreeNode>();
 		for (TplGroup group : tplGroupList) {
-			TreeNode treeNode = new TreeNode(group.getId(), group.getGroupName(), group.getTplId().toString(),group.getParentId());
+			TreeNode treeNode = new TreeNode(group.getId(), group.getGroupName(), group.getParentId(), group);
 			treeNodeList.add(treeNode);
 		}
 		List<TreeNode> treeList = Utils.builderTree(treeNodeList);

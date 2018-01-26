@@ -183,6 +183,11 @@
         <el-form-item label="项目组名称" prop="groupName">
           <el-input type="text" v-model="projectGroupObj.groupName"></el-input>
         </el-form-item>
+        <el-form-item label="角色" prop="groupRole">
+          <el-select v-model="projectGroupObj.groupRole" placeholder="请选择">
+            <el-option v-for="item in builtinRoleParamList" :key="item.id" :label="item.paramDesc" :value="item.paramValue" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="项目组描述" prop="vendorId">
            <el-input type="text" v-model="projectGroupObj.groupDesc"></el-input>
         </el-form-item>
@@ -241,7 +246,7 @@
         <!-- <el-form-item label="监理参与" prop="hasSupervisor">
           <el-switch v-model="projectStageObj.hasSupervisor" active-text="是" inactive-text="否" :active-value="1" :inactive-value="0"></el-switch>
         </el-form-item> -->
-        <el-form-item label="责任人" prop="category">
+        <el-form-item label="负责人" prop="category">
           <el-select v-model="projectStageObj.actorStaffId" placeholder="请选择" clearable>
             <el-option v-for="item in projectStaffList" :key="item.id" :label="item.empName" :value="item.id" />
           </el-select>
@@ -345,6 +350,7 @@ export default {
         id: "",
         projectId: "",
         groupName: "",
+        groupRole:"",
         groupDesc: "",
         parentId: ""
       },
@@ -406,6 +412,7 @@ export default {
       dlgProjectStageListVis: false,
       dlgProjectStageEditVis: false,
       categoryParamList: [],
+      builtinRoleParamList:[],
       vendorList: [],
       projectVendorList: []
     };
@@ -448,7 +455,8 @@ export default {
             type: "error"
           });
         else {
-          _this.categoryParamList = res;
+          if(paramKeyObj.paramKey=="category") _this.categoryParamList = res; 
+          else if(paramKeyObj.paramKey=="built-in-role") _this.builtinRoleParamList = res; 
         }
       });
     },
@@ -605,9 +613,11 @@ export default {
         id: "",
         projectId: this.selectedProject.id,
         groupName: "",
+        groupRole:"",
         groupDesc: "",
         parentId: 0
       });
+      this.parentGroupIds = [];
       this.dlgProjectGroupEditVis = true;
     },
     openEditProjectGroup(node, data) {
@@ -615,24 +625,12 @@ export default {
         id: data.id,
         projectId: this.selectedProject.id,
         groupName: data.label,
-        groupDesc: data.desc,
+        groupRole: data.data.groupRole, 
+        groupDesc: data.data.groupDesc,
         parentId: data.parentId
       };
-      this.builderParentIdSeq(node);
+      this.parentGroupIds = getNodePath(this.projectGroupTreeList,data.parentId);
       this.dlgProjectGroupEditVis = true;
-    },
-    builderParentIdSeq(node) {
-      this.parentGroupIds = [];
-      if (node.level != 1) {
-        this.parentGroupIds.unshift(node.data.parentId); //push末尾添加,unshift开头添加
-        this.unshiftParentId(node.parent);
-      }
-    },
-    unshiftParentId(pnode) {
-      if (pnode.level != 1) {
-        this.parentGroupIds.unshift(pnode.data.parentId);
-        this.unshiftParentId(pnode.parent);
-      }
     },
     openAddProjectStaff() {
       this.dlgProjectStaffEditVis = true;
@@ -949,7 +947,8 @@ export default {
       return cellValue;
     },
     fmtDep(row, column, cellValue) {
-      return getNode(this.depTreeList,cellValue).label;
+      var node = getNode(this.depTreeList,cellValue);
+      if(node) return node.label;
     }
   },
   computed: {
@@ -983,6 +982,7 @@ export default {
   mounted() {
     this.selectProjectList();
     this.selectParamValueList({ paramKey: "category" });
+    this.selectParamValueList({ paramKey: "built-in-role" });
     this.selectVendorList();
     this.selectAllDepEmpList(); //业主的所有员工
     this.selectDepTreeList(); //业主的所有部门

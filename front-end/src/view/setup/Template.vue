@@ -5,7 +5,7 @@
         <el-card>
           <div slot="header" class="clearfix">
             <span>项目模板</span>
-            <el-button @click="openAddTplProject" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加项目模板</el-button>
+            <el-button @click="openAddTplProject" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加项目阶段</el-button>
           </div>
           <el-table :data="tplProjectList" highlight-current-row @current-change="onTplProjectChange">
             <el-table-column label="模板名称" prop="tplName"></el-table-column>
@@ -41,7 +41,7 @@
       </el-col>
     </el-row>
     <!--编辑窗口-->
-    <el-dialog :title="tplProjectObj.id==''?'增加项目模板':'编辑项目模板'" :visible.sync="dlgTplProjectEditVis" width="30%">
+    <el-dialog :title="tplProjectObj.id==''?'增加项目阶段':'编辑项目阶段'" :visible.sync="dlgTplProjectEditVis" width="30%">
       <el-form :model="tplProjectObj" :rules="tplProjectObjRules" ref="tplProjectForm" label-width="80px">
         <el-form-item label="模板名称" prop="tplName">
           <el-input type="text" v-model="tplProjectObj.tplName"></el-input>
@@ -56,7 +56,7 @@
       </el-form>
     </el-dialog>
 
-    <el-dialog :title="tplStageObj.id==''?'增加项目模板':'编辑项目模板'" :visible.sync="dlgTplStageEditVis" width="30%">
+    <el-dialog :title="tplStageObj.id==''?'增加项目阶段':'编辑项目阶段'" :visible.sync="dlgTplStageEditVis" width="30%">
       <el-form :model="tplStageObj" :rules="tplStageObjRules" ref="tplStageForm" label-width="80px">
         <el-form-item label="上级阶段" prop="parentId">
           <el-cascader :options="tplStageTreeList" :props="{value:'id'}" v-model="stageParentIds" @change="onStageParentChange" change-on-select style="width:100%"/>
@@ -101,10 +101,12 @@ import {
   UPDATE_TPL_GROUP,
   DELETE_TPL_GROUP
 } from "@/config/api";
+import { getNodePath } from "@/util/treeUtil.js";
 export default {
   data() {
     return {
       logining: false,
+      selectTplProject:{},
       tplProjectList: [],
       tplStageTreeList: [],
       tplGroupTreeList: [],
@@ -181,14 +183,18 @@ export default {
     },
     openAddTplStage() {
       this.tplStageObj.id = "";
+      this.tplStageObj.tplId = this.selectTplProject.id;
       this.tplStageObj.stageName = "";
       this.tplStageObj.parentId = 0;
+      this.stageParentIds = [];
       this.dlgTplStageEditVis = true;
     },
     openAddTplGroup() {
       this.tplGroupObj.id = "";
+      this.tplGroupObj.tplId = this.selectTplProject.id;
       this.tplGroupObj.groupName = "";
       this.tplGroupObj.parentId = 0;
+      this.groupParentIds = [];
       this.dlgTplGroupEditVis = true;
     },
     openEditTplProject(row) {
@@ -198,39 +204,19 @@ export default {
     openEditTplStage(node, data){
       this.tplStageObj.id = data.id;
       this.tplStageObj.stageName = data.label;
-      this.tplStageObj.tplId = parseInt(data.desc);
+      this.tplStageObj.tplId = parseInt(data.data.desc);
       this.tplStageObj.parentId = data.parentId;
-      this.builderParentIdSeq(node,1);
+      this.stageParentIds = getNodePath(this.tplStageTreeList,data.parentId);
       this.dlgTplStageEditVis = true;
     },
     openEditTplGroup(node, data){
       this.tplGroupObj.id = data.id;
       this.tplGroupObj.groupName = data.label;
-      this.tplGroupObj.tplId = parseInt(data.desc);
+      this.tplGroupObj.tplId = parseInt(data.data.desc);
       this.tplGroupObj.parentId = data.parentId;
-      this.builderParentIdSeq(node,2);
+      this.groupParentIds = getNodePath(this.tplGroupTreeList,data.parentId);
       this.dlgTplGroupEditVis = true;
     },
-
-    builderParentIdSeq(node,who) {
-      if(who == 1){
-        this.stageParentIds = [];
-        this.stageParentIds.unshift(node.data.parentId)
-      }
-      else{
-        this.groupParentIds = [];
-        this.groupParentIds.unshift(node.data.parentId)
-      }
-      this.unshiftParentId(node.parent,who);
-    },
-    unshiftParentId(pnode,who) {
-      if (pnode!=null && pnode.level != 1) {
-        if(who == 1) this.stageParentIds.unshift(pnode.data.parentId)
-        else this.groupParentIds.unshift(pnode.data.parentId);        
-        this.unshiftParentId(pnode.parent,who);
-      }
-    },
-
     updateTplProject() {
       var _this = this;
       this.$refs.tplProjectForm.validate(valid => {
@@ -265,7 +251,7 @@ export default {
             if (data == "") {
               _this.$message({ message: "更新项目阶段失败，请联系系统管理员。", type: "error" });
             } else {
-              _this.selectTplStageTreeList(_this.tplStageObj.tplId);
+              _this.selectTplStageTreeList(_this.selectTplProject.id);
               _this.dlgTplStageEditVis = false;
             }
           });
@@ -287,7 +273,7 @@ export default {
             if (data == "") {
               _this.$message({ message: "更新项目组失败，请联系系统管理员。", type: "error" });
             } else {
-              _this.selectTplGroupTreeList(_this.tplGroupObj.tplId);
+              _this.selectTplGroupTreeList(_this.selectTplProject.id);
               _this.dlgTplGroupEditVis = false;
             }
           });
@@ -316,7 +302,7 @@ export default {
         .then(() => {
           DELETE_TPL_STAGE({ id: data.id }).then(res => {
             _this.$message({ message: "删除成功", type: "success" });
-            _this.selectTplStageTreeList(parseInt(data.desc));
+            _this.selectTplStageTreeList(this.selectTplProject.id);
           });
         });
     },
@@ -329,11 +315,12 @@ export default {
         .then(() => {
           DELETE_TPL_GROUP({ id: data.id }).then(res => {
             _this.$message({ message: "删除成功", type: "success" });
-            _this.selectTplGroupTreeList(parseInt(data.desc));
+            _this.selectTplGroupTreeList(this.selectTplProject.id);
           });
         });
     },
     onTplProjectChange(data) {
+      this.selectTplProject = data;
       this.tplStageObj.tplId = data.id;
       this.tplGroupObj.tplId = data.id;
       this.selectTplStageTreeList(data.id);

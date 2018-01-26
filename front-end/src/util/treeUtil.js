@@ -13,7 +13,7 @@ export function getNodePath(treeList,nodeId) {
 
 export function getNode(treeList,nodeId){
     const nodes = getObjects(treeList,"id",nodeId);
-    if(nodes.length == 1) return nodes[0];
+    if(nodes.length == 2) return nodes[0]; //自定义的node中包含一个data属性，实际是当前节点的完整的数据。意味着具有同样的ID，所以会取出来2条记录
 }
 
 //return an array of objects according to key, value, or key and value matching

@@ -14,6 +14,7 @@ public class TreeNode {
 	private Integer id;
 	private String label;
 	private String desc;
+	private Object data; //node 所承载的实际数据
 	private Integer parentId;
 	private List<TreeNode> children = new ArrayList<TreeNode>();
 
@@ -26,11 +27,18 @@ public class TreeNode {
 		this.parentId = parentId;
 	}
 	
-	public TreeNode(Integer id, String label, String desc, Integer parentId) {
+//	public TreeNode(Integer id, String label, String desc, Integer parentId) {
+//		this.id = id;
+//		this.label = label;
+//		this.desc = desc;
+//		this.parentId = parentId;
+//	}
+	
+	public TreeNode(Integer id, String label, Integer parentId, Object data) {
 		this.id = id;
 		this.label = label;
-		this.desc = desc;
 		this.parentId = parentId;
+		this.data = data;
 	}
 
 	public Integer getId() {
@@ -55,6 +63,14 @@ public class TreeNode {
 
 	public void setDesc(String desc) {
 		this.desc = desc;
+	}
+
+	public Object getData() {
+		return data;
+	}
+
+	public void setData(Object data) {
+		this.data = data;
 	}
 
 	public Integer getParentId() {

@@ -35,14 +35,16 @@ public class DepartmentAction {
 		List<Department> depList = depService.selectDepartmentList();
 		List<TreeNode> depTreeNodeList = new ArrayList<TreeNode>();
 		for (Department dep : depList) {
-			TreeNode treeNode = new TreeNode(dep.getId(), dep.getDepName(), dep.getDepDesc(),dep.getParentId());
+			// TreeNode treeNode = new TreeNode(dep.getId(), dep.getDepName(),
+			// dep.getDepDesc(),dep.getParentId());
+			TreeNode treeNode = new TreeNode(dep.getId(), dep.getDepName(), dep.getParentId(), dep);
 			depTreeNodeList.add(treeNode);
 		}
 		List<TreeNode> depTreeList = Utils.builderTree(depTreeNodeList);
 
 		return depTreeList;
 	}
-	
+
 	@RequestMapping(value = "/updateDep", method = RequestMethod.POST)
 	public int updateDepartment(@RequestBody Department dep) {
 
@@ -51,25 +53,25 @@ public class DepartmentAction {
 		else
 			return depService.updateDepartment(dep);
 	};
-	
+
 	@RequestMapping(value = "/deleteDep", method = RequestMethod.POST)
 	public int deleteDep(@RequestBody Department dep) {
 
 		return depService.deleteDepartment(dep.getId());
 	};
-	
+
 	@RequestMapping(value = "/selectDepEmpList", method = RequestMethod.POST)
 	public List<Employee> selectDepEmpList(@RequestBody Department dep) {
 
 		return depService.selectDepartmentEmployeeList(dep.getId());
 	}
-	
+
 	@RequestMapping(value = "/selectAllDepEmpList", method = RequestMethod.POST)
 	public List<Employee> selectAllDepEmpList() {
 
 		return depService.selectAllDepEmpList();
 	}
-	
+
 	@RequestMapping(value = "/updateDepEmp", method = RequestMethod.POST)
 	public int updateDepEmp(@RequestBody Employee depEmp) {
 
@@ -78,13 +80,13 @@ public class DepartmentAction {
 		else
 			return depService.updateEmployee(depEmp);
 	};
-	
+
 	@RequestMapping(value = "/deleteDepEmp", method = RequestMethod.POST)
 	public int deleteDepEmp(@RequestBody Employee depEmp) {
 
 		return depService.deleteDepartmentEmployee(depEmp.getId());
 	};
-	
+
 	@RequestMapping(value = "/updateEmployee", method = RequestMethod.POST)
 	public int updateEmployee(@RequestBody Employee emp) {
 
