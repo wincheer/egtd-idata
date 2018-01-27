@@ -56,4 +56,9 @@ public class DocumentService {
 
 		documentDao.deleteDocuments(doc);
 	}
+
+	public Document selectDocument(int docId) {
+		
+		return documentDao.selectDocumentByPK(docId);
+	}
 }

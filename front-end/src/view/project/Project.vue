@@ -97,6 +97,7 @@ import {
   SELECT_GROUP_EMP_LIST,
 } from "@/config/api";
 import { formatDate } from "@/util/date.js";
+import base from "@/config/remote";
 export default {
   components: { Gantt },
   data() {
@@ -356,7 +357,11 @@ export default {
       this.selectedFile = null;
     },
     downloadFile(file){
-      console.log("Hello,Baby");
+      //console.log("Hello,Baby");
+      let link = document.createElement("a");
+      link.href = base + "/download?docId=" + file.id;
+      link.target = "_BLANK"
+      link.click();
     },
   },
   computed: {
