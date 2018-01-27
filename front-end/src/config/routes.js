@@ -25,7 +25,7 @@ let routes = [
         children: [
             // { path: '/todo', component: DOING, name: '待办事项列表' ,iconCls:'el-icon-time'},
             // { path: '/todo2', component: Calendar, name: '工作日历' ,iconCls:'el-icon-date'},
-            { path: '/dashboard', component: DashBoard, name: '工作台' ,iconCls: 'el-icon-time',},
+            { path: '/dashboard', component: DashBoard, name: '工作台' ,iconCls: 'el-icon-time',blackList:[]},
         ]
     },
     {
@@ -34,8 +34,8 @@ let routes = [
         name: '项目',
         iconCls: 'el-icon-view',
         children: [
-            { path: '/project', component: Project, name: '项目进程' ,iconCls:'el-icon-date'},
-            { path: '/project-init', component: ProjectInit, name: '项目信息维护' ,iconCls:'el-icon-refresh'}
+            { path: '/project', component: Project, name: '项目进程' ,iconCls:'el-icon-date',blackList:[]},
+            { path: '/project-init', component: ProjectInit, name: '项目信息维护' ,iconCls:'el-icon-refresh',blackList:["R02","R03"]}
         ]
     },
     {
@@ -44,9 +44,9 @@ let routes = [
         name: '系统配置',
         iconCls: 'el-icon-setting',
         children: [
-            { path: '/resource', component: Resource, name: '资源管理',iconCls:'el-icon-goods' },
-            { path: '/template', component: Template, name: '项目模板定义' ,iconCls:'el-icon-star-on'},
-            { path: '/param-config', component: ParamConfig, name: '系统参数' ,iconCls:'el-icon-edit-outline'}
+            { path: '/resource', component: Resource, name: '资源管理',iconCls:'el-icon-goods',blackList:["R01","R04","R10"] },
+            { path: '/template', component: Template, name: '项目模板定义' ,iconCls:'el-icon-star-on',blackList:["R01","R10"]},
+            { path: '/param-config', component: ParamConfig, name: '系统参数' ,iconCls:'el-icon-edit-outline',blackList:["R01","R02","R03","R04","R10"]}
         ]
     }
 ];

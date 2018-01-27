@@ -53,11 +53,10 @@ public class ProjectService {
 	private ProjectStaffMapper projectStaffDao;
 	@Autowired
 	private DocumentService documentService;
-	///
-	@Autowired
-	private EmployeeMapper empDao;
 	@Autowired
 	private VendorMapper vendorDao;
+	@Autowired
+	private EmployeeMapper empDao;
 
 	public List<Project> selectProjectList() {
 
@@ -194,60 +193,41 @@ public class ProjectService {
 		return empDao.selectGroupEmpList(groupId);
 	}
 
-	public List<Map<String, Object>> selectAvailableProjectStaffList(Integer projectId) {
+	public List<Employee> selectAvailableProjectEmployeeList(Integer projectId) {
+		
+		List<Employee> projectEmpList = empDao.selectAvailableProjectEmployeeList(projectId);
+		return projectEmpList;
+	}
+	
+	public List<Map<String, Object>> selectAvailableGroupProjectEmployeeList(Integer projectId) {
 
-		List<Map<String, Object>> staffList = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> employeeGroupList = new ArrayList<Map<String, Object>>();
 		// 查询业主的员工并转换格式 => projectStaff
 		List<Employee> depEmpList = empDao.selectAllDepEmpList();
-		List<ProjectStaff> staffList_dep = new ArrayList<ProjectStaff>();
-		for (Employee emp : depEmpList) {
-			ProjectStaff staff = new ProjectStaff();
-
-			staff.setEmpId(emp.getId());
-			staff.setIsVendor(0);
-			staff.setPassword("12345678");
-			staff.setStaffEmail(emp.getEmpEmail());
-			staff.setStaffMobile(emp.getEmpMobile());
-			staff.setStaffName(emp.getEmpName());
-			staff.setId(emp.getId()); // -- 唯一标识，业主的用正数，供应商负数
-			staff.setCode("o" + emp.getId()); // ownder o+empId
-
-			staffList_dep.add(staff);
-		}
 		// 整理成前端所需要的格式
 		Map<String, Object> m0 = new LinkedHashMap<String, Object>();
 		m0.put("branch", "本机构员工");
-		m0.put("staffList", staffList_dep);
-		staffList.add(m0);
+		m0.put("employeeList", depEmpList);
+		employeeGroupList.add(m0);
 
 		// 根据合同查询对应的供应商，根据供应商分别查询员工并整理格式 => projectStaff
 		List<Employee> venderEmpList = empDao.selectVendorEmployeeListByProject(projectId);
 		List<Vendor> projectVendorList = vendorDao.selectVendorListByProject(projectId);
 		for (Vendor vendor : projectVendorList) {
-			List<ProjectStaff> vendorStaffList = new ArrayList<ProjectStaff>();
-			// 填充并转换 => projectStaff
+			List<Employee> vendorEmployeeList = new ArrayList<Employee>();
+			// 填充
 			for (Employee emp : venderEmpList) {
 				if (emp.getOrgId().equals(vendor.getId())) {
-					ProjectStaff staff = new ProjectStaff();
-					staff.setEmpId(emp.getId());
-					staff.setIsVendor(1);
-					staff.setPassword("12345678");
-					staff.setStaffEmail(emp.getEmpEmail());
-					staff.setStaffMobile(emp.getEmpMobile());
-					staff.setStaffName(emp.getEmpName());
-					staff.setId(-1 * emp.getId()); // -- 唯一标识，业主的用正数，供应商负数
-					staff.setCode("s" + emp.getId()); // supply s+empId
-
-					vendorStaffList.add(staff);
+					vendorEmployeeList.add(emp);
 				}
 			}
 			Map<String, Object> m1 = new LinkedHashMap<String, Object>();
 			m1.put("branch", vendor.getVendorName());
-			m1.put("staffList", vendorStaffList);
-			staffList.add(m1);
+			m1.put("employeeList", vendorEmployeeList);
+			employeeGroupList.add(m1);
 		}
 
-		return staffList;
+		return employeeGroupList;
 	}
 
 	public int updateProjectStaffs(Map<String, Object> map) {
@@ -260,28 +240,13 @@ public class ProjectService {
 		List<Map<String, Object>> _staffList = (List<Map<String, Object>>) map.get("staffList");
 		@SuppressWarnings("unused")
 		List<ProjectStaff> staffList = new ArrayList<ProjectStaff>();
-		// 添加所有成员 TODO 改为批量插入，顺便修改ProjectStaff的名称和结构
+		// 添加所有成员 TODO 改为批量插入
 		for (Map<String, Object> _map : _staffList) {
 			ProjectStaff staff = new ProjectStaff();
 			staff.setGroupId(groupId);
-			staff.setEmpId((Integer) _map.get("empId"));
-			staff.setId(null);
-			staff.setIsVendor((Integer) _map.get("isVendor"));
-			staff.setPassword((String) _map.get("password"));
-			staff.setStaffEmail((String) _map.get("staffEmail"));
-			staff.setStaffMobile((String) _map.get("staffMobile"));
-			staff.setStaffName((String) _map.get("staffName"));
-			if (staff.getIsVendor() == 1)
-				staff.setCode("s" + staff.getEmpId());
-			else
-				staff.setCode("o" + staff.getEmpId());
+			staff.setEmpId((Integer) _map.get("id"));
 
 			projectStaffDao.insertStaff(staff);
-
-			Employee employee = new Employee();
-			employee.setId(staff.getEmpId());
-			employee.setCode(staff.getCode());
-			empDao.updateEmployee(employee);
 		}
 
 		return 1;
@@ -303,6 +268,11 @@ public class ProjectService {
 	public List<Employee> selectEmployeeList() {
 
 		return empDao.selectEmployeeList();
+	}
+
+	public List<Employee> selectOwnerProjectEmpList(Integer projectId) {
+
+		return empDao.selectOwnerProjectEmpList(projectId);
 	}
 
 }

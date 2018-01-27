@@ -37,4 +37,8 @@ public interface EmployeeMapper {
 	List<Employee> selectEmployeeList();  
 	
 	List<Employee> selectGroupEmpList(Integer groupId);
+
+	List<Employee> selectAvailableProjectEmployeeList(Integer projectId);
+
+	List<Employee> selectOwnerProjectEmpList(Integer projectId);  
 }

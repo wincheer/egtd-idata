@@ -199,9 +199,9 @@
     <el-dialog title="维护项目组成员" :visible.sync="dlgProjectStaffEditVis" width="20%" :close-on-click-modal="false">
       <el-form :model="projectStaffObj" ref="projectStaffObjForm" label-width="80px">
         <el-form-item label="机构员工">
-            <el-select v-model="selectedProjectStaffs" value-key="code" filterable multiple clearable placeholder="请选择">
-              <el-option-group v-for="group in availableStaffList" :key="group.branch" :label="group.branch">
-                <el-option v-for="item in group.staffList" :key="item.id" :label="item.staffName" :value="item"></el-option>
+            <el-select v-model="selectedProjectStaffs" value-key="id" filterable multiple clearable placeholder="请选择">
+              <el-option-group v-for="group in availableEmployeeGroup" :key="group.branch" :label="group.branch">
+                <el-option v-for="item in group.employeeList" :key="item.id" :label="item.empName" :value="item"></el-option>
               </el-option-group>
             </el-select>
         </el-form-item>
@@ -244,7 +244,7 @@
         </el-form-item>
         <el-form-item label="负责人" prop="category">
           <el-select v-model="projectStageObj.actorStaffId" placeholder="请选择" clearable>
-            <el-option v-for="item in projectStaffList" :key="item.id" :label="item.empName" :value="item.id" />
+            <el-option v-for="item in ownerProjectEmpList" :key="item.id" :label="item.empName" :value="item.id" />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -279,9 +279,10 @@ import {
   UPDATE_DOCUMENT,
   DELETE_DOCUMENT,
   SELECT_GROUP_EMP_LIST,
-  SELECT_AVAILABLE_PROJECT_STAFF_LIST,
+  SELECT_AVAILABLE_GROUP_PROJECT_EMPLOYEE_LIST,
   UPDATE_PROJECT_STAFFS,
   SELECT_PROJECT_EMPLOYEE_LIST,
+  SELECT_OWNER_PROJECT_EMPLOYEE_LIST,
   SELECT_DEP_TREE_LIST
 } from "@/config/api";
 import { formatDate } from "@/util/date.js";
@@ -366,7 +367,7 @@ export default {
         staffMobile: "",
         password: ""
       },
-      availableStaffList: [],
+      availableEmployeeGroup: [],
       selectedProjectStaffs: [],
 
       projectStageObj: {
@@ -409,7 +410,8 @@ export default {
       categoryParamList: [],
       builtinRoleParamList: [],
       vendorList: [],
-      projectVendorList: []
+      projectVendorList: [],
+      ownerProjectEmpList:[]
     };
   },
   methods: {
@@ -578,6 +580,19 @@ export default {
         }
       });
     },
+    selectOwnerProjectEmpList(projectId) {
+      var _this = this;
+      SELECT_OWNER_PROJECT_EMPLOYEE_LIST({ id: projectId }).then(res => {
+        if (!Array.isArray(res))
+          _this.$message({
+            message: "获取甲方项目组成员失败，请联系系统管理员。",
+            type: "error"
+          });
+        else {
+          _this.ownerProjectEmpList = res;
+        }
+      });
+    },
     openAddProject() {
       this.dlgProjectEditVis = true;
     },
@@ -639,6 +654,7 @@ export default {
     },
     openEditProjectStage(row) {
       this.projectStageObj = Object.assign(row);
+      this.selectOwnerProjectEmpList(this.selectedProject.id);
       this.dlgProjectStageEditVis = true;
     },
     openAddProjectStage() {
@@ -650,7 +666,7 @@ export default {
         end_date: "",
         actorStaffId: ""
       });
-
+      this.selectOwnerProjectEmpList(this.selectedProject.id);
       this.dlgProjectStageEditVis = true;
     },
     openProjectGroupList(row) {
@@ -881,16 +897,16 @@ export default {
         this.selectProjectGroupTreeList(row.id);
         this.selectProjectStageList(row.id);
         //填充项目相关的供应商
-        this.selectEmployeeList(row.id);
+        this.selectEmployeeGroup(row.id);
         this.selectProjectStaffList(row.id);
       } else this.selectedProject = {};
 
       this.$refs.projectTable.setCurrentRow(row);
     },
-    selectEmployeeList(projectId) {
+    selectEmployeeGroup(projectId) {
       var _this = this;
-      SELECT_AVAILABLE_PROJECT_STAFF_LIST({ id: projectId }).then(res => {
-        _this.availableStaffList = res;
+      SELECT_AVAILABLE_GROUP_PROJECT_EMPLOYEE_LIST({ id: projectId }).then(res => {
+        _this.availableEmployeeGroup = res;
       });
     },
     onProjectGroupChange(data) {

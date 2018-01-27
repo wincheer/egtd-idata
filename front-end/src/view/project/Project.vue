@@ -28,7 +28,7 @@
           <el-form-item label="任务描述"  style="margin-right: 10px;" prop="taskDesc">
             <el-input v-model="taskObj.taskDesc" :disabled="whoami!='asigner'" placeholder="填写任务要求" type="textarea"></el-input>
             <el-upload ref="uploadStandard" action="any" :disabled="whoami!='asigner'" :http-request="updateTaskWithFile" :on-preview="downloadFile" :on-remove="onFileRemove" :auto-upload="false" :file-list="taskStandardFileList">
-              <el-button slot="trigger" size="mini">任务要求附件 ...</el-button>
+              <el-button slot="trigger" :disabled="whoami!='asigner'" size="mini">任务要求附件 ...</el-button>
             </el-upload>
           </el-form-item>
           <el-row :gutter="10">
@@ -71,7 +71,7 @@
           <el-form-item label="当前进度"  prop="progress" v-show="this.taskMode==='update'">
             <el-slider v-model="taskObj.progress" :min="0" :max="1" :step="0.2" :disabled="whoami!='actor'" show-stops style="margin-left: 5px;"></el-slider>
             <el-upload ref="uploadResult" action="any" :disabled="whoami!='actor'" :http-request="updateTaskWithFileResult" :on-preview="downloadFile" :on-remove="onFileRemove" :file-list="taskResultFileList">
-              <el-button slot="trigger" size="mini">任务结果附件 ...</el-button>
+              <el-button slot="trigger" :disabled="whoami!='actor'" size="mini">任务结果附件 ...</el-button>
             </el-upload>
           </el-form-item>
         </el-form>

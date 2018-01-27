@@ -167,10 +167,17 @@ public class ProjectAction {
 	}
 
 	// 项目中所有可用的人员（不一定全部用上） - available
-	@RequestMapping(value = "/selectAvailableProjectStaffList", method = RequestMethod.POST)
-	public List<Map<String, Object>> selectAvailableProjectStaffList(@RequestBody Project data) throws Exception {
+	@RequestMapping(value = "/selectAvailableProjectEmployeeList", method = RequestMethod.POST)
+	public List<Employee> selectAvailableProjectEmployeeList(@RequestBody Project data) throws Exception {
 
-		List<Map<String, Object>> employeeList = projectService.selectAvailableProjectStaffList(data.getId());
+		List<Employee> employeeList = projectService.selectAvailableProjectEmployeeList(data.getId());
+		return employeeList;
+	}
+	// 项目中所有可用的人员（按公司分组） - available
+	@RequestMapping(value = "/selectAvailableGroupProjectEmployeeList", method = RequestMethod.POST)
+	public List<Map<String, Object>> selectAvailableGroupProjectEmployeeList(@RequestBody Project data) throws Exception {
+
+		List<Map<String, Object>> employeeList = projectService.selectAvailableGroupProjectEmployeeList(data.getId());
 		return employeeList;
 	}
 
@@ -187,6 +194,14 @@ public class ProjectAction {
 	public List<Employee> selectEmployeeList() throws Exception {
 
 		List<Employee> staffList = projectService.selectEmployeeList();
+		return staffList;
+	}
+	
+	// 甲方项目中已经分配的人员
+	@RequestMapping(value = "/selectOwnerProjectEmpList", method = RequestMethod.POST)
+	public List<Employee> selectOwnerProjectEmpList(@RequestBody Project data) throws Exception {
+
+		List<Employee> staffList = projectService.selectOwnerProjectEmpList(data.getId());
 		return staffList;
 	}
 

@@ -120,15 +120,31 @@
   </select>
   
   <select id="selectProjectEmployeeList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    SELECT DISTINCT
+	SELECT DISTINCT
 		employee.*
 	FROM
 		employee
-	LEFT JOIN project_staff ON employee.id = project_staff.emp_id
-	LEFT JOIN project_group ON project_staff.group_id = project_group.id
-	LEFT JOIN project ON project_group.project_id = project.id
+	INNER JOIN project_staff ON employee.id = project_staff.emp_id
+	INNER JOIN project_group ON project_staff.group_id = project_group.id
 	WHERE
-		project.id = #{projectId,jdbcType=INTEGER}
+		project_group.project_id = #{projectId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectAvailableProjectEmployeeList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+	SELECT
+		employee.*
+	FROM
+		employee
+	LEFT JOIN project_contract ON employee.org_id = project_contract.vendor_id
+	WHERE
+		employee.`code` != 'o0'
+	AND (
+		(
+			LEFT (employee.`code`, 1) = 's'
+			AND project_contract.project_id = #{projectId,jdbcType=INTEGER}
+		)
+		OR LEFT (employee.`code`, 1) = 'o'
+	)
   </select>
   
   <select id="selectEmployeeList"  resultMap="BaseResultMap">
@@ -146,6 +162,18 @@
 	LEFT JOIN project_staff ON employee.id = project_staff.emp_id
 	WHERE
 		project_staff.group_id = #{groupId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectOwnerProjectEmpList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+	SELECT
+		employee.*
+	FROM
+		employee
+	LEFT JOIN project_staff ON employee.id = project_staff.emp_id
+	LEFT JOIN project_group ON project_staff.group_id = project_group.id
+	WHERE
+		LEFT (employee.`code`, 1) = 'o'
+	AND project_group.project_id = #{projectId,jdbcType=INTEGER}
   </select>
 
 </mapper>

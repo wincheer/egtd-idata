@@ -35,8 +35,6 @@ public class DepartmentAction {
 		List<Department> depList = depService.selectDepartmentList();
 		List<TreeNode> depTreeNodeList = new ArrayList<TreeNode>();
 		for (Department dep : depList) {
-			// TreeNode treeNode = new TreeNode(dep.getId(), dep.getDepName(),
-			// dep.getDepDesc(),dep.getParentId());
 			TreeNode treeNode = new TreeNode(dep.getId(), dep.getDepName(), dep.getParentId(), dep);
 			depTreeNodeList.add(treeNode);
 		}
