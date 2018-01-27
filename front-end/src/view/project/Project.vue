@@ -27,7 +27,7 @@
           </el-row>
           <el-form-item label="任务描述"  style="margin-right: 10px;" prop="taskDesc">
             <el-input v-model="taskObj.taskDesc" :disabled="whoami!='asigner'" placeholder="填写任务要求" type="textarea"></el-input>
-            <el-upload ref="uploadStandard" action="any" :disabled="whoami!='asigner'" :http-request="updateTaskWithFile" :on-remove="onFileRemove" :auto-upload="false" :file-list="taskStandardFileList">
+            <el-upload ref="uploadStandard" action="any" :disabled="whoami!='asigner'" :http-request="updateTaskWithFile" :on-preview="downloadFile" :on-remove="onFileRemove" :auto-upload="false" :file-list="taskStandardFileList">
               <el-button slot="trigger" size="mini">任务要求附件 ...</el-button>
             </el-upload>
           </el-form-item>
@@ -70,7 +70,7 @@
           </el-form-item>
           <el-form-item label="当前进度"  prop="progress" v-show="this.taskMode==='update'">
             <el-slider v-model="taskObj.progress" :min="0" :max="1" :step="0.2" :disabled="whoami!='actor'" show-stops style="margin-left: 5px;"></el-slider>
-            <el-upload ref="uploadResult" action="any" :disabled="whoami!='actor'" :http-request="updateTaskWithFileResult" :on-remove="onFileRemove" :file-list="taskResultFileList">
+            <el-upload ref="uploadResult" action="any" :disabled="whoami!='actor'" :http-request="updateTaskWithFileResult" :on-preview="downloadFile" :on-remove="onFileRemove" :file-list="taskResultFileList">
               <el-button slot="trigger" size="mini">任务结果附件 ...</el-button>
             </el-upload>
           </el-form-item>
@@ -257,6 +257,10 @@ export default {
         type: "task", //隐藏字段，标记任务类型
         hasSupervisor: "0" //隐藏字段，用来扩展任务完成检查链
       };
+
+      this.taskStandardFileList = [];
+      this.taskResultFileList = [];
+
       this.dlgTaskEditVis = true;
     },
     ////////
@@ -334,8 +338,8 @@ export default {
                 type: "error"
               });
             else {
-              _this.dlgTaskEditVis = false;
-              _this.selectTaskList(_this.selectedProject);
+              //_this.dlgTaskEditVis = false;
+              //_this.selectTaskList(_this.selectedProject);
             }
           });
         }
@@ -350,6 +354,9 @@ export default {
         });
       }
       this.selectedFile = null;
+    },
+    downloadFile(file){
+      console.log("Hello,Baby");
     },
   },
   computed: {
