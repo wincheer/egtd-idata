@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.idata.gtd.common.DocCat;
 import com.idata.gtd.dao.EmployeeMapper;
 import com.idata.gtd.dao.ProjectContractMapper;
 import com.idata.gtd.dao.ProjectGroupMapper;
@@ -92,6 +93,7 @@ public class ProjectService {
 		doc.setFileName(String.valueOf(System.currentTimeMillis()));
 		doc.setBelongTo("contract");
 		doc.setSourceId(data.getId());
+		doc.setCategory(DocCat.DOCUMENT.getValue());
 
 		documentService.upload(file, doc);
 
@@ -112,6 +114,7 @@ public class ProjectService {
 		doc.setFileName(String.valueOf(System.currentTimeMillis()));
 		doc.setBelongTo("contract");
 		doc.setSourceId(data.getId());
+		doc.setCategory(DocCat.DOCUMENT.getValue());
 
 		documentService.upload(file, doc);
 		return 0;

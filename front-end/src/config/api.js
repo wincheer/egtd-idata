@@ -62,7 +62,9 @@ export const SELECT_EMPLOYEE_LIST = () => { return axios.post(`${base}/selectEmp
 
 // 项目任务
 export const SELECT_PROJECT_TASK_LIST = (params) => { return axios.post(`${base}/selectProjectTaskList`,params).then(res => res.data); };
-export const UPDATE_PROJECT_TASKE = (params) => { return axios.post(`${base}/updateProjectTask`, params).then(res => res.data); };
+export const UPDATE_PROJECT_TASK = (params) => { return axios.post(`${base}/updateProjectTask`, params).then(res => res.data); };
+export const UPDATE_PROJECT_TASK_WITH_FILE = (params) => { return axios.post(`${base}/updateProjectTaskWithFile`, params).then(res => res.data); };
+export const UPDATE_PROJECT_TASK_WITH_FILE_RESULT = (params) => { return axios.post(`${base}/updateProjectTaskWithFileResult`, params).then(res => res.data); };
 export const SELECT_MY_TASK_LIST = (params) => { return axios.post(`${base}/selectMyTaskList`,params).then(res => res.data); };
 export const SELECT_MY_TASK_LIST_IN = (params) => { return axios.post(`${base}/selectMyTaskListIn`,params).then(res => res.data); };
 export const SELECT_MY_TASK_LIST_OUT = (params) => { return axios.post(`${base}/selectMyTaskListOut`,params).then(res => res.data); };

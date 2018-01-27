@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.idata.gtd.common.DocCat;
 import com.idata.gtd.dao.ProjectTaskMapper;
+import com.idata.gtd.entity.Document;
 import com.idata.gtd.entity.ProjectTask;
 
 /**
@@ -22,6 +24,8 @@ public class TaskService {
 
 	@Autowired
 	private ProjectTaskMapper taskDao;
+	@Autowired
+	private DocumentService documentService;
 
 	public List<ProjectTask> selectProjectTaskList(Integer projectId) {
 
@@ -42,15 +46,53 @@ public class TaskService {
 		return task.getId();
 	}
 
-	public int insertProjectTask(MultipartFile file, ProjectTask model) {
-		// TODO Auto-generated method stub
+	public int insertProjectTask(MultipartFile file, ProjectTask model) throws Exception {
+
+		taskDao.insertProjectTask(model);
+
+		Document doc = new Document();
+		doc.setName(file.getOriginalFilename());
+		doc.setFileName(String.valueOf(System.currentTimeMillis()));
+		doc.setBelongTo("task");
+		doc.setSourceId(model.getId());
+		doc.setCategory(DocCat.STANDARD.getValue()); //?
+
+		documentService.upload(file, doc);
+		
 		return 0;
 	}
 
-	public int updateProjectTask(MultipartFile file, ProjectTask model) {
-		// TODO Auto-generated method stub
+	public int updateProjectTask(MultipartFile file, ProjectTask model) throws Exception {
+		
+		taskDao.updateProjectTask(model);
+
+		Document doc = new Document();
+		doc.setName(file.getOriginalFilename());
+		doc.setFileName(String.valueOf(System.currentTimeMillis()));
+		doc.setBelongTo("task");
+		doc.setSourceId(model.getId());
+		doc.setCategory(DocCat.STANDARD.getValue());
+
+		documentService.upload(file, doc);
+		
 		return 0;
 	}
+	
+	public int updateProjectTaskWithResult(MultipartFile file, ProjectTask model) throws Exception {
+		
+		taskDao.updateProjectTask(model);
+
+		Document doc = new Document();
+		doc.setName(file.getOriginalFilename());
+		doc.setFileName(String.valueOf(System.currentTimeMillis()));
+		doc.setBelongTo("task");
+		doc.setSourceId(model.getId());
+		doc.setCategory(DocCat.RESULT.getValue());
+
+		documentService.upload(file, doc);
+		
+		return 0;
+	} 
 
 	public List<ProjectTask> selectMyTaskList(Integer empId) {
 		
@@ -64,5 +106,7 @@ public class TaskService {
 	public List<ProjectTask> selectMyTaskListOut(Integer empId) {
 		return taskDao.selectMyTaskListOut(empId);
 	}
+
+	
 
 }

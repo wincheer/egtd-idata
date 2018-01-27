@@ -7,6 +7,7 @@ public class Document {
 	private String fileName;
 	private String belongTo;
 	private Integer sourceId;
+	private String category; //文档分类：1普通文档、2任务要求、3任务结果
 
 	public Integer getId() {
 		return id;
@@ -38,6 +39,14 @@ public class Document {
 
 	public void setSourceId(Integer sourceId) {
 		this.sourceId = sourceId;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 	public String getFileName() {

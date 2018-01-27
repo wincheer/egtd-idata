@@ -136,7 +136,7 @@
             action="any"
             :http-request="updateProjectContract"
             :on-change="onFileChange"
-            :before-remove="onFileRemove"
+            :on-remove="onFileRemove"
             :auto-upload="false" 
             :file-list="contractFileList">
             <el-button slot="trigger" size="mini">选取合同 ...</el-button>

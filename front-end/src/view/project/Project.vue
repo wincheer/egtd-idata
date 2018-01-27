@@ -4,8 +4,8 @@
         <el-select v-model="selectedProject" placeholder="请选择项目" @change="onProjectChange" value-key="id">
           <el-option v-for="item in myProjectList" :key="item.id" :label="item.projectName" :value="item" />
         </el-select>
-        <el-button icon="el-icon-edit" type="primary" plain @click="openTastEdit" :disabled="caniOpen"> 编辑任务</el-button>
-        <el-button icon="el-icon-share" type="primary" plain @click="openTastAdd" :disabled="caniOpen">分配子任务</el-button>
+        <el-button icon="el-icon-edit" type="primary" plain @click="openTaskEdit" :disabled="caniOpen || selectedTask.parent==0"> 编辑任务</el-button>
+        <el-button icon="el-icon-share" type="primary" plain @click="openTaskAdd" :disabled="caniOpen">分配子任务</el-button>
       </el-row>
       <el-row>
         <gantt :tasks="tasks" @task-selected="onSelectTask"></gantt>
@@ -27,8 +27,8 @@
           </el-row>
           <el-form-item label="任务描述"  style="margin-right: 10px;" prop="taskDesc">
             <el-input v-model="taskObj.taskDesc" :disabled="whoami!='asigner'" placeholder="填写任务要求" type="textarea"></el-input>
-            <el-upload ref="upload" action="any" :http-request="updateProjectTask" :on-change="onFileChange" :on-remove="onFileRemove" :auto-upload="false" :file-list="taskFileList">
-              <el-button slot="trigger" size="mini">添加附件 ...</el-button>
+            <el-upload ref="uploadStandard" action="any" :disabled="whoami!='asigner'" :http-request="updateTaskWithFile" :on-remove="onFileRemove" :auto-upload="false" :file-list="taskStandardFileList">
+              <el-button slot="trigger" size="mini">任务要求附件 ...</el-button>
             </el-upload>
           </el-form-item>
           <el-row :gutter="10">
@@ -68,13 +68,16 @@
               <el-radio-button label="20">最低</el-radio-button>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="当前进度"  prop="progress" v-show="this.taskMode=='update'">
+          <el-form-item label="当前进度"  prop="progress" v-show="this.taskMode==='update'">
             <el-slider v-model="taskObj.progress" :min="0" :max="1" :step="0.2" :disabled="whoami!='actor'" show-stops style="margin-left: 5px;"></el-slider>
+            <el-upload ref="uploadResult" action="any" :disabled="whoami!='actor'" :http-request="updateTaskWithFileResult" :on-remove="onFileRemove" :file-list="taskResultFileList">
+              <el-button slot="trigger" size="mini">任务结果附件 ...</el-button>
+            </el-upload>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dlgTaskEditVis = false">取消</el-button>
-          <el-button type="primary" @click="updateTask">保存</el-button>
+          <el-button type="primary" @click="uploadFile">保存</el-button>
         </div>
       </el-dialog>
     </section>
@@ -85,9 +88,13 @@ import Gantt from "@/component/Gantt.vue";
 import {
   SELECT_MY_PROJECT_LIST,
   SELECT_PROJECT_TASK_LIST,
-  UPDATE_PROJECT_TASKE,
+  UPDATE_PROJECT_TASK,
+  UPDATE_PROJECT_TASK_WITH_FILE,
+  UPDATE_PROJECT_TASK_WITH_FILE_RESULT,
+  DELETE_DOCUMENT,
+  SELECT_DOCUMENT_LIST,
   SELECT_PROJECT_EMPLOYEE_LIST,
-  SELECT_GROUP_EMP_LIST
+  SELECT_GROUP_EMP_LIST,
 } from "@/config/api";
 import { formatDate } from "@/util/date.js";
 export default {
@@ -114,11 +121,10 @@ export default {
         planWorkload: "", //工作量
         realWorkload: "", // 隐藏字段，实际工作量
         isDelay: "", //隐藏字段，是否延期
-        delayReason: "", //隐藏字段：延期原因
+        delayReason: null, //隐藏字段：延期原因
         readonly: "", //隐藏字段，附加字段
         editable: "", //隐藏字段，附加字段
         type: "task", //隐藏字段，标记任务类型
-        hasSupervisor: "" //隐藏字段，用来扩展任务完成检查链
       },
       taskObjRules: {
         text: [
@@ -136,7 +142,8 @@ export default {
       selectedTask: {},
       dlgTaskEditVis: false,
       projectStaffList: [],
-
+      taskStandardFileList:[],
+      taskResultFileList:[],
       taskMode: "" //任务模式编辑 edit 或者分配子任务 asign,与登录者身份(whoami)配合用来检测可编辑状态
       //isLightBoxActive: false
     };
@@ -187,6 +194,25 @@ export default {
         _this.projectStaffList = res;
       });
     },
+    selectDocumentList(projectTaskId,docCategory) {
+      var _this = this;
+      SELECT_DOCUMENT_LIST({
+        belongTo: "task",
+        sourceId: projectTaskId,
+        category:docCategory
+      }).then(res => {
+        if (!Array.isArray(res))
+          _this.$message({
+            message: "获取项目文档文件失败，请联系系统管理员。",
+            type: "error"
+          });
+        else {
+          _this.contractFileList = res;
+          if(docCategory==="2") _this.taskStandardFileList = res;
+          if(docCategory==="3") _this.taskResultFileList = res;
+        }
+      });
+    },
     fmtDate(timestamp) {
       return formatDate(new Date(timestamp), "yyyy-MM-dd");
     },
@@ -199,14 +225,14 @@ export default {
     onSelectTask(task) {
       this.selectedTask = task;
     },
-    openTastEdit() {
+    openTaskEdit() {
       this.taskMode = "update";
-
       this.taskObj = Object.assign(this.selectedTask);
-      //this.taskObj.assignStaffId = this.$store.state.loginUser.id;
+      this.selectDocumentList(this.selectedTask.id,"2");
+      this.selectDocumentList(this.selectedTask.id,"3");
       this.dlgTaskEditVis = true;
     },
-    openTastAdd() {
+    openTaskAdd() {
       this.taskMode = "add";
 
       this.taskObj = {
@@ -225,7 +251,7 @@ export default {
         planWorkload: "", //工作量
         realWorkload: "", // 隐藏字段，实际工作量
         isDelay: 0, //隐藏字段，是否延期
-        delayReason: "", //隐藏字段：延期原因
+        delayReason: null, //隐藏字段：延期原因
         readonly: 0, //隐藏字段，附加字段
         editable: 1, //隐藏字段，附加字段
         type: "task", //隐藏字段，标记任务类型
@@ -233,11 +259,27 @@ export default {
       };
       this.dlgTaskEditVis = true;
     },
+    ////////
+    /**上传文件，同时包含表单内容 */
+    uploadFile() {
+      var _uploadFiles = this.$refs.uploadStandard.uploadFiles;
+      if (_uploadFiles.length == 0) this.updateTask();
+      else {
+        for (var i = 0; i < _uploadFiles.length; i++) {
+          var _uploadFile = _uploadFiles[i];
+          if (_uploadFile.status != "success") {
+            this.$refs.uploadStandard.submit();
+            return;
+          }
+        }
+        this.updateTask();
+      }
+    },
     updateTask() {
       var _this = this;
       this.$refs.taskForm.validate(valid => {
         if (valid) {
-          UPDATE_PROJECT_TASKE(_this.taskObj).then(data => {
+          UPDATE_PROJECT_TASK(_this.taskObj).then(data => {
             if (data == "") {
               _this.$message({
                 message: "更新任务失败，请联系系统管理员。",
@@ -250,7 +292,65 @@ export default {
           });
         }
       });
-    }
+    },
+    updateTaskWithFile(item) {
+      var _this = this;
+      this.$refs.taskForm.validate(valid => {
+        if (valid) {
+          var formData = new FormData();
+          for (var key in _this.taskObj) {
+            if(key.substr(0,1)!=="$")
+              formData.append(key, _this.taskObj[key]);
+          }
+          formData.append("file", item.file);
+          UPDATE_PROJECT_TASK_WITH_FILE(formData).then(data => {
+            if (data !== 0)
+              _this.$message({
+                message: "更新项目合同失败，请联系系统管理员。",
+                type: "error"
+              });
+            else {
+              _this.dlgTaskEditVis = false;
+              _this.selectTaskList(_this.selectedProject);
+            }
+          });
+        }
+      });
+    },
+    updateTaskWithFileResult(item) {
+      var _this = this;
+      this.$refs.taskForm.validate(valid => {
+        if (valid) {
+          var formData = new FormData();
+          for (var key in _this.taskObj) {
+            if(key.substr(0,1)!=="$")
+              formData.append(key, _this.taskObj[key]);
+          }
+          formData.append("file", item.file);
+          UPDATE_PROJECT_TASK_WITH_FILE_RESULT(formData).then(data => {
+            if (data !== 0)
+              _this.$message({
+                message: "更新项目合同失败，请联系系统管理员。",
+                type: "error"
+              });
+            else {
+              _this.dlgTaskEditVis = false;
+              _this.selectTaskList(_this.selectedProject);
+            }
+          });
+        }
+      });
+    },
+    onFileRemove(file, fileList) {
+      var _this = this;
+      if (file.status == "success") {
+        DELETE_DOCUMENT({ id: file.id }).then(res => {
+          _this.$message({ message: "删除成功", type: "success" });
+          //_this.selectDocumentList(file.sourceId);
+        });
+      }
+      this.selectedFile = null;
+    },
   },
   computed: {
     caniOpen() {

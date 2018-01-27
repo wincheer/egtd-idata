@@ -8,6 +8,7 @@
     <result column="file_name" jdbcType="VARCHAR" property="fileName" />
     <result column="belong_to" jdbcType="VARCHAR" property="belongTo" />
     <result column="source_id" jdbcType="INTEGER" property="sourceId" />
+    <result column="category" jdbcType="VARCHAR" property="category" />
   </resultMap>
 
   <select id="selectDocumentByPK" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -29,6 +30,7 @@
       <if test="fileName != null">file_name,</if>
       <if test="belongTo != null">belong_to,</if>
       <if test="sourceId != null">source_id,</if>
+      <if test="category != null">category,</if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">#{id,jdbcType=INTEGER},</if>
@@ -36,6 +38,7 @@
       <if test="fileName != null">#{fileName,jdbcType=VARCHAR},</if>
       <if test="belongTo != null">#{belongTo,jdbcType=VARCHAR},</if>
       <if test="sourceId != null">#{sourceId,jdbcType=INTEGER},</if>
+      <if test="category != null">#{category,jdbcType=VARCHAR},</if>
     </trim>
   </insert>
   
@@ -46,6 +49,7 @@
       <if test="fileName != null">file_name = #{fileName,jdbcType=VARCHAR},</if>
       <if test="belongTo != null">belong_to = #{belongTo,jdbcType=VARCHAR},</if>
       <if test="sourceId != null">source_id = #{sourceId,jdbcType=INTEGER},</if>
+      <if test="category != null">category = #{category,jdbcType=VARCHAR},</if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -59,6 +63,7 @@
 	    <if test="fileName != null">file_name = #{fileName,jdbcType=VARCHAR} and </if>
 		<if test="belongTo != null">belong_to = #{belongTo,jdbcType=VARCHAR} and </if>
 		<if test="sourceId != null">source_id = #{sourceId,jdbcType=INTEGER} and </if>
+		<if test="category != null">category = #{category,jdbcType=VARCHAR} and </if>
 	</trim>
   </select>
   
@@ -70,6 +75,7 @@
 	    <if test="fileName != null">file_name = #{fileName,jdbcType=VARCHAR} and </if>
 		<if test="belongTo != null">belong_to = #{belongTo,jdbcType=VARCHAR} and </if>
 		<if test="sourceId != null">source_id = #{sourceId,jdbcType=INTEGER} and </if>
+		<if test="category != null">category = #{category,jdbcType=VARCHAR} and </if>
 	</trim>
   </select>
  

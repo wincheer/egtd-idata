@@ -1,5 +1,6 @@
 package com.idata.gtd.action;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +77,7 @@ public class ProjectAction {
 	public int updateProjectContract(@RequestParam Map<String, Object> data, @RequestParam MultipartFile file) throws Exception {
 
 		logger.info("合同上传的附件 = " + file.getOriginalFilename());
-		Gson gson = new GsonBuilder().create();
+		Gson gson = new GsonBuilder().setDateFormat(DateFormat.FULL).create();
 		ProjectContract model = gson.fromJson(data.toString(), ProjectContract.class);
 
 		if (model.getId() == 0) {
@@ -158,17 +159,6 @@ public class ProjectAction {
 		return projectService.deleteProjectStage(data.getId());
 	};
 
-	///////////
-	// 项目组人员
-	// @RequestMapping(value = "/selectGroupStaffList", method =
-	// RequestMethod.POST)
-	// public List<ProjectStaff> selectGroupStaffList(@RequestBody ProjectStaff
-	// data) throws Exception {
-	//
-	// List<ProjectStaff> projectStaffList =
-	// projectService.selectGroupStaffList(data.getGroupId());
-	// return projectStaffList;
-	// }
 	@RequestMapping(value = "/selectGroupEmpList", method = RequestMethod.POST)
 	public List<Employee> selectGroupEmpList(@RequestBody ProjectStaff data) throws Exception {
 
