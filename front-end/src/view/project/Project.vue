@@ -16,30 +16,30 @@
           <el-row :gutter="10">
             <el-col :span="12">
               <el-form-item label="任务名称" prop="text">
-                <el-input v-model="taskObj.text" placeholder="新任务" :disabled="whoami!='asigner'"></el-input>
+                <el-input v-model="taskObj.text" placeholder="新任务" :disabled="whoami.indexOf('asigner')==-1"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="计划工时" prop="planWorkload">
-                <el-input-number v-model="taskObj.planWorkload" :disabled="whoami!='asigner'" :min="0" :max="1000" style="width:160px"></el-input-number> 小时
+                <el-input-number v-model="taskObj.planWorkload" :disabled="whoami.indexOf('asigner')==-1" :min="0" :max="1000" style="width:160px"></el-input-number> 小时
               </el-form-item>
             </el-col>
           </el-row>
           <el-form-item label="任务描述"  style="margin-right: 10px;" prop="taskDesc">
-            <el-input v-model="taskObj.taskDesc" :disabled="whoami!='asigner'" placeholder="填写任务要求" type="textarea"></el-input>
-            <el-upload ref="uploadStandard" action="any" :disabled="whoami!='asigner'" :http-request="updateTaskWithFile" :on-preview="downloadFile" :on-remove="onFileRemove" :auto-upload="false" :file-list="taskStandardFileList">
-              <el-button slot="trigger" :disabled="whoami!='asigner'" size="mini">任务要求附件 ...</el-button>
+            <el-input v-model="taskObj.taskDesc" :disabled="whoami.indexOf('asigner')==-1" placeholder="填写任务要求" type="textarea"></el-input>
+            <el-upload ref="uploadStandard" action="any" :disabled="whoami.indexOf('asigner')==-1" :http-request="updateTaskWithFile" :on-preview="downloadFile" :on-remove="onFileRemove" :auto-upload="false" :file-list="taskStandardFileList">
+              <el-button slot="trigger" :disabled="whoami.indexOf('asigner')==-1" size="mini">任务要求附件 ...</el-button>
             </el-upload>
           </el-form-item>
           <el-row :gutter="10">
             <el-col :span="12">
               <el-form-item label="开始日期" prop="start_date">
-                <el-date-picker v-model="taskObj.start_date" :disabled="whoami!='asigner'" placeholder="选择开始日期"></el-date-picker>
+                <el-date-picker v-model="taskObj.start_date" :disabled="whoami.indexOf('asigner')==-1" placeholder="选择开始日期"></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="结束日期" prop="end_date">
-                <el-date-picker v-model="taskObj.end_date" :disabled="whoami!='asigner'" placeholder="选择结束日期"></el-date-picker>
+                <el-date-picker v-model="taskObj.end_date" :disabled="whoami.indexOf('asigner')==-1" placeholder="选择结束日期"></el-date-picker>
               </el-form-item>
             </el-col>
           </el-row>
@@ -69,9 +69,9 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="当前进度"  prop="progress" v-show="this.taskMode==='update'">
-            <el-slider v-model="taskObj.progress" :min="0" :max="1" :step="0.2" :disabled="whoami!='actor'" show-stops style="margin-left: 5px;"></el-slider>
-            <el-upload ref="uploadResult" action="any" :disabled="whoami!='actor'" :http-request="updateTaskWithFileResult" :on-preview="downloadFile" :on-remove="onFileRemove" :file-list="taskResultFileList">
-              <el-button slot="trigger" :disabled="whoami!='actor'" size="mini">任务结果附件 ...</el-button>
+            <el-slider v-model="taskObj.progress" :min="0" :max="1" :step="0.2" :disabled="whoami.indexOf('actor')==-1" show-stops style="margin-left: 5px;"></el-slider>
+            <el-upload ref="uploadResult" action="any" :disabled="whoami.indexOf('actor')==-1" :http-request="updateTaskWithFileResult" :on-preview="downloadFile" :on-remove="onFileRemove" :file-list="taskResultFileList">
+              <el-button slot="trigger" :disabled="whoami.indexOf('actor')==-1" size="mini">任务结果附件 ...</el-button>
             </el-upload>
           </el-form-item>
         </el-form>
@@ -374,15 +374,15 @@ export default {
     },
     whoami() {
       //我是谁 - 任务发布者 asigner ? 任务接受者 actor?
-      var myRole = "player" //默认是无关者（非任务直接参与人）
+      var myRole = [] //默认是无关者（非任务直接参与人）
       if(this.taskMode=="update"){
         if (this.selectedTask.assignStaffId === this.$store.state.loginUser.id)
-          myRole =  "asigner"
+          myRole.push("asigner");
         if (this.selectedTask.actorStaffId === this.$store.state.loginUser.id)
-          myRole =  "actor";
+          myRole.push("actor");
       }
       else{
-          myRole =  "asigner";
+          myRole.push("asigner");
       }
       return myRole;
     },
