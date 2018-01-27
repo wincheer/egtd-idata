@@ -22,8 +22,9 @@ public class ProjectTask {
     private Integer readonly;
     private Integer editable;
     private String type;
-    private Integer hasSupervisor;
     private Integer projectId;
+    private Date real_start_date;
+    private Date real_end_date;
 
     public Integer getId() {
         return id;
@@ -170,19 +171,27 @@ public class ProjectTask {
         this.type = type;
     }
 
-	public Integer getHasSupervisor() {
-		return hasSupervisor;
-	}
-
-	public void setHasSupervisor(Integer hasSupervisor) {
-		this.hasSupervisor = hasSupervisor;
-	}
-
 	public Integer getProjectId() {
 		return projectId;
 	}
 
 	public void setProjectId(Integer projectId) {
 		this.projectId = projectId;
+	}
+
+	public Date getReal_start_date() {
+		return real_start_date;
+	}
+
+	public void setReal_start_date(Date real_start_date) {
+		this.real_start_date = real_start_date;
+	}
+
+	public Date getReal_end_date() {
+		return real_end_date;
+	}
+
+	public void setReal_end_date(Date real_end_date) {
+		this.real_end_date = real_end_date;
 	}
 }

@@ -73,8 +73,7 @@ public class ProjectAction {
 	}
 
 	@RequestMapping(value = "/updateProjectContract", method = RequestMethod.POST)
-	public int updateProjectContract(@RequestParam Map<String, Object> data, @RequestParam MultipartFile file)
-			throws Exception {
+	public int updateProjectContract(@RequestParam Map<String, Object> data, @RequestParam MultipartFile file) throws Exception {
 
 		logger.info("合同上传的附件 = " + file.getOriginalFilename());
 		Gson gson = new GsonBuilder().create();

@@ -136,9 +136,8 @@
             action="any"
             :http-request="updateProjectContract"
             :on-change="onFileChange"
-            :on-remove="onFileRemove"
+            :before-remove="onFileRemove"
             :auto-upload="false" 
-            :limit="1" 
             :file-list="contractFileList">
             <el-button slot="trigger" size="mini">选取合同 ...</el-button>
           </el-upload>
@@ -243,9 +242,6 @@
         <el-form-item label="结束日期" prop="end_date">
           <el-date-picker type="date" clearable placeholder="结束日期" v-model="projectStageObj.end_date"/>
         </el-form-item>
-        <!-- <el-form-item label="监理参与" prop="hasSupervisor">
-          <el-switch v-model="projectStageObj.hasSupervisor" active-text="是" inactive-text="否" :active-value="1" :inactive-value="0"></el-switch>
-        </el-form-item> -->
         <el-form-item label="负责人" prop="category">
           <el-select v-model="projectStageObj.actorStaffId" placeholder="请选择" clearable>
             <el-option v-for="item in projectStaffList" :key="item.id" :label="item.empName" :value="item.id" />
@@ -289,7 +285,7 @@ import {
   SELECT_DEP_TREE_LIST
 } from "@/config/api";
 import { formatDate } from "@/util/date.js";
-import { getNodePath,getNode } from "@/util/treeUtil.js";
+import { getNodePath, getNode } from "@/util/treeUtil.js";
 export default {
   props: {},
   data() {
@@ -300,7 +296,7 @@ export default {
       // projectStageStatus:'',
       allDepEmpList: [],
       depTreeList: [],
-      depIds:[],
+      depIds: [],
       projectObj: {
         id: "",
         projectName: "",
@@ -350,7 +346,7 @@ export default {
         id: "",
         projectId: "",
         groupName: "",
-        groupRole:"",
+        groupRole: "",
         groupDesc: "",
         parentId: ""
       },
@@ -379,7 +375,6 @@ export default {
         text: "",
         start_date: "",
         end_date: "",
-        hasSupervisor: 0,
         actorStaffId: ""
       },
       projectStageObjRules: {
@@ -412,7 +407,7 @@ export default {
       dlgProjectStageListVis: false,
       dlgProjectStageEditVis: false,
       categoryParamList: [],
-      builtinRoleParamList:[],
+      builtinRoleParamList: [],
       vendorList: [],
       projectVendorList: []
     };
@@ -422,7 +417,10 @@ export default {
       var _this = this;
       SELECT_DEP_TREE_LIST().then(res => {
         if (!Array.isArray(res))
-          _this.$message({ message: "获取组织结构失败，请联系系统管理员。", type: "error" });
+          _this.$message({
+            message: "获取组织结构失败，请联系系统管理员。",
+            type: "error"
+          });
         else {
           _this.depTreeList = res;
         }
@@ -455,8 +453,9 @@ export default {
             type: "error"
           });
         else {
-          if(paramKeyObj.paramKey=="category") _this.categoryParamList = res; 
-          else if(paramKeyObj.paramKey=="built-in-role") _this.builtinRoleParamList = res; 
+          if (paramKeyObj.paramKey == "category") _this.categoryParamList = res;
+          else if (paramKeyObj.paramKey == "built-in-role")
+            _this.builtinRoleParamList = res;
         }
       });
     },
@@ -584,7 +583,7 @@ export default {
     },
     openEditProject(row) {
       this.projectObj = Object.assign(row);
-      this.depIds = getNodePath(this.depTreeList,row.depId);//级联选项的数据
+      this.depIds = getNodePath(this.depTreeList, row.depId); //级联选项的数据
       this.dlgProjectEditVis = true;
     },
 
@@ -613,7 +612,7 @@ export default {
         id: "",
         projectId: this.selectedProject.id,
         groupName: "",
-        groupRole:"",
+        groupRole: "",
         groupDesc: "",
         parentId: 0
       });
@@ -625,11 +624,14 @@ export default {
         id: data.id,
         projectId: this.selectedProject.id,
         groupName: data.label,
-        groupRole: data.data.groupRole, 
+        groupRole: data.data.groupRole,
         groupDesc: data.data.groupDesc,
         parentId: data.parentId
       };
-      this.parentGroupIds = getNodePath(this.projectGroupTreeList,data.parentId);
+      this.parentGroupIds = getNodePath(
+        this.projectGroupTreeList,
+        data.parentId
+      );
       this.dlgProjectGroupEditVis = true;
     },
     openAddProjectStaff() {
@@ -646,7 +648,6 @@ export default {
         text: "",
         start_date: "",
         end_date: "",
-        hasSupervisor: 0,
         actorStaffId: ""
       });
 
@@ -809,14 +810,13 @@ export default {
       }
     },
     onFileRemove(file, fileList) {
+      var _this = this;
       if (file.status == "success") {
-        //删除文件file.id
         DELETE_DOCUMENT({ id: file.id }).then(res => {
           _this.$message({ message: "删除成功", type: "success" });
           _this.selectDocumentList(file.sourceId);
         });
       }
-      //this.projectContractObj.contractName = "";
       this.selectedFile = null;
     },
     delProject(row) {
@@ -930,7 +930,7 @@ export default {
       );
     },
     fmtDate(row, column, cellValue) {
-      if(cellValue == null) return "";
+      if (cellValue == null) return "";
       else return formatDate(new Date(cellValue), "yyyy-MM-dd");
     },
     fmtVendor(row, column, cellValue) {
@@ -941,14 +941,15 @@ export default {
       }
     },
     fmtEmp(row, column, cellValue) {
-      for(var i=0;i<this.allDepEmpList.length;i++){
-        if(this.allDepEmpList[i].id == cellValue) return this.allDepEmpList[i].empName;
+      for (var i = 0; i < this.allDepEmpList.length; i++) {
+        if (this.allDepEmpList[i].id == cellValue)
+          return this.allDepEmpList[i].empName;
       }
       return cellValue;
     },
     fmtDep(row, column, cellValue) {
-      var node = getNode(this.depTreeList,cellValue);
-      if(node) return node.label;
+      var node = getNode(this.depTreeList, cellValue);
+      if (node) return node.label;
     }
   },
   computed: {
@@ -957,15 +958,18 @@ export default {
       else return "wait";
     },
     projectContractStatus() {
-      if (this.selectedProject.id && this.projectContractList.length != 0) return "finish";
+      if (this.selectedProject.id && this.projectContractList.length != 0)
+        return "finish";
       else return "wait";
     },
     projectGroupStatus() {
-      if (this.selectedProject.id && this.projectGroupTreeList.length != 0) return "finish";
+      if (this.selectedProject.id && this.projectGroupTreeList.length != 0)
+        return "finish";
       else return "wait";
     },
     projectStageStatus() {
-      if (this.selectedProject.id && this.projectStageList.length != 0) return "finish";
+      if (this.selectedProject.id && this.projectStageList.length != 0)
+        return "finish";
       else return "wait";
     },
     projectReadyStatus() {

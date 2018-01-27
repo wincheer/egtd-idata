@@ -11,7 +11,7 @@
         <gantt :tasks="tasks" @task-selected="onSelectTask"></gantt>
       </el-row>
       <!--任务编辑对话框-->
-      <el-dialog :title="'任务：' + selectedTask.text" :visible.sync="dlgTaskEditVis" width="35%" :close-on-click-modal="false">
+      <el-dialog :title="taskTitle" :visible.sync="dlgTaskEditVis" width="35%" :close-on-click-modal="false">
         <el-form :model="taskObj" :rules="taskObjRules" ref="taskForm" label-width="80px" label-position="right"> 
           <el-row :gutter="10">
             <el-col :span="12">
@@ -27,9 +27,9 @@
           </el-row>
           <el-form-item label="任务描述"  style="margin-right: 10px;" prop="taskDesc">
             <el-input v-model="taskObj.taskDesc" :disabled="whoami!='asigner'" placeholder="填写任务要求" type="textarea"></el-input>
-            <!-- <el-upload ref="upload" action="any" :http-request="updateProjectContract" :on-change="onFileChange" :on-remove="onFileRemove" :auto-upload="false" :limit="1" :file-list="contractFileList">
+            <el-upload ref="upload" action="any" :http-request="updateProjectTask" :on-change="onFileChange" :on-remove="onFileRemove" :auto-upload="false" :file-list="taskFileList">
               <el-button slot="trigger" size="mini">添加附件 ...</el-button>
-            </el-upload> -->
+            </el-upload>
           </el-form-item>
           <el-row :gutter="10">
             <el-col :span="12">
@@ -274,6 +274,12 @@ export default {
       }
       return myRole;
     },
+    taskTitle(){
+      var title = ""
+      if(this.taskMode == "update") title = this.selectedTask.text + "：更新";
+      else title = this.selectedTask.text + "：分配子任务";
+      return title;
+    }
   },
   mounted() {
     this.selectMyProjectList(this.$store.state.loginUser.code);
