@@ -53,6 +53,7 @@ export default {
               //登录用户的角色
               _this.$store.commit("setMyRoles", data.myRoles);
               sessionStorage.setItem("myRoles", JSON.stringify(data.myRoles));
+              console.log(JSON.stringify(data.myRoles))
 
               _this.$router.push({ path: "/dashboard" });
             }

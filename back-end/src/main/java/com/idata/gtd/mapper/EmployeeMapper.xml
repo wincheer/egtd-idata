@@ -71,7 +71,7 @@
   </update>
   
   <select id="login" parameterType="com.idata.gtd.entity.Employee" resultMap="BaseResultMap">
-  	select DISTINCT * from employee
+  	select employee.* from employee 
   	where 1 = 1
   	<trim prefix=" and (" suffix=")" suffixOverrides="and">
       <if test="empMobile != null">emp_mobile = #{empMobile,jdbcType=VARCHAR} and</if>
@@ -164,7 +164,7 @@
 		project_staff.group_id = #{groupId,jdbcType=INTEGER}
   </select>
   
-  <select id="selectOwnerProjectEmpList" parameterType="java.lang.Integer" resultMap="java.lang.String">
+  <select id="selectOwnerProjectEmpList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
 	SELECT
 		employee.*
 	FROM
@@ -176,7 +176,7 @@
 	AND project_group.project_id = #{projectId,jdbcType=INTEGER}
   </select>
   
-  <select id="selectMyRoles" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectMyRoles" parameterType="java.lang.Integer" resultType="java.lang.String">
 	SELECT DISTINCT
 		project_group.group_role
 	FROM

@@ -23,6 +23,12 @@ const mutations = {
     },
     setMyRoles(state,projectRoleList){
         state.myRoles = projectRoleList;
+    },
+    clearStore(state){
+        state = {
+            loginUser: null,
+            myRoles:[]
+        }
     }
 };
 

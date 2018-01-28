@@ -13,7 +13,7 @@
             <el-col :span="4" class="userinfo">
                 <el-dropdown trigger="hover">
                     <span class="el-dropdown-link userinfo-inner">
-                        <img :src="this.sysUserAvatar" /> {{this.$store.state.loginUser.empName}} 
+                        <img :src="this.sysUserAvatar" /> {{loginUser.empName}} 
                         <!-- <el-badge :value="12"></el-badge> -->
                     </span>
                     <el-dropdown-menu slot="dropdown">
@@ -27,12 +27,12 @@
             <aside :style="{width: isCollapse?'60px':'230px'}">
                 <!--导航菜单-->
                 <el-menu :default-active="$route.path" class="el-menu-vertical-demo" :collapse="isCollapse" unique-opened router>
-                    <el-submenu v-for="(menu,index) in $router.options.routes" :key="index" :index="index+''"  v-if="!menu.hidden">
+                    <el-submenu v-for="(menu,index) in $router.options.routes" :key="index" :index="index+''" v-if="!menu.hidden && allowMe(menu)">
                         <template slot="title">
                             <i :class="menu.iconCls"></i>
                             <span v-text="menu.name"></span>
                         </template>
-                        <el-menu-item v-for="(item,index) in menu.children" :key="index" :index="item.path">
+                        <el-menu-item v-for="(item,index) in menu.children" :key="index" :index="item.path"  v-if="!item.hidden && allowMe(item)">
                             <i :class="item.iconCls"></i>
                             <span v-text="item.name"></span>
                         </el-menu-item>
@@ -87,7 +87,8 @@ export default {
   data() {
     return {
       appName: "eGTD - iData",
-      loginUser: {},
+      loginUser: this.$store.state.loginUser,
+      myRoles: this.$store.state.myRoles,
       isCollapse: false,
       sysUserAvatar: avatar,
 
@@ -114,6 +115,8 @@ export default {
       this.$confirm("确认退出吗?", "提示", {})
         .then(() => {
           sessionStorage.removeItem("loginUser");
+          sessionStorage.removeItem("myRoles");
+          this.$store.commit("clearStore");
           this.$router.push("/login");
         })
         .catch(() => {});
@@ -134,9 +137,6 @@ export default {
               };
               UPDATE_EMPLOYEE(para).then(res => {
                 _this.$message({message: "更新密码成功，下次请用新密码登录",type: "success"});
-                // _this.loginUser.password = _this.pwdObj.newPwd;
-                // // _this.$store.commit("setLoginUser", _this.loginUser);
-                // sessionStorage.setItem("loginUser", JSON.stringify(_this.loginUser));
                 _this.pwdObj = {oldPwd: "",newPwd: "",newSecPwd: ""};
                 _this.pwdFormVisible = false;
               });
@@ -146,7 +146,25 @@ export default {
           return false;
         }
       });
+    },
+    allowMe(menu){
+      //this.myRoles = ["R00"]
+      //blackList = ["R01","R02","R10"]
+      var allowed = false;
+      //任意一个角色不在黑名单就可以显示
+      for(var i=0;i<this.myRoles.length;i++){
+        var myRole = this.myRoles[i];
+        if(menu.blackList.indexOf(myRole) == -1) {
+          allowed = true;
+          break;
+        }
+      }
+
+      return allowed;
     }
+  },
+  computed:{
+    
   },
   mounted() {}
 };
