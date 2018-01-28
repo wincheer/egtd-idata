@@ -24,7 +24,9 @@ export default {
         password: ""
       },
       loginFormRules: {
-        empMobile: [{ required: true, message: "请输入电话号码", trigger: "blur" }],
+        empMobile: [
+          { required: true, message: "请输入电话号码", trigger: "blur" }
+        ],
         password: [{ required: true, message: "请输入密码", trigger: "blur" }]
       }
     };
@@ -37,25 +39,28 @@ export default {
           _this.logining = true;
           var loginParams = {
             empMobile: _this.loginForm.empMobile,
-            password: _this.loginForm.password,
+            password: _this.loginForm.password
           };
-          LOGIN({model:loginParams,actor:0}).then(data => {
+          LOGIN({ model: loginParams, actor: 0 }).then(data => {
             _this.logining = false;
-            if (data == "") {
+            if (data.loginUser) {
+              //登录用户
+              _this.$store.commit("setLoginUser", data.loginUser);
+              sessionStorage.setItem(
+                "loginUser",
+                JSON.stringify(data.loginUser)
+              );
+              //登录用户的角色
+              _this.$store.commit("setMyRoles", data.myRoles);
+              sessionStorage.setItem("myRoles", JSON.stringify(data.myRoles));
+              console.log(JSON.stringify(data.myRoles));
+
+              _this.$router.push({ path: "/dashboard" });
+            } else {
               _this.$message({
                 message: "登录失败，请检查用户名和密码是否正确。",
                 type: "error"
               });
-            } else {
-              //登录用户
-              _this.$store.commit("setLoginUser", data.loginUser);
-              sessionStorage.setItem("loginUser", JSON.stringify(data.loginUser));
-              //登录用户的角色
-              _this.$store.commit("setMyRoles", data.myRoles);
-              sessionStorage.setItem("myRoles", JSON.stringify(data.myRoles));
-              console.log(JSON.stringify(data.myRoles))
-
-              _this.$router.push({ path: "/dashboard" });
             }
           });
         }

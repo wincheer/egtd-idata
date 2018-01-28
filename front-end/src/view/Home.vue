@@ -148,8 +148,6 @@ export default {
       });
     },
     allowMe(menu){
-      //this.myRoles = ["R00"]
-      //blackList = ["R01","R02","R10"]
       var allowed = false;
       //任意一个角色不在黑名单就可以显示
       for(var i=0;i<this.myRoles.length;i++){
@@ -159,7 +157,6 @@ export default {
           break;
         }
       }
-
       return allowed;
     }
   },

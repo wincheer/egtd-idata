@@ -7,7 +7,7 @@
       <el-step title="分解项目阶段" :status="projectStageStatus" description="分解项目阶段及任务，指派责任人以及配置检查链"></el-step>
       <el-step title="项目就绪" :status="projectReadyStatus"></el-step>
     </el-steps>
-    <el-button style="margin-top: 12px;" @click="openAddProject" type="primary">新建项目</el-button>
+    <el-button style="margin-top: 12px;" @click="openAddProject" type="primary" :disabled="denyMe">新建项目</el-button>
     <el-table border stripe :data="projectList" style="margin-top: 20px;" highlight-current-row @current-change="onProjectChange" ref="projectTable">
       <el-table-column type="index" width="30"></el-table-column>
       <el-table-column prop="projectName" label="项目名称"></el-table-column>
@@ -997,6 +997,19 @@ export default {
       )
         return "success";
       else return "wait";
+    },
+    denyMe(){
+      var denied = true;
+      var myRoles = this.$store.state.myRoles;
+      //任意一个角色在白名单就不拒绝
+      for(var i=0;i<myRoles.length;i++){
+        var myRole = myRoles[i];
+        if(["R00"].indexOf(myRole) != -1) {
+          denied = false;
+          break;
+        }
+      }
+      return denied;
     }
   },
   mounted() {
