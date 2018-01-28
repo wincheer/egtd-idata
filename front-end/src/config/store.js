@@ -10,7 +10,8 @@ Vue.use(Vuex);
 
 //定义状态
 const state = {
-    loginUser: null
+    loginUser: null,
+    myRoles:[]
 };
 //定义操作
 const mutations = {
@@ -19,6 +20,9 @@ const mutations = {
     },
     removeLoginUser(state) {
         state.loginUser = null;
+    },
+    setMyRoles(state,projectRoleList){
+        state.myRoles = projectRoleList;
     }
 };
 

@@ -1,5 +1,7 @@
 package com.idata.gtd.service;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +26,16 @@ public class LoginService {
 	private EmployeeMapper empDao;
 
 	public Employee login(Employee employee) {
-		Employee _staff = empDao.login(employee);
-		if (_staff != null)
-			logger.info(_staff.getEmpName() + " is login ...... ");
+		Employee emp = empDao.login(employee);
+		if (emp != null)
+			logger.info(emp.getEmpName() + " is login ...... ");
 
-		return _staff;
+		return emp;
+	}
+
+	public List<String> selectMyRoles(Integer empId) {
+
+		return empDao.selectMyRoles(empId);
 	}
 
 }

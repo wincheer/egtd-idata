@@ -1,5 +1,7 @@
 package com.idata.gtd.action;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.idata.gtd.common.GTDRole;
 import com.idata.gtd.common.LogEvent;
 import com.idata.gtd.common.LogTarget;
 import com.idata.gtd.entity.Employee;
@@ -27,13 +30,26 @@ public class LoginAction {
 	private LogService logService;
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public Employee login(@RequestBody Map<String, Object> param) {
+	public Map<String,Object> login(@RequestBody Map<String, Object> param) {
 
 		Gson gson = new GsonBuilder().create();
 		Employee model = gson.fromJson(param.get("model").toString(), Employee.class);
 
 		Employee loginUser = loginService.login(model);
-
+		
+		//查询我的角色
+		Map<String,Object> map = new HashMap<String ,Object>();
+		if(loginUser!=null) {
+			List<String> myRoles = loginService.selectMyRoles(loginUser.getId());
+			map.put("loginUser", loginUser);
+			if(myRoles.size()== 0) {
+				if(loginUser.getCode().toLowerCase().equals("o0")) 
+					myRoles.add(GTDRole.ADMIN); //超级用户 
+				else
+					myRoles.add(GTDRole.IDLER); //非项目用户
+			}
+			map.put("myRoles", myRoles);
+		}
 		// 记录日志
 		Integer actor;
 		String detail;
@@ -46,7 +62,7 @@ public class LoginAction {
 		}
 		logService.insertLog(actor, LogEvent.LOGIN, LogTarget.APP, detail);
 
-		return loginUser;
+		return map;
 	}
 
 }

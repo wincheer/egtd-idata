@@ -47,8 +47,13 @@ export default {
                 type: "error"
               });
             } else {
-              _this.$store.commit("setLoginUser", data);
-              sessionStorage.setItem("loginUser", JSON.stringify(data));
+              //登录用户
+              _this.$store.commit("setLoginUser", data.loginUser);
+              sessionStorage.setItem("loginUser", JSON.stringify(data.loginUser));
+              //登录用户的角色
+              _this.$store.commit("setMyRoles", data.myRoles);
+              sessionStorage.setItem("myRoles", JSON.stringify(data.myRoles));
+
               _this.$router.push({ path: "/dashboard" });
             }
           });
