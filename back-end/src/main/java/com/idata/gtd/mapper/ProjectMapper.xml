@@ -99,7 +99,7 @@
 	LEFT JOIN project_staff ON project_staff.group_id = project_group.id
 	INNER JOIN employee ON project_staff.emp_id = employee.id
 	WHERE
-		employee.code = #{empCode,jdbcType=INTEGER}
+		employee.code = #{empCode,jdbcType=VARCHAR}
   </select>
 
 </mapper>
