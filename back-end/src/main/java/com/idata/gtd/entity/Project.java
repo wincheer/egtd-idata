@@ -22,7 +22,7 @@ public class Project {
 	private Integer actorStaffId;
 	private String icon;
 	private Integer amount;
-	private Integer isApproval;
+	private String auditState; //init（初始化）、wait(等待审核)、refuse(审核拒绝)、ready(审核通过就绪)
 	private Integer depId;
 
 	public Integer getId() {
@@ -120,14 +120,15 @@ public class Project {
 	public void setAmount(Integer amount) {
 		this.amount = amount;
 	}
-	public Integer getIsApproval() {
-		return isApproval;
+	
+	public String getAuditState() {
+		return auditState;
 	}
 
-	public void setIsApproval(Integer isApproval) {
-		this.isApproval = isApproval;
+	public void setAuditState(String auditState) {
+		this.auditState = auditState;
 	}
-	
+
 	public Integer getDepId() {
 		return depId;
 	}

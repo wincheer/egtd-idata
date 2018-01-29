@@ -15,7 +15,7 @@
     <result column="actor_staff_id" jdbcType="INTEGER" property="actorStaffId" />
     <result column="icon" jdbcType="VARCHAR" property="icon" />
     <result column="amount" jdbcType="INTEGER" property="amount" />
-    <result column="is_approval" jdbcType="INTEGER" property="isApproval" />
+    <result column="audit_state" jdbcType="INTEGER" property="auditState" />
     <result column="dep_id" jdbcType="INTEGER" property="depId" />
   </resultMap>
   
@@ -45,7 +45,7 @@
       <if test="actorStaffId != null">actor_staff_id,</if>
       <if test="icon != null">icon,</if>
       <if test="amount != null">amount,</if>
-      <if test="isApproval != null">is_approval,</if>
+      <if test="audit_state != null">auditState,</if>
       <if test="depId != null">dep_id,</if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -61,7 +61,7 @@
       <if test="actorStaffId != null">#{actorStaffId,jdbcType=INTEGER},</if>
       <if test="icon != null">#{icon,jdbcType=VARCHAR},</if>
       <if test="amount != null">#{amount,jdbcType=INTEGER},</if>
-      <if test="isApproval != null">#{isApproval,jdbcType=INTEGER},</if>
+      <if test="auditState != null">#{auditState,jdbcType=VARCHAR},</if>
       <if test="depId != null">#{depId,jdbcType=INTEGER},</if>
     </trim>
   </insert>
@@ -80,7 +80,7 @@
       <if test="actorStaffId != null">actor_staff_id = #{actorStaffId,jdbcType=INTEGER},</if>
       <if test="icon != null">icon = #{icon,jdbcType=VARCHAR},</if>
       <if test="amount != null">amount = #{amount,jdbcType=INTEGER},</if>
-      <if test="isApproval != null">is_approval = #{isApproval,jdbcType=INTEGER},</if>
+      <if test="auditState != null">audit_state = #{auditState,jdbcType=INTEGER},</if>
       <if test="depId != null">dep_id = #{depId,jdbcType=INTEGER},</if>
     </set>
     where id = #{id,jdbcType=INTEGER}

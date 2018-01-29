@@ -28,7 +28,7 @@
             </el-dropdown-menu>
           </el-dropdown>
           <el-button size="mini" type="danger" @click="delProject(scope.row)">删除</el-button>
-          <el-button size="mini" type="warning">申请审批</el-button>
+          <el-button size="mini" type="warning" @click="applyAudit(scope.row)" :disabled="scope.row.auditState!=='init'">申请审批</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -411,7 +411,7 @@ export default {
       builtinRoleParamList: [],
       vendorList: [],
       projectVendorList: [],
-      ownerProjectEmpList:[]
+      ownerProjectEmpList: []
     };
   },
   methods: {
@@ -594,7 +594,7 @@ export default {
       });
     },
     openAddProject() {
-      let btn = this.$refs.btnCreateProject
+      let btn = this.$refs.btnCreateProject;
       this.dlgProjectEditVis = true;
     },
     openEditProject(row) {
@@ -906,9 +906,11 @@ export default {
     },
     selectEmployeeGroup(projectId) {
       var _this = this;
-      SELECT_AVAILABLE_GROUP_PROJECT_EMPLOYEE_LIST({ id: projectId }).then(res => {
-        _this.availableEmployeeGroup = res;
-      });
+      SELECT_AVAILABLE_GROUP_PROJECT_EMPLOYEE_LIST({ id: projectId }).then(
+        res => {
+          _this.availableEmployeeGroup = res;
+        }
+      );
     },
     onProjectGroupChange(data) {
       // 查询当前项目组的员工
@@ -999,30 +1001,52 @@ export default {
         return "success";
       else return "wait";
     },
-    authCheck(conmponentName){
-      const authList = [{name:"btnCreateProject",whiteList:["R00"]}]
+    authCheck(conmponentName) {
+      const authList = [{ name: "btnCreateProject", whiteList: ["R00"] }];
 
       var conmponent = this.$refs[conmponentName];
-      var whiteList = []
-      for(var auth of authList){
-        if(auth.name === conmponentName){
+      var whiteList = [];
+      for (var auth of authList) {
+        if (auth.name === conmponentName) {
           whiteList = auth.whiteList;
           break;
         }
       }
-
       var denied = true;
       var myRoles = this.$store.state.myRoles;
       //任意一个角色在白名单就不拒绝
-      for(var i=0;i<myRoles.length;i++){
+      for (var i = 0; i < myRoles.length; i++) {
         var myRole = myRoles[i];
-        if(whiteList.indexOf(myRole) != -1) {
+        if (whiteList.indexOf(myRole) != -1) {
           denied = false;
           break;
         }
       }
       //return denied;
       conmponent.disabled = denied;
+    },
+    applyAudit(row) {
+      var _this = this;
+      var params = {
+        from: this.$store.state.loginUser.empName,
+        to: "who", //后台确定
+        toScope: "actor",
+        title: "项目经理xxx已完成项目yyy的项目计划，请您进行审核",
+        body:"",
+        type: "audit",
+        relationId: row.id
+      };
+
+      // SELECT_PROJECT_GROUP_TREE_LIST({ projectId: projectId }).then(res => {
+      //   if (!Array.isArray(res))
+      //     _this.$message({
+      //       message: "获取项目组失败，请联系系统管理员。",
+      //       type: "error"
+      //     });
+      //   else {
+      //     _this.projectGroupTreeList = res;
+      //   }
+      // });
     }
   },
   mounted() {

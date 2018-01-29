@@ -7,10 +7,10 @@ public class Message {
 	private Integer id;
     private String from;
     private String to;
-    private String toScop;
+    private String toScop; //acotr个人、group项目组
     private String title;
     private String body;
-    private String type;
+    private String type; //normal 普通消息(任务发布、任务延期（系统发送）)，audit 针对项目审批、confirm针对任务确认
     private Integer relationId;
     private Date time;
     private Integer isRead;
