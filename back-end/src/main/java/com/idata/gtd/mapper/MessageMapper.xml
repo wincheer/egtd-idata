@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.idata.gtd.dao.MessageMapper">
+
+  <resultMap id="BaseResultMap" type="com.idata.gtd.entity.Message">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="from" jdbcType="VARCHAR" property="from" />
+    <result column="to" jdbcType="VARCHAR" property="to" />
+    <result column="to_scop" jdbcType="VARCHAR" property="toScop" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="body" jdbcType="VARCHAR" property="body" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="relation_id" jdbcType="INTEGER" property="relationId" />
+    <result column="time" jdbcType="TIMESTAMP" property="time" />
+  </resultMap>
+
+  <select id="selectMessageByPK" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select *
+    from message
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteMessageByPK" parameterType="java.lang.Integer">
+    delete from message
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insertMessage" parameterType="com.idata.gtd.entity.Message">
+    insert into message
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">id,</if>
+      <if test="from != null">from,</if>
+      <if test="to != null">to,</if>
+      <if test="toScop != null">to_scop,</if>
+      <if test="title != null">title,</if>
+      <if test="body != null">body,</if>
+      <if test="type != null">type,</if>
+      <if test="relationId != null">relation_id,</if>
+      <if test="time != null">time,</if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">#{id,jdbcType=INTEGER},</if>
+      <if test="from != null">#{from,jdbcType=VARCHAR},</if>
+      <if test="to != null">#{to,jdbcType=VARCHAR},</if>
+      <if test="toScop != null">#{toScop,jdbcType=VARCHAR},</if>
+      <if test="title != null">#{title,jdbcType=VARCHAR},</if>
+      <if test="body != null">#{body,jdbcType=VARCHAR},</if>
+      <if test="type != null">#{type,jdbcType=VARCHAR},</if>
+      <if test="relationId != null">#{relationId,jdbcType=INTEGER},</if>
+      <if test="time != null">#{time,jdbcType=TIMESTAMP},</if>
+    </trim>
+  </insert>
+  
+  <update id="updateMessage" parameterType="com.idata.gtd.entity.Message">
+    update message
+    <set>
+      <if test="from != null">from = #{from,jdbcType=VARCHAR},</if>
+      <if test="to != null">to = #{to,jdbcType=VARCHAR},</if>
+      <if test="toScop != null">to_scop = #{toScop,jdbcType=VARCHAR},</if>
+      <if test="title != null">title = #{title,jdbcType=VARCHAR},</if>
+      <if test="body != null">body = #{body,jdbcType=VARCHAR},</if>
+      <if test="type != null">type = #{type,jdbcType=VARCHAR},</if>
+      <if test="relationId != null">relation_id = #{relationId,jdbcType=INTEGER},</if>
+      <if test="time != null">time = #{time,jdbcType=TIMESTAMP},</if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+</mapper>

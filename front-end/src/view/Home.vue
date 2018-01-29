@@ -14,11 +14,12 @@
                 <el-dropdown trigger="hover">
                     <span class="el-dropdown-link userinfo-inner">
                         <img :src="this.sysUserAvatar" /> {{loginUser.empName}} 
-                        <!-- <el-badge :value="12"></el-badge> -->
+                        <el-badge :is-dot="latestMsgList.length!==0"></el-badge>
                     </span>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item @click.native="pwdFormVisible = true">修改密码</el-dropdown-item>
-                        <el-dropdown-item divided @click.native="logout">退出登录</el-dropdown-item>
+                        <el-dropdown-item @click.native="dlgMsgListVis = true">消息中心<el-badge :value="latestMsgList.length" /></el-dropdown-item>
+                        <el-dropdown-item divided @click.native="pwdFormVisible = true">修改密码</el-dropdown-item>
+                        <el-dropdown-item @click.native="logout">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </el-col>
@@ -76,6 +77,28 @@
           <el-button type="primary" @click="updatePwd">提交</el-button>
         </div>
       </el-dialog>
+      <!--消息中心-->
+      <el-dialog title="消息中心" :visible.sync="dlgMsgListVis" width="30%">
+        <el-tabs v-model="avtiveTab" type="card">
+          <el-tab-pane label="新消息" name="latest">
+            <el-table :data="latestMsgList" stripe :show-header="false" highlight-current-row @expand-change="rowExpandChange">
+              <el-table-column type="expand">
+                <template slot-scope="props">
+                  <span>{{ props.row.body }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="来自" prop="from"></el-table-column>
+              <el-table-column label="主题" prop="title"></el-table-column>
+              <el-table-column label="主题" prop="time"></el-table-column>
+            </el-table>
+          </el-tab-pane>
+          <el-tab-pane label="历史消息" name="hostory">TODO</el-tab-pane>
+        </el-tabs>
+        <div slot="footer">
+          <!-- <el-button @click="sendMsg" size="mini" type="primary" icon="el-icon-edit">发布消息</el-button> -->
+          <el-button @click.native="dlgMsgListVis = false" size="mini" >关闭</el-button>
+        </div>
+      </el-dialog>
     </section>
     
 </template>
@@ -91,8 +114,8 @@ export default {
       myRoles: this.$store.state.myRoles,
       isCollapse: false,
       sysUserAvatar: avatar,
-
       pwdFormVisible: false,
+      dlgMsgListVis: false,
       pwdObj: {
         oldPwd: "",
         newPwd: "",
@@ -101,7 +124,26 @@ export default {
       pwdObjRules: {
         oldPwd: [{ required: true, message: "请输入原密码", trigger: "blur" }],
         newPwd: [{ required: true, message: "请输入新密码", trigger: "blur" }]
-      }
+      },
+      avtiveTab:"latest",
+      latestMsgList: [
+        {
+          from: "系统管理员",
+          to: "me",
+          title: "任务xxx发布",
+          body: "消息的正文内容",
+          isRead: 0,
+          time: "2018-01-29 15:03"
+        },
+        {
+          from: "部门1员工1",
+          to: "me",
+          title: "分配新任务Task0527",
+          body: "消息的正文内容",
+          isRead: 0,
+          time: "2018-01-29 14:28"
+        }
+      ]
     };
   },
   methods: {
@@ -126,18 +168,27 @@ export default {
       _this.$refs.pwdForm.validate(valid => {
         if (valid) {
           if (_this.pwdObj.oldPwd != _this.$store.state.loginUser.password) {
-            _this.$message({message: "原密码错误，重新输入！",type: "error"});
+            _this.$message({
+              message: "原密码错误，重新输入！",
+              type: "error"
+            });
           } else {
             if (_this.pwdObj.newPwd != _this.pwdObj.newSecPwd) {
-              _this.$message({message: "新密码两次输入的不一致，重新输入！",type: "warning"});
+              _this.$message({
+                message: "新密码两次输入的不一致，重新输入！",
+                type: "warning"
+              });
             } else {
               let para = {
                 id: _this.$store.state.loginUser.id,
                 password: _this.pwdObj.newPwd
               };
               UPDATE_EMPLOYEE(para).then(res => {
-                _this.$message({message: "更新密码成功，下次请用新密码登录",type: "success"});
-                _this.pwdObj = {oldPwd: "",newPwd: "",newSecPwd: ""};
+                _this.$message({
+                  message: "更新密码成功，下次请用新密码登录",
+                  type: "success"
+                });
+                _this.pwdObj = { oldPwd: "", newPwd: "", newSecPwd: "" };
                 _this.pwdFormVisible = false;
               });
             }
@@ -147,22 +198,27 @@ export default {
         }
       });
     },
-    allowMe(menu){
+    allowMe(menu) {
       var allowed = false;
       //任意一个角色不在黑名单就可以显示
-      for(var i=0;i<this.myRoles.length;i++){
+      for (var i = 0; i < this.myRoles.length; i++) {
         var myRole = this.myRoles[i];
-        if(menu.blackList.indexOf(myRole) == -1) {
+        if (menu.blackList.indexOf(myRole) == -1) {
           allowed = true;
           break;
         }
       }
       return allowed;
+    },
+    rowExpandChange(row, expandedRows){
+      console.log("操作行" + row.title);
+      console.log("展开行数：" + expandedRows.length);
+    },
+    sendMsg(){
+      this.$message("我要发布新消息了")
     }
   },
-  computed:{
-    
-  },
+  computed: {},
   mounted() {}
 };
 </script>

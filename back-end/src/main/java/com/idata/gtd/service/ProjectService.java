@@ -262,7 +262,7 @@ public class ProjectService {
 		if (empCode.equals("o0")) // 超级用户的唯一标记是o0 (欧零)
 			return projectDao.selectProjectList();
 		else
-			return projectDao.selectMyProjectList(empCode);
+			return projectDao.selectMyProjectList(Integer.parseInt(empCode.substring(1)));
 	}
 
 	public List<Employee> selectEmployeeList() {

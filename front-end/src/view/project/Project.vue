@@ -11,7 +11,7 @@
         <gantt :tasks="tasks" @task-selected="onSelectTask"></gantt>
       </el-row>
       <!--任务编辑对话框-->
-      <el-dialog :title="taskTitle" :visible.sync="dlgTaskEditVis" width="35%" :close-on-click-modal="false">
+      <el-dialog :title="taskTitle" :visible.sync="dlgTaskEditVis" width="40%" :close-on-click-modal="false">
         <el-form :model="taskObj" :rules="taskObjRules" ref="taskForm" label-width="80px" label-position="right"> 
           <el-row :gutter="10">
             <el-col :span="12">
@@ -394,7 +394,8 @@ export default {
     }
   },
   mounted() {
-    this.selectMyProjectList(this.$store.state.loginUser.code);
+    var loginUser = this.$store.state.loginUser;
+    this.selectMyProjectList(loginUser.code.substr(0,1) + loginUser.id);
     this.tasks = { data: [], links: [] };
   }
 };

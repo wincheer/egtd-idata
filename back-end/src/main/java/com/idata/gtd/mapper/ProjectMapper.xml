@@ -90,7 +90,7 @@
     select * from project
   </select>
   
-  <select id="selectMyProjectList" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="selectMyProjectList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
 	SELECT DISTINCT
 		project.*
 	FROM
@@ -99,7 +99,7 @@
 	LEFT JOIN project_staff ON project_staff.group_id = project_group.id
 	INNER JOIN employee ON project_staff.emp_id = employee.id
 	WHERE
-		employee.code = #{empCode,jdbcType=VARCHAR}
+		project.is_forzen != 1 AND employee.id = #{empId,jdbcType=INTEGER}
   </select>
 
 </mapper>

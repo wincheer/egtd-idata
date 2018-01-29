@@ -16,6 +16,6 @@ public interface ProjectMapper {
 
 	List<Project> selectProjectList();
 
-	List<Project> selectMyProjectList(String empCode); 
+	List<Project> selectMyProjectList(Integer empId); 
 	
 }
