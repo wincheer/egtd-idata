@@ -1,5 +1,7 @@
 package com.idata.gtd.dao;
 
+import java.util.List;
+
 import com.idata.gtd.entity.Message;
 
 public interface MessageMapper {
@@ -11,5 +13,7 @@ public interface MessageMapper {
     Message selectMessageByPK(Integer id);
 
     int updateMessage(Message record);
+
+	List<Message> selectMessageList(Message msg);
 
 }

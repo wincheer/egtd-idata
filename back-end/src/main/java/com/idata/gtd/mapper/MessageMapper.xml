@@ -26,7 +26,7 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   
-  <insert id="insertMessage" parameterType="com.idata.gtd.entity.Message">
+  <insert id="insertMessage" useGeneratedKeys="true" keyProperty="id" parameterType="com.idata.gtd.entity.Message">
     insert into message
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">id,</if>
@@ -69,5 +69,21 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <select id="selectMessageList" parameterType="com.idata.gtd.entity.Message" resultMap="BaseResultMap">
+    select *
+    from message where 1=1 and 
+    <trim prefix=" and (" suffix=")" suffixOverrides="and">
+    	<if test="from != null">from = #{from,jdbcType=VARCHAR} and </if>
+		<if test="to != null">to = #{to,jdbcType=VARCHAR} and </if>
+		<if test="toScop != null">to_scop = #{toScop,jdbcType=VARCHAR} and </if>
+		<if test="title != null">title = #{title,jdbcType=VARCHAR} and </if>
+		<if test="body != null">body = #{body,jdbcType=VARCHAR} and </if>
+		<if test="type != null">type = #{type,jdbcType=VARCHAR} and </if>
+		<if test="relationId != null">relation_id = #{relationId,jdbcType=INTEGER} and </if>
+		<if test="time != null">time = #{time,jdbcType=TIMESTAMP} and </if>
+		<if test="isRead != null">is_read = #{isRead,jdbcType=INTEGER} and </if>
+	</trim>
+  </select>
 
 </mapper>
