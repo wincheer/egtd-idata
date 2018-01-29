@@ -13,6 +13,7 @@ public class Message {
     private String type;
     private Integer relationId;
     private Date time;
+    private Integer isRead;
 
     public Integer getId() {
         return id;
@@ -85,4 +86,12 @@ public class Message {
     public void setTime(Date time) {
         this.time = time;
     }
+
+	public Integer getIsRead() {
+		return isRead;
+	}
+
+	public void setIsRead(Integer isRead) {
+		this.isRead = isRead;
+	}
 }
