@@ -159,6 +159,11 @@ export default {
 
     gantt.config.autosize = "y";
     gantt.config.readonly = true;
+    gantt.config.drag_resize = false;
+    gantt.config.drag_progress = false;
+    gantt.config.drag_move = false;
+    gantt.config.drag_links = false;
+    //gantt.config.show_chart = false; 不显示 gantt 图
     gantt.config.root_id = 0; 
     gantt.config.open_tree_initially = true; //展开全部
     gantt.init(this.$refs.gantt);
