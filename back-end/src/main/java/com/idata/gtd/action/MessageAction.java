@@ -41,9 +41,9 @@ public class MessageAction {
 	public int updateMessage(@RequestBody Message msg) {
 
 		if (msg.getId() == null)
-			return msgService.insertDepartment(msg);
+			return msgService.insertMessage(msg);
 		else
-			return msgService.updateDepartment(msg);
+			return msgService.updateMessage(msg);
 	};
 
 	@RequestMapping(value = "/deleteMessage", method = RequestMethod.POST)

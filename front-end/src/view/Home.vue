@@ -108,7 +108,7 @@
       <el-dialog :title="dlgTitle" :visible.sync="dlgAuditProjecyVis" width="30%">
         <el-tabs v-model="avtiveProjectTab">
           <el-tab-pane label="项目基本信息" name="info">
-            <el-form label-position="left">
+            <el-form label-position="left" style="margin-left:10px">
               <el-row>
                 <el-col :span="12">
                   <el-form-item label="项目名称：">

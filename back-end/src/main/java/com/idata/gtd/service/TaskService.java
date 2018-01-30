@@ -1,5 +1,6 @@
 package com.idata.gtd.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.idata.gtd.common.DocCat;
 import com.idata.gtd.dao.ProjectTaskMapper;
 import com.idata.gtd.entity.Document;
+import com.idata.gtd.entity.Message;
 import com.idata.gtd.entity.ProjectTask;
 
 /**
@@ -26,6 +28,8 @@ public class TaskService {
 	private ProjectTaskMapper taskDao;
 	@Autowired
 	private DocumentService documentService;
+	@Autowired
+	private MessageService msgService;
 
 	public List<ProjectTask> selectProjectTaskList(Integer projectId) {
 
@@ -35,36 +39,88 @@ public class TaskService {
 	}
 
 	public int insertProjectTask(ProjectTask task) {
-		
+		// 如果有任务接收人，给任务接收人发送一条任务分配消息
+		if (task.getActorStaffId() != null) {
+			if (task.getAssignStaffId() != task.getActorStaffId()) { // 给自己分配的任务状态直接设置为
+																		// 1进行中，且不发送消息
+				task.setState(1);
+			} else {
+				Message msg = new Message();
+				msg.setFrom(task.getAssignStaffId());
+				msg.setTo(task.getActorStaffId());
+				msg.setToScope("actor");
+				msg.setTime(new Date());
+				msg.setTitle("任务分配");
+				msg.setBody("您被分配了一条新任务，任务名称为【" + task.getText() + "】");
+				msg.setRelationId(task.getId());
+				msg.setType("normal");
+				msgService.insertMessage(msg);
+			}
+		}
 		taskDao.insertProjectTask(task);
 		return task.getId();
 	}
 
 	public int updateProjectTask(ProjectTask task) {
-		
+
+		ProjectTask originalTask = taskDao.selectProjectTaskByPK(task.getId());
+		if (task.getActorStaffId() != originalTask.getActorStaffId()) { // 意味着换了任务执行人
+			// 给新的任务接收人发送任务分配通知
+			Message msg = new Message();
+			msg.setFrom(task.getAssignStaffId());
+			msg.setTo(task.getActorStaffId());
+			msg.setToScope("actor");
+			msg.setTime(new Date());
+			msg.setTitle("任务分配");
+			msg.setBody("您被分配了一条新任务，任务名称为【" + task.getText() + "】");
+			msg.setRelationId(task.getId());
+			msg.setType("normal");
+			msgService.insertMessage(msg);
+		} else {
+			if (task.getProgress() == 1) {
+				if (task.getState() == 1) { // 进行中
+					if (task.getAssignStaffId() != task.getActorStaffId()) { 
+						task.setState(2); // 待确认
+						// 给任务创建人发一条请求任务完成的确认消息
+						Message msg = new Message();
+						msg.setFrom(task.getActorStaffId());
+						msg.setTo(task.getAssignStaffId());
+						msg.setToScope("actor");
+						msg.setTime(new Date());
+						msg.setTitle("任务完成确认");
+						msg.setBody("您分配的一条任务已完成，需要确认。任务名称为【" + task.getText() + "】");
+						msg.setRelationId(task.getId());
+						msg.setType("confirm");
+						msgService.insertMessage(msg);
+					} else { // 给自己分配的任务不提醒
+						task.setState(3); // 完成
+					}
+				}
+			}
+		}
 		taskDao.updateProjectTask(task);
 		return task.getId();
 	}
 
 	public int insertProjectTask(MultipartFile file, ProjectTask model) throws Exception {
 
-		taskDao.insertProjectTask(model);
+		insertProjectTask(model);
 
 		Document doc = new Document();
 		doc.setName(file.getOriginalFilename());
 		doc.setFileName(String.valueOf(System.currentTimeMillis()));
 		doc.setBelongTo("task");
 		doc.setSourceId(model.getId());
-		doc.setCategory(DocCat.STANDARD.getValue()); //?
+		doc.setCategory(DocCat.STANDARD.getValue()); // ?
 
 		documentService.upload(file, doc);
-		
+
 		return 0;
 	}
 
 	public int updateProjectTask(MultipartFile file, ProjectTask model) throws Exception {
-		
-		taskDao.updateProjectTask(model);
+
+		updateProjectTask(model);
 
 		Document doc = new Document();
 		doc.setName(file.getOriginalFilename());
@@ -74,12 +130,12 @@ public class TaskService {
 		doc.setCategory(DocCat.STANDARD.getValue());
 
 		documentService.upload(file, doc);
-		
+
 		return 0;
 	}
-	
+
 	public int updateProjectTaskWithResult(MultipartFile file, ProjectTask model) throws Exception {
-		
+
 		taskDao.updateProjectTask(model);
 
 		Document doc = new Document();
@@ -90,12 +146,12 @@ public class TaskService {
 		doc.setCategory(DocCat.RESULT.getValue());
 
 		documentService.upload(file, doc);
-		
+
 		return 0;
-	} 
+	}
 
 	public List<ProjectTask> selectMyTaskList(Integer empId) {
-		
+
 		return taskDao.selectMyTaskList(empId);
 	}
 
@@ -106,7 +162,5 @@ public class TaskService {
 	public List<ProjectTask> selectMyTaskListOut(Integer empId) {
 		return taskDao.selectMyTaskListOut(empId);
 	}
-
-	
 
 }

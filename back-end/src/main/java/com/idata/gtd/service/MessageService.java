@@ -32,7 +32,7 @@ public class MessageService {
 		return msgDao.selectMessageList(msg);
 	}
 
-	public int insertDepartment(Message msg) {
+	public int insertMessage(Message msg) {
 
 		msg.setTime(new Date());
 		if (msg.getType().equals("audit")) {
@@ -48,7 +48,7 @@ public class MessageService {
 		return msg.getId();
 	}
 
-	public int updateDepartment(Message msg) {
+	public int updateMessage(Message msg) {
 
 		if (msg.getIsExec()!=null && msg.getIsExec() > 1) {
 			if (msg.getType().equals("audit")) {
