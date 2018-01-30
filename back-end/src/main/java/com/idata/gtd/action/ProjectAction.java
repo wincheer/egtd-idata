@@ -42,6 +42,12 @@ public class ProjectAction {
 	@Autowired
 	private ProjectService projectService;
 
+	@RequestMapping(value = "/selectProject", method = RequestMethod.POST)
+	public Project selectProject(@RequestBody Project project) throws Exception {
+
+		return projectService.selectProject(project.getId());
+	}
+	
 	@RequestMapping(value = "/selectProjectList", method = RequestMethod.POST)
 	public List<Project> selectProjectList() throws Exception {
 

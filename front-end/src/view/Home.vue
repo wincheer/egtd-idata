@@ -79,33 +79,118 @@
       </el-dialog>
       <!--消息中心-->
       <el-dialog title="消息中心" :visible.sync="dlgMsgListVis" width="30%">
-        <el-tabs v-model="avtiveTab" type="card">
+        <el-tabs v-model="avtiveMsgTab" type="card">
           <el-tab-pane label="新消息" name="latest">
-            <el-table :data="latestMsgList" stripe :show-header="false" highlight-current-row @expand-change="rowExpandChange">
+            <el-table :data="latestMsgList" stripe :show-header="false" highlight-current-row @current-change="rowChange">
               <el-table-column type="expand">
                 <template slot-scope="props">
                   <span>{{ props.row.body }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="来自" prop="from"></el-table-column>
+              <!-- <el-table-column label="来自" prop="from"></el-table-column> -->
               <el-table-column label="主题" prop="title"></el-table-column>
-              <el-table-column label="主题" prop="time"></el-table-column>
+              <el-table-column label="时间" prop="time" :formatter="fmtDate"></el-table-column>
+              <el-table-column label="操作">
+                <template slot-scope="scope">
+                  <el-button size="mini" type="primary" @click="viewDetail(scope.row)" v-if="scope.row.type!=='normal'">详情</el-button>
+                </template>
+              </el-table-column>
             </el-table>
           </el-tab-pane>
-          <el-tab-pane label="历史消息" name="hostory">TODO</el-tab-pane>
+          <!-- <el-tab-pane label="历史消息" name="history">TODO</el-tab-pane> -->
         </el-tabs>
         <div slot="footer">
           <!-- <el-button @click="sendMsg" size="mini" type="primary" icon="el-icon-edit">发布消息</el-button> -->
           <el-button @click.native="dlgMsgListVis = false" size="mini" >关闭</el-button>
         </div>
       </el-dialog>
+      <!--项目审批-->
+      <el-dialog :title="dlgTitle" :visible.sync="dlgAuditProjecyVis" width="30%">
+        <el-tabs v-model="avtiveProjectTab">
+          <el-tab-pane label="项目基本信息" name="info">
+            <el-form label-position="left">
+              <el-row>
+                <el-col :span="12">
+                  <el-form-item label="项目名称：">
+                    <span>{{project.projectName}}</span>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="项目金额：">
+                    <span>{{project.amount}} 万元</span>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <!-- <el-row>
+                <el-col :span="12">
+                  <el-form-item label="项目经理">
+                  <span>{{project.actorStaffId}}</span>
+                </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="所属部门">
+                  <span>{{project.depId}} </span>
+                </el-form-item>
+                </el-col>
+              </el-row> -->
+              <el-row>
+                <el-col :span="12">
+                  <el-form-item label="启动日期：">
+                  <span>{{project.startDate|fmtDateFilter}}</span>
+                </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="结束日期：">
+                    <span>{{project.endDate|fmtDateFilter}}</span>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+          </el-form>
+          </el-tab-pane>
+          <el-tab-pane label="项目阶段划分" name="stage">
+            <el-table :data="projectStageList" highlight-current-row >
+              <el-table-column label="阶段" prop="text"></el-table-column>
+              <el-table-column label="开始日期" prop="start_date" :formatter="fmtDate"></el-table-column>
+              <el-table-column label="结束日期" prop="end_date" :formatter="fmtDate"></el-table-column>
+            </el-table>
+          </el-tab-pane>
+        </el-tabs>
+        <div slot="footer">
+          <el-button @click="auditProject(3)" size="mini" type="success" icon="el-icon-check">同意</el-button>
+          <el-button @click="auditProject(2)" size="mini" type="primary" icon="el-icon-close">拒绝</el-button>
+          <el-button @click.native="dlgAuditProjecyVis = false" size="mini" >关闭</el-button>
+        </div>
+      </el-dialog>
+      <!--任务确认-->
+      <!-- <el-dialog :title="dlgTitle" :visible.sync="dlgConfirmTaskVis" width="30%">
+        <el-tabs v-model="avtiveProjectTab">
+          <el-tab-pane label="项目基本信息" name="info">
+          </el-tab-pane>
+          <el-tab-pane label="项目组" name="group">TODO</el-tab-pane>
+          <el-tab-pane label="项目阶段划分" name="stage">
+            
+          </el-tab-pane>
+        </el-tabs>
+        <div slot="footer">
+          <el-button @click="auditProject(3)" size="mini" type="success" icon="el-icon-check">同意</el-button>
+          <el-button @click="auditProject(2)" size="mini" type="primary" icon="el-icon-close">拒绝</el-button>
+          <el-button @click.native="dlgConfirmTaskVis = false" size="mini" >关闭</el-button>
+        </div>
+      </el-dialog> -->
     </section>
     
 </template>
 
 <script>
 import avatar from "@/assets/logo.png";
-import { UPDATE_EMPLOYEE } from "../config/api";
+import {
+  UPDATE_EMPLOYEE,
+  SELECT_MESSAGE_LIST,
+  UPDATE_MESSAGE,
+  SELECT_PROJECT_STAGE_LIST,
+  SELECT_PROJECT
+} from "@/config/api";
+import { formatDate } from "@/util/date.js";
 export default {
   data() {
     return {
@@ -116,6 +201,8 @@ export default {
       sysUserAvatar: avatar,
       pwdFormVisible: false,
       dlgMsgListVis: false,
+      dlgAuditProjecyVis: false,
+      dlgConfirmTaskVis: false,
       pwdObj: {
         oldPwd: "",
         newPwd: "",
@@ -125,25 +212,14 @@ export default {
         oldPwd: [{ required: true, message: "请输入原密码", trigger: "blur" }],
         newPwd: [{ required: true, message: "请输入新密码", trigger: "blur" }]
       },
-      avtiveTab:"latest",
-      latestMsgList: [
-        {
-          from: "系统管理员",
-          to: "me",
-          title: "任务xxx发布",
-          body: "消息的正文内容",
-          isRead: 0,
-          time: "2018-01-29 15:03"
-        },
-        {
-          from: "部门1员工1",
-          to: "me",
-          title: "分配新任务Task0527",
-          body: "消息的正文内容",
-          isRead: 0,
-          time: "2018-01-29 14:28"
-        }
-      ]
+      selectedMsg: {},
+      avtiveMsgTab: "latest",
+      avtiveProjectTab: "info",
+      dlgTitle: "",
+      latestMsgList: [],
+      historyMsgList: [],
+      projectStageList: [],
+      project: {}
     };
   },
   methods: {
@@ -210,16 +286,105 @@ export default {
       }
       return allowed;
     },
-    rowExpandChange(row, expandedRows){
-      console.log("操作行" + row.title);
-      console.log("展开行数：" + expandedRows.length);
+    fmtDate(row, column, cellValue) {
+      if (cellValue == null) return "";
+      else return formatDate(new Date(cellValue), "yyyy-MM-dd hh:mm");
     },
-    sendMsg(){
-      this.$message("我要发布新消息了")
+    sendMsg() {
+      this.$message("我要发布新消息了");
+    },
+    selectMyMessageList() {
+      var _this = this;
+      SELECT_MESSAGE_LIST({
+        to: this.$store.state.loginUser.id,
+        isExec: 0,
+      }).then(res => {
+        if (res === "") {
+          _this.$message({
+            message: "获取消息列表失败，请联系系统管理员。",
+            type: "error"
+          });
+        } else {
+          _this.latestMsgList = res;
+        }
+      });
+    },
+    selectProjectStageList(projectId) {
+      var _this = this;
+      SELECT_PROJECT_STAGE_LIST({ projectId: projectId }).then(res => {
+        if (!Array.isArray(res))
+          _this.$message({
+            message: "获取项目阶段失败，请联系系统管理员。",
+            type: "error"
+          });
+        else {
+          _this.projectStageList = res;
+        }
+      });
+    },
+    selectProject(projectId) {
+      var _this = this;
+      SELECT_PROJECT({ id: projectId }).then(res => {
+        _this.project = res;
+      });
+    },
+    rowChange(row) {
+      //更新消息isRead状态
+      this.selectedMsg = row;
+      var _this = this;
+      var params = { id: row.id, isRead: 1 };
+      if (row.isRead !== 1) {
+        UPDATE_MESSAGE(params).then(res => {
+          if (res === "") {
+            _this.$message({
+              message: "更新消息状态失败，请联系系统管理员。",
+              type: "error"
+            });
+          } else {
+            row.isRead = 1;
+          }
+        });
+      }
+    },
+    auditProject(exec) {
+      var _this = this;
+      var params = Object.assign(_this.selectedMsg);
+      params.isExec = exec;
+      UPDATE_MESSAGE(params).then(res => {
+        if (res === "") {
+          _this.$message({
+            message: "更新消息状态失败，请联系系统管理员。",
+            type: "error"
+          });
+        } else {
+          _this.dlgAuditProjecyVis = false;
+          _this.selectMyMessageList();
+        }
+      });
+    },
+    confirmTask() {},
+    viewDetail(row) {
+      if (row.type === "audit") {
+        this.dlgTitle = "审批项目计划";
+        this.selectProjectStageList(row.relationId);
+        this.selectProject(row.relationId);
+        this.dlgAuditProjecyVis = true;
+      } else if (row.type === "confirm") {
+        this.dlgTitle = "确认任务完成";
+        this.dlgConfirmTaskVis = true;
+      }
     }
   },
   computed: {},
-  mounted() {}
+  filters: {
+    fmtDateFilter: function(value) {
+      if (value == null) return "";
+      else return formatDate(new Date(value), "yyyy-MM-dd");
+    }
+  },
+  mounted() {
+    this.selectMyMessageList();
+  }
 };
 </script>
 

@@ -58,6 +58,11 @@ public class ProjectService {
 	@Autowired
 	private EmployeeMapper empDao;
 
+	public Project selectProject(Integer projectId) {
+
+		return projectDao.selectProjectByPK(projectId);
+	}
+	
 	public List<Project> selectProjectList() {
 
 		logger.info("查询项目");
@@ -273,6 +278,11 @@ public class ProjectService {
 	public List<Employee> selectOwnerProjectEmpList(Integer projectId) {
 
 		return empDao.selectOwnerProjectEmpList(projectId);
+	}
+	
+	public Employee selectProjectLeader(Integer projectId){
+		
+		return empDao.selectProjectLeader(projectId);
 	}
 
 }

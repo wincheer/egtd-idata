@@ -28,7 +28,7 @@ export const UPDATE_VENDOR_EMP = (params) => { return axios.post(`${base}/update
 export const DELETE_VENDOR_EMP = (params) => { return axios.post(`${base}/deleteVendorEmp`, params).then(res => res.data); };
 export const UPDATE_EMPLOYEE = (params) => { return axios.post(`${base}/updateEmployee`, params).then(res => res.data); };
 
-//模板管理
+// 模板管理
 export const SELECT_TPL_PROJECT_LIST = () => { return axios.post(`${base}/selectTplProjectList`).then(res => res.data); };
 export const UPDATE_TPL_PROJECT = (params) => { return axios.post(`${base}/updateTplProject`, params).then(res => res.data); };
 export const DELETE_TPL_PROJECT = (params) => { return axios.post(`${base}/deleteTplProject`, params).then(res => res.data); };
@@ -39,7 +39,8 @@ export const SELECT_TPL_GROUP_TREE_LIST = (params) => { return axios.post(`${bas
 export const UPDATE_TPL_GROUP = (params) => { return axios.post(`${base}/updateTplGroup`, params).then(res => res.data); };
 export const DELETE_TPL_GROUP = (params) => { return axios.post(`${base}/deleteTplGroup`, params).then(res => res.data); };
 
-//项目维护
+// 项目维护
+export const SELECT_PROJECT = (params) => { return axios.post(`${base}/selectProject`,params).then(res => res.data); };
 export const SELECT_PROJECT_LIST = () => { return axios.post(`${base}/selectProjectList`).then(res => res.data); };
 export const SELECT_MY_PROJECT_LIST = (params) => { return axios.post(`${base}/selectMyProjectList`,params).then(res => res.data); };
 export const UPDATE_PROJECT = (params) => { return axios.post(`${base}/updateProject`, params).then(res => res.data); };
@@ -70,7 +71,12 @@ export const UPDATE_PROJECT_TASK_WITH_FILE_RESULT = (params) => { return axios.p
 export const SELECT_MY_TASK_LIST = (params) => { return axios.post(`${base}/selectMyTaskList`,params).then(res => res.data); };
 export const SELECT_MY_TASK_LIST_IN = (params) => { return axios.post(`${base}/selectMyTaskListIn`,params).then(res => res.data); };
 export const SELECT_MY_TASK_LIST_OUT = (params) => { return axios.post(`${base}/selectMyTaskListOut`,params).then(res => res.data); };
-//文档附件
+
+// 消息
+export const UPDATE_MESSAGE = (params) => { return axios.post(`${base}/updateMessage`, params).then(res => res.data); };
+export const SELECT_MESSAGE_LIST = (params) => { return axios.post(`${base}/selectMessageList`,params).then(res => res.data); };
+
+// 文档附件
 export const SELECT_DOCUMENT_LIST = (params) => { return axios.post(`${base}/selectDocumentList`,params).then(res => res.data); };
 export const UPDATE_DOCUMENT = (params) => { return axios.post(`${base}/updateDocument`,params).then(res => res.data); };
 export const DELETE_DOCUMENT = (params) => { return axios.post(`${base}/deleteDocument`,params).then(res => res.data); };

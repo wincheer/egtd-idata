@@ -5,15 +5,16 @@ import java.util.Date;
 public class Message {
 
 	private Integer id;
-    private String from;
-    private String to;
-    private String toScop; //actor个人、group项目组
+    private Integer from;
+    private Integer to;
+    private String toScope; //actor个人、group项目组
     private String title;
     private String body;
     private String type; //normal 普通消息(任务发布、任务延期（系统发送）)，audit 针对项目审批、confirm针对任务确认
     private Integer relationId;
     private Date time;
     private Integer isRead;
+    private Integer isExec;
 
     public Integer getId() {
         return id;
@@ -23,28 +24,28 @@ public class Message {
         this.id = id;
     }
 
-    public String getFrom() {
+    public Integer getFrom() {
         return from;
     }
 
-    public void setFrom(String from) {
+    public void setFrom(Integer from) {
         this.from = from;
     }
 
-    public String getTo() {
+    public Integer getTo() {
         return to;
     }
 
-    public void setTo(String to) {
+    public void setTo(Integer to) {
         this.to = to;
     }
 
-    public String getToScop() {
-        return toScop;
+    public String getToScope() {
+        return toScope;
     }
 
-    public void setToScop(String toScop) {
-        this.toScop = toScop;
+    public void setToScope(String toScope) {
+        this.toScope = toScope;
     }
 
     public String getTitle() {
@@ -93,5 +94,13 @@ public class Message {
 
 	public void setIsRead(Integer isRead) {
 		this.isRead = isRead;
+	}
+
+	public Integer getIsExec() {
+		return isExec;
+	}
+
+	public void setIsExec(Integer isExec) {
+		this.isExec = isExec;
 	}
 }

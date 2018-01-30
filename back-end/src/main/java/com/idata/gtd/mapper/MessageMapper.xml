@@ -4,15 +4,16 @@
 
   <resultMap id="BaseResultMap" type="com.idata.gtd.entity.Message">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="from" jdbcType="VARCHAR" property="from" />
-    <result column="to" jdbcType="VARCHAR" property="to" />
-    <result column="to_scop" jdbcType="VARCHAR" property="toScop" />
+    <result column="from" jdbcType="INTEGER" property="from" />
+    <result column="to" jdbcType="INTEGER" property="to" />
+    <result column="to_scope" jdbcType="VARCHAR" property="toScope" />
     <result column="title" jdbcType="VARCHAR" property="title" />
     <result column="body" jdbcType="VARCHAR" property="body" />
     <result column="type" jdbcType="VARCHAR" property="type" />
     <result column="relation_id" jdbcType="INTEGER" property="relationId" />
     <result column="time" jdbcType="TIMESTAMP" property="time" />
     <result column="is_read" jdbcType="INTEGER" property="isRead" />
+    <result column="is_exce" jdbcType="INTEGER" property="isExec" />
   </resultMap>
 
   <select id="selectMessageByPK" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -30,60 +31,65 @@
     insert into message
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">id,</if>
-      <if test="from != null">from,</if>
-      <if test="to != null">to,</if>
-      <if test="toScop != null">to_scop,</if>
+      <if test="from != null">`from`,</if>
+      <if test="to != null">`to`,</if>
+      <if test="toScope != null">to_scope,</if>
       <if test="title != null">title,</if>
       <if test="body != null">body,</if>
       <if test="type != null">type,</if>
       <if test="relationId != null">relation_id,</if>
       <if test="time != null">time,</if>
       <if test="isRead != null">is_read,</if>
+      <if test="isExec != null">is_exec,</if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">#{id,jdbcType=INTEGER},</if>
-      <if test="from != null">#{from,jdbcType=VARCHAR},</if>
-      <if test="to != null">#{to,jdbcType=VARCHAR},</if>
-      <if test="toScop != null">#{toScop,jdbcType=VARCHAR},</if>
+      <if test="from != null">#{from,jdbcType=INTEGER},</if>
+      <if test="to != null">#{to,jdbcType=INTEGER},</if>
+      <if test="toScope != null">#{toScope,jdbcType=VARCHAR},</if>
       <if test="title != null">#{title,jdbcType=VARCHAR},</if>
       <if test="body != null">#{body,jdbcType=VARCHAR},</if>
       <if test="type != null">#{type,jdbcType=VARCHAR},</if>
       <if test="relationId != null">#{relationId,jdbcType=INTEGER},</if>
       <if test="time != null">#{time,jdbcType=TIMESTAMP},</if>
       <if test="isRead != null">#{isRead,jdbcType=INTEGER},</if>
+      <if test="isExec != null">#{isExec,jdbcType=INTEGER},</if>
     </trim>
   </insert>
   
   <update id="updateMessage" parameterType="com.idata.gtd.entity.Message">
     update message
     <set>
-      <if test="from != null">from = #{from,jdbcType=VARCHAR},</if>
-      <if test="to != null">to = #{to,jdbcType=VARCHAR},</if>
-      <if test="toScop != null">to_scop = #{toScop,jdbcType=VARCHAR},</if>
+      <if test="from != null">`from` = #{from,jdbcType=INTEGER},</if>
+      <if test="to != null">`to` = #{to,jdbcType=INTEGER},</if>
+      <if test="toScope != null">to_scope = #{toScope,jdbcType=VARCHAR},</if>
       <if test="title != null">title = #{title,jdbcType=VARCHAR},</if>
       <if test="body != null">body = #{body,jdbcType=VARCHAR},</if>
       <if test="type != null">type = #{type,jdbcType=VARCHAR},</if>
       <if test="relationId != null">relation_id = #{relationId,jdbcType=INTEGER},</if>
       <if test="time != null">time = #{time,jdbcType=TIMESTAMP},</if>
       <if test="isRead != null">is_read = #{isRead,jdbcType=INTEGER},</if>
+      <if test="isExec != null">is_exec = #{isExec,jdbcType=INTEGER},</if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
   
   <select id="selectMessageList" parameterType="com.idata.gtd.entity.Message" resultMap="BaseResultMap">
     select *
-    from message where 1=1 and 
+    from message where 1=1 
     <trim prefix=" and (" suffix=")" suffixOverrides="and">
-    	<if test="from != null">from = #{from,jdbcType=VARCHAR} and </if>
-		<if test="to != null">to = #{to,jdbcType=VARCHAR} and </if>
-		<if test="toScop != null">to_scop = #{toScop,jdbcType=VARCHAR} and </if>
+    	<if test="from != null">`from` = #{from,jdbcType=INTEGER} and </if>
+		<if test="to != null">`to` = #{to,jdbcType=INTEGER} and </if>
+		<if test="toScope != null">to_scope = #{toScope,jdbcType=VARCHAR} and </if>
 		<if test="title != null">title = #{title,jdbcType=VARCHAR} and </if>
 		<if test="body != null">body = #{body,jdbcType=VARCHAR} and </if>
 		<if test="type != null">type = #{type,jdbcType=VARCHAR} and </if>
 		<if test="relationId != null">relation_id = #{relationId,jdbcType=INTEGER} and </if>
 		<if test="time != null">time = #{time,jdbcType=TIMESTAMP} and </if>
 		<if test="isRead != null">is_read = #{isRead,jdbcType=INTEGER} and </if>
+		<if test="isExec != null">is_exec = #{isExec,jdbcType=INTEGER} and </if>
 	</trim>
+	ORDER BY time DESC
   </select>
 
 </mapper>

@@ -186,5 +186,17 @@
 	WHERE
 		employee.id = #{empId,jdbcType=INTEGER}
   </select>
+  
+  <select id="selectProjectLeader" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+	SELECT
+		employee.*
+	FROM
+		employee
+	LEFT JOIN project_staff ON employee.id = project_staff.emp_id
+	LEFT JOIN project_group ON project_staff.group_id = project_group.id
+	WHERE
+		project_group.project_id = #{projectId,jdbcType=INTEGER}
+	AND project_group.group_role = 'R01'
+  </select>
 
 </mapper>

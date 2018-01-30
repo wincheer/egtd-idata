@@ -15,8 +15,9 @@
     <result column="actor_staff_id" jdbcType="INTEGER" property="actorStaffId" />
     <result column="icon" jdbcType="VARCHAR" property="icon" />
     <result column="amount" jdbcType="INTEGER" property="amount" />
-    <result column="audit_state" jdbcType="INTEGER" property="auditState" />
+    <result column="audit_state" jdbcType="VARCHAR" property="auditState" />
     <result column="dep_id" jdbcType="INTEGER" property="depId" />
+    <result column="owner_id" jdbcType="INTEGER" property="ownerId" />
   </resultMap>
   
   <select id="selectProjectByPK" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -47,6 +48,7 @@
       <if test="amount != null">amount,</if>
       <if test="audit_state != null">auditState,</if>
       <if test="depId != null">dep_id,</if>
+      <if test="ownerId != null">owner_id,</if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">#{id,jdbcType=INTEGER},</if>
@@ -63,6 +65,7 @@
       <if test="amount != null">#{amount,jdbcType=INTEGER},</if>
       <if test="auditState != null">#{auditState,jdbcType=VARCHAR},</if>
       <if test="depId != null">#{depId,jdbcType=INTEGER},</if>
+      <if test="ownerId != null">#{ownerId,jdbcType=INTEGER},</if>
     </trim>
   </insert>
   
@@ -80,14 +83,36 @@
       <if test="actorStaffId != null">actor_staff_id = #{actorStaffId,jdbcType=INTEGER},</if>
       <if test="icon != null">icon = #{icon,jdbcType=VARCHAR},</if>
       <if test="amount != null">amount = #{amount,jdbcType=INTEGER},</if>
-      <if test="auditState != null">audit_state = #{auditState,jdbcType=INTEGER},</if>
+      <if test="auditState != null">audit_state = #{auditState,jdbcType=VARCHAR},</if>
       <if test="depId != null">dep_id = #{depId,jdbcType=INTEGER},</if>
+      <if test="ownerId != null">owner_id = #{ownerId,jdbcType=INTEGER},</if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
   
   <select id="selectProjectList" resultMap="BaseResultMap">
     select * from project
+  </select>
+  
+  <select id="selectProjectList2" parameterType="com.idata.gtd.entity.Project" resultMap="BaseResultMap">
+    select * 
+    from project where 1=1 
+    <trim prefix=" and (" suffix=")" suffixOverrides="and">
+		<if test="projectName != null">project_name = #{projectName,jdbcType=VARCHAR} and </if>
+		<if test="projectDesc != null">project_desc = #{projectDesc,jdbcType=VARCHAR} and </if>
+		<if test="category != null">category = #{category,jdbcType=VARCHAR} and </if>
+		<if test="isKey != null">is_key = #{isKey,jdbcType=INTEGER} and </if>
+		<if test="isForzen != null">is_forzen = #{isForzen,jdbcType=INTEGER} and </if>
+		<if test="createDate != null">create_date = #{createDate,jdbcType=TIMESTAMP} and </if>
+		<if test="startDate != null">start_date = #{startDate,jdbcType=TIMESTAMP} and </if>
+		<if test="endDate != null">end_date = #{endDate,jdbcType=TIMESTAMP} and </if>
+		<if test="actorStaffId != null">actor_staff_id = #{actorStaffId,jdbcType=INTEGER} and </if>
+		<if test="icon != null">icon = #{icon,jdbcType=VARCHAR} and </if>
+		<if test="amount != null">amount = #{amount,jdbcType=INTEGER} and </if>
+		<if test="auditState != null">audit_state = #{auditState,jdbcType=VARCHAR} and </if>
+		<if test="depId != null">dep_id = #{depId,jdbcType=INTEGER} and </if>
+		<if test="ownerId != null">owner_id = #{ownerId,jdbcType=INTEGER} and </if>
+    </trim>
   </select>
   
   <select id="selectMyProjectList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -97,9 +122,9 @@
 	project
 	LEFT JOIN project_group ON project_group.project_id = project.id
 	LEFT JOIN project_staff ON project_staff.group_id = project_group.id
-	INNER JOIN employee ON project_staff.emp_id = employee.id
+	LEFT JOIN employee ON project_staff.emp_id = employee.id
 	WHERE
-		project.is_forzen != 1 AND employee.id = #{empId,jdbcType=INTEGER}
+		project.is_forzen != 1 AND project.audit_state = 'ready' AND employee.id = #{empId,jdbcType=INTEGER}
   </select>
 
 </mapper>

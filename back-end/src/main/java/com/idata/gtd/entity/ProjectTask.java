@@ -12,7 +12,7 @@ public class ProjectTask {
     private String taskDesc;
     private Integer priority;
     private Float progress;
-    private Integer state;
+    private Integer state; //未开始0，进行中1，已完成2，待检查3，确认完成4
     private Integer assignStaffId;
     private Integer actorStaffId;
     private Integer planWorkload;

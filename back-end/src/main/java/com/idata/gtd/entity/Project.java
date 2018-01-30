@@ -24,6 +24,7 @@ public class Project {
 	private Integer amount;
 	private String auditState; //init（初始化）、wait(等待审核)、refuse(审核拒绝)、ready(审核通过就绪)
 	private Integer depId;
+	private Integer ownerId;
 
 	public Integer getId() {
 		return id;
@@ -136,4 +137,14 @@ public class Project {
 	public void setDepId(Integer depId) {
 		this.depId = depId;
 	}
+
+	public Integer getOwnerId() {
+		return ownerId;
+	}
+
+	public void setOwnerId(Integer ownerId) {
+		this.ownerId = ownerId;
+	}
+
+
 }
