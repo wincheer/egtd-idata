@@ -194,7 +194,7 @@ import { formatDate } from "@/util/date.js";
 export default {
   data() {
     return {
-      appName: "eGTD - iData",
+      appName: "项目管理软件",
       loginUser: this.$store.state.loginUser,
       myRoles: this.$store.state.myRoles,
       isCollapse: false,
