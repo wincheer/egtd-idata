@@ -13,6 +13,7 @@ import com.idata.gtd.dao.MessageMapper;
 import com.idata.gtd.entity.Message;
 import com.idata.gtd.entity.Project;
 import com.idata.gtd.entity.ProjectTask;
+import com.idata.gtd.entity.TaskCheck;
 
 @Service
 @Transactional
@@ -43,7 +44,7 @@ public class MessageService {
 			project.setAuditState("wait");
 			projectService.updateProject(project);
 		}
-		
+
 		if (msg.getType().equals("confirm")) { // 提醒任务确认的消息
 			// 同时更新task状态为完成待检查
 			ProjectTask task = new ProjectTask();
@@ -51,7 +52,7 @@ public class MessageService {
 			task.setState(2); // 未开始0，进行中1，已完成待检查2，确认完成3
 			taskService.updateProjectTask(task);
 		}
-				
+
 		msgDao.insertMessage(msg);
 
 		return msg.getId();
@@ -69,27 +70,37 @@ public class MessageService {
 			if (msg.getType().equals("confirm")) {
 				ProjectTask task = new ProjectTask();
 				task.setId(msg.getRelationId());
-				task.setState(msg.getIsExec() == 4 ? 4 : 3); // 4直接确认，3转发其他人继续确认
+				task.setState(msg.getIsExec());
+				
+				TaskCheck tc = new TaskCheck();
+				tc.setTaskId(msg.getRelationId());
+				tc.setChecker(msg.getTo()); 
+				tc.setResult(msg.getTitle()); //临时借用title
+				msg.setTitle(null); //防止误更新
+				tc.setCheckDate(new Date());
+				
+				if (msg.getIsExec() == 2) { // 转发继续确认
+					//给下一个检查人发消息
+				}
+				if (msg.getIsExec() == 3) { // 同意
+					task.setReal_end_date(new Date());
+					//给任务接收人发消息
+				}
+				if (msg.getIsExec() == 4) { // 拒绝了
+					//给任务接收人发消息
+				}
 				taskService.updateProjectTask(task);
 			}
-			if (msg.getType().equals("normal")) { //接收任务
-				ProjectTask task = new ProjectTask();
-				task.setId(msg.getRelationId());
-				task.setState(1); //开始
-				task.setReal_start_date(new Date());
-				taskService.updateProjectTask(task);
-			}
-			
+			msg.setIsExec(1);
 		}
-		if(msg.getType().equals("normal")){
+		if (msg.getType().equals("normal")) {
 			ProjectTask task = new ProjectTask();
 			task.setId(msg.getRelationId());
-			task.setState(1); //开始
+			task.setState(1); // 开始
 			task.setReal_start_date(new Date());
 			taskService.updateProjectTask(task);
+			msg.setIsExec(1);
 		}
-		
-		msg.setIsExec(1);
 
 		return msgDao.updateMessage(msg);
 	}

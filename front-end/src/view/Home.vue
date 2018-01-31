@@ -3,7 +3,7 @@
       <el-row class="container">
         <el-col :span="24" class="header">
             <el-col :span="10" class="logo" :class="isCollapse?'logo-collapse-width':'logo-width'">
-                {{isCollapse?'':this.appName}}
+                <img :src="this.sysUserAvatar" />{{isCollapse?'':this.appName}}
             </el-col>
             <el-col :span="10">
                 <div class="tools" @click="collapse">
@@ -13,15 +13,15 @@
             <el-col :span="4" class="userinfo">
                 <el-dropdown trigger="hover">
                     <span class="el-dropdown-link userinfo-inner">
-                        <img :src="this.sysUserAvatar" /> {{loginUser.empName}} 
+                        {{loginUser.empName}} 
                         <el-badge :is-dot="latestMsgList.length!==0"></el-badge>
                     </span>
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item @click.native="dlgMsgListVis = true">消息中心<el-badge :value="latestMsgList.length" /></el-dropdown-item>
                         <el-dropdown-item divided @click.native="pwdFormVisible = true">修改密码</el-dropdown-item>
-                        <el-dropdown-item @click.native="logout">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
+                | <el-button type="text" class="userinfo-inner" @click="logout">退出登录</el-button>
             </el-col>
         </el-col>
         <el-col :span="24" class="main">
@@ -214,7 +214,7 @@
         <div slot="footer">
           <el-button-group v-if="selectedMsg.type!=='normal'">
             <el-button @click="execMessage(3)" size="mini" type="success" icon="el-icon-check">确认完成</el-button>
-            <el-button @click="execMessage(3)" size="mini" type="danger" icon="el-icon-close">拒绝</el-button>
+            <el-button @click="refuseTask(2)" size="mini" type="danger" icon="el-icon-close">拒绝</el-button>
             <el-select size="mini" style="width:120px" v-model="nextChecker" clearable value-key="id">
               <el-option v-for="item in projectEmployeeList" :key="item.id" :label="item.empName" :value="item" />
             </el-select>
@@ -273,11 +273,11 @@ export default {
       projectStageList: [],
       project: {},
       task: {},
-      taskStandardFileList:[],
-      taskResultFileList:[],
-      projectEmployeeList:[],
-      nextChecker:'',
-      taskCheckList:[]
+      taskStandardFileList: [],
+      taskResultFileList: [],
+      projectEmployeeList: [],
+      nextChecker: "",
+      taskCheckList: []
     };
   },
   methods: {
@@ -355,7 +355,7 @@ export default {
       var _this = this;
       SELECT_MESSAGE_LIST({
         to: this.$store.state.loginUser.id,
-        isExec: 0,
+        isExec: 0
       }).then(res => {
         if (res === "") {
           _this.$message({
@@ -391,8 +391,8 @@ export default {
       SELECT_PROJECT_TASK({ id: taskId }).then(res => {
         _this.task = res;
         _this.selectProjectEmployeeList(_this.task.projectId);
-        _this.selectDocumentList(_this.task.id,"2");
-        _this.selectDocumentList(_this.task.id,"3");
+        _this.selectDocumentList(_this.task.id, "2");
+        _this.selectDocumentList(_this.task.id, "3");
       });
     },
     selectProjectEmployeeList(projectId) {
@@ -407,31 +407,31 @@ export default {
         _this.projectEmployeeList = res;
       });
     },
-    selectDocumentList(projectTaskId,docCategory) {
+    selectDocumentList(projectTaskId, docCategory) {
       var _this = this;
       SELECT_DOCUMENT_LIST({
         belongTo: "task",
         sourceId: projectTaskId,
-        category:docCategory
+        category: docCategory
       }).then(res => {
-        if(docCategory==="2") _this.taskStandardFileList = res;
-        if(docCategory==="3") _this.taskResultFileList = res;
+        if (docCategory === "2") _this.taskStandardFileList = res;
+        if (docCategory === "3") _this.taskResultFileList = res;
       });
     },
-    downloadFile(row, event, column){
+    downloadFile(row, event, column) {
       let link = document.createElement("a");
       link.href = base + "/download?docId=" + row.id;
-      link.target = "_BLANK"
+      link.target = "_BLANK";
       link.click();
     },
     rowChange(row) {
       //更新消息isRead状态
       this.selectedMsg = row;
-      if(row){
+      if (row) {
         var _this = this;
         var params = Object.assign(row);
         if (row.isRead !== 1) {
-          params.isRead = 1
+          params.isRead = 1;
           UPDATE_MESSAGE(params).then(res => {
             if (res === "") {
               _this.$message({
@@ -445,40 +445,40 @@ export default {
         }
       }
     },
-    execMessage(exec) {
-      var _this = this;
-      var params = Object.assign(_this.selectedMsg);
-      params.isExec = exec;
-      UPDATE_MESSAGE(params).then(res => {
-        if (res === "") {
-          _this.$message({
-            message: "更新消息状态失败，请联系系统管理员。",
-            type: "error"
-          });
-        } else {
-           if (row.type === "audit") _this.dlgAuditProjecyVis = false;
-           else {
-             _this.dlgConfirmTaskVis = false;
-           }
-           _this.selectMyMessageList();
-        }
-      });
-    },
     viewDetail(row) {
       if (row.type === "audit") {
         this.dlgTitle = "审批项目计划";
         this.selectProjectStageList(row.relationId);
         this.selectProject(row.relationId);
         this.dlgAuditProjecyVis = true;
-      } else  {
+      } else {
         this.dlgTitle = "确认任务完成";
         this.selectProjectTask(row.relationId);
         this.dlgConfirmTaskVis = true;
       }
     },
+    execMessage(exec,reason) {
+      var _this = this;
+      var params = Object.assign(_this.selectedMsg);
+      params.isExec = exec;
+      if(reason) params.title = reason;
+      UPDATE_MESSAGE(params).then(res => {
+        if (row.type === "audit") _this.dlgAuditProjecyVis = false;
+        else _this.dlgConfirmTaskVis = false;
+        _this.selectMyMessageList();
+      });
+    },
+    refuseTask() {
+      this.$prompt("请输入拒绝的理由", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消"
+      }).then(({ value }) => {
+        this.execMessage(2,value)
+      });
+    },
     fmtEmployee(empId) {
-      for(var emp of this.projectEmployeeList){
-        if(emp.id === empId) return emp.empName;
+      for (var emp of this.projectEmployeeList) {
+        if (emp.id === empId) return emp.empName;
       }
       //return value;
     }
@@ -492,7 +492,7 @@ export default {
     fmtDateTimeFilter: function(value) {
       if (value == null) return "";
       else return formatDate(new Date(value), "yyyy-MM-dd hh:mm");
-    },
+    }
   },
   mounted() {
     this.selectMyMessageList();
@@ -532,7 +532,7 @@ export default {
       //width:230px;
       height: 60px;
       font-size: 22px;
-      padding-left: 20px;
+      padding-left: 2px;
       padding-right: 20px;
       border-color: rgba(238, 241, 146, 0.3);
       border-right-width: 1px;
@@ -540,7 +540,7 @@ export default {
       img {
         width: 40px;
         float: left;
-        margin: 10px 10px 10px 18px;
+        margin: 10px 10px 10px 10px;
       }
       .txt {
         color: #fff;
