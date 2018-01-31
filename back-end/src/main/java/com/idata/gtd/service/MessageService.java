@@ -72,8 +72,24 @@ public class MessageService {
 				task.setState(msg.getIsExec() == 4 ? 4 : 3); // 4直接确认，3转发其他人继续确认
 				taskService.updateProjectTask(task);
 			}
-			msg.setIsExec(1);
+			if (msg.getType().equals("normal")) { //接收任务
+				ProjectTask task = new ProjectTask();
+				task.setId(msg.getRelationId());
+				task.setState(1); //开始
+				task.setReal_start_date(new Date());
+				taskService.updateProjectTask(task);
+			}
+			
 		}
+		if(msg.getType().equals("normal")){
+			ProjectTask task = new ProjectTask();
+			task.setId(msg.getRelationId());
+			task.setState(1); //开始
+			task.setReal_start_date(new Date());
+			taskService.updateProjectTask(task);
+		}
+		
+		msg.setIsExec(1);
 
 		return msgDao.updateMessage(msg);
 	}

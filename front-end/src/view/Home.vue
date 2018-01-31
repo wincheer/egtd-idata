@@ -92,7 +92,7 @@
               <el-table-column label="时间" prop="time" :formatter="fmtDate"></el-table-column>
               <el-table-column label="操作">
                 <template slot-scope="scope">
-                  <el-button size="mini" type="primary" @click="viewDetail(scope.row)" v-if="scope.row.type!=='normal'">详情</el-button>
+                  <el-button size="mini" type="primary" @click="viewDetail(scope.row)">详情</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -156,8 +156,8 @@
           </el-tab-pane>
         </el-tabs>
         <div slot="footer">
-          <el-button @click="auditProject(3)" size="mini" type="success" icon="el-icon-check">同意</el-button>
-          <el-button @click="auditProject(2)" size="mini" type="primary" icon="el-icon-close">拒绝</el-button>
+          <el-button @click="execMessage(3)" size="mini" type="success" icon="el-icon-check">同意</el-button>
+          <el-button @click="execMessage(2)" size="mini" type="primary" icon="el-icon-close">拒绝</el-button>
           <el-button @click.native="dlgAuditProjecyVis = false" size="mini" >关闭</el-button>
         </div>
       </el-dialog>
@@ -212,15 +212,14 @@
           </el-tab-pane>
         </el-tabs>
         <div slot="footer">
-          <el-button-group>
-            <el-button @click="auditProject(3)" size="mini" type="success" icon="el-icon-check">确认完成</el-button>
-            <el-button @click="auditProject(3)" size="mini" type="danger" icon="el-icon-close">拒绝</el-button>
+          <el-button-group v-if="selectedMsg.type!=='normal'">
+            <el-button @click="execMessage(3)" size="mini" type="success" icon="el-icon-check">确认完成</el-button>
+            <el-button @click="execMessage(3)" size="mini" type="danger" icon="el-icon-close">拒绝</el-button>
+            <el-select size="mini" style="width:120px" v-model="nextChecker" clearable value-key="id">
+              <el-option v-for="item in projectEmployeeList" :key="item.id" :label="item.empName" :value="item" />
+            </el-select>
+            <el-button @click="execMessage(2)" size="mini" type="primary" icon="el-icon-share" :disabled="nextChecker===''">再确认</el-button>
           </el-button-group>
-          <el-select size="mini" style="width:120px" v-model="nextChecker" clearable value-key="value">
-            <el-option label="xxx" value="xxx"/>
-            <el-option label="yyy" value="yyy"/>
-          </el-select>
-          <el-button @click="auditProject(2)" size="mini" type="primary" icon="el-icon-share" :disabled="nextChecker===''">再确认</el-button>
           <el-button @click.native="dlgConfirmTaskVis = false" size="mini" >关闭</el-button>
         </div>
       </el-dialog>
@@ -428,22 +427,25 @@ export default {
     rowChange(row) {
       //更新消息isRead状态
       this.selectedMsg = row;
-      var _this = this;
-      var params = { id: row.id, isRead: 1 };
-      if (row.isRead !== 1) {
-        UPDATE_MESSAGE(params).then(res => {
-          if (res === "") {
-            _this.$message({
-              message: "更新消息状态失败，请联系系统管理员。",
-              type: "error"
-            });
-          } else {
-            row.isRead = 1;
-          }
-        });
+      if(row){
+        var _this = this;
+        var params = Object.assign(row);
+        if (row.isRead !== 1) {
+          params.isRead = 1
+          UPDATE_MESSAGE(params).then(res => {
+            if (res === "") {
+              _this.$message({
+                message: "更新消息状态失败，请联系系统管理员。",
+                type: "error"
+              });
+            } else {
+              row.isRead = 1;
+            }
+          });
+        }
       }
     },
-    auditProject(exec) {
+    execMessage(exec) {
       var _this = this;
       var params = Object.assign(_this.selectedMsg);
       params.isExec = exec;
@@ -454,19 +456,21 @@ export default {
             type: "error"
           });
         } else {
-          _this.dlgAuditProjecyVis = false;
-          _this.selectMyMessageList();
+           if (row.type === "audit") _this.dlgAuditProjecyVis = false;
+           else {
+             _this.dlgConfirmTaskVis = false;
+           }
+           _this.selectMyMessageList();
         }
       });
     },
-    confirmTask() {},
     viewDetail(row) {
       if (row.type === "audit") {
         this.dlgTitle = "审批项目计划";
         this.selectProjectStageList(row.relationId);
         this.selectProject(row.relationId);
         this.dlgAuditProjecyVis = true;
-      } else if (row.type === "confirm") {
+      } else  {
         this.dlgTitle = "确认任务完成";
         this.selectProjectTask(row.relationId);
         this.dlgConfirmTaskVis = true;

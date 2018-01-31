@@ -238,7 +238,7 @@ export default {
 
       this.taskObj = {
         projectId: this.selectedProject.id,
-        id: "",
+        id: null,
         parent: this.selectedTask.id, //隐藏字段
         text: "",
         start_date: "",
@@ -249,8 +249,8 @@ export default {
         progress: 0,
         priority: 60,
         state: 0, //隐藏字段。任务状态：未开始0，进行中1，已完成待确认2，已完成3
-        planWorkload: "", //工作量
-        realWorkload: "", // 隐藏字段，实际工作量
+        planWorkload: 0, //工作量
+        realWorkload: null, // 隐藏字段，实际工作量
         isDelay: 0, //隐藏字段，是否延期
         delayReason: null, //隐藏字段：延期原因
         readonly: 0, //隐藏字段，附加字段

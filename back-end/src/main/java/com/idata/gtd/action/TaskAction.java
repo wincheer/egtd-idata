@@ -17,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.idata.gtd.entity.Department;
 import com.idata.gtd.entity.Employee;
 import com.idata.gtd.entity.Project;
 import com.idata.gtd.entity.ProjectTask;
@@ -80,7 +79,7 @@ public class TaskAction {
 
 		ProjectTask model = gson.fromJson(data.toString(), ProjectTask.class);
 
-		if (model.getId() == 0) {
+		if (model.getId() == null) {
 			model.setId(null);
 			return taskService.insertProjectTask(file, model);
 		} else

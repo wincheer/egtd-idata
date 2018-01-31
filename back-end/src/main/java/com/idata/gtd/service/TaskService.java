@@ -46,10 +46,11 @@ public class TaskService {
 		task.setCreate_date(new Date()); 
 		// 如果有任务接收人，给任务接收人发送一条任务分配消息
 		if (task.getActorStaffId() != null) {
-			if (task.getAssignStaffId() != task.getActorStaffId()) { // 给自己分配的任务状态直接设置为
-																		// 1进行中，且不发送消息
+			if (task.getAssignStaffId() == task.getActorStaffId()) { // 给自己分配的任务状态直接设置为1进行中，且不发送消息
 				task.setState(1);
+				taskDao.insertProjectTask(task);
 			} else {
+				taskDao.insertProjectTask(task);
 				Message msg = new Message();
 				msg.setFrom(task.getAssignStaffId());
 				msg.setTo(task.getActorStaffId());
@@ -62,43 +63,45 @@ public class TaskService {
 				msgService.insertMessage(msg);
 			}
 		}
-		taskDao.insertProjectTask(task);
+		//taskDao.insertProjectTask(task);
 		return task.getId();
 	}
 
 	public int updateProjectTask(ProjectTask task) {
 
-		ProjectTask originalTask = taskDao.selectProjectTaskByPK(task.getId());
-		if (task.getActorStaffId() != originalTask.getActorStaffId()) { // 意味着换了任务执行人
-			// 给新的任务接收人发送任务分配通知
-			Message msg = new Message();
-			msg.setFrom(task.getAssignStaffId());
-			msg.setTo(task.getActorStaffId());
-			msg.setToScope("actor");
-			msg.setTime(new Date());
-			msg.setTitle("任务分配");
-			msg.setBody("您被分配了一条新任务，任务名称为【" + task.getText() + "】");
-			msg.setRelationId(task.getId());
-			msg.setType("normal");
-			msgService.insertMessage(msg);
-		} else {
-			if (task.getProgress() == 1) {
-				if (task.getState() == 1) { // 进行中
-					if (task.getAssignStaffId() != task.getActorStaffId()) { 
-						task.setState(2); // 待确认
-						// 给任务创建人发一条请求任务完成的确认消息
-						Message msg = new Message();
-						msg.setFrom(task.getActorStaffId());
-						msg.setTo(task.getAssignStaffId());
-						msg.setToScope("actor");
-						msg.setTime(new Date());
-						msg.setTitle("任务完成确认");
-						msg.setBody("您分配的一条任务已完成，需要确认。任务名称为【" + task.getText() + "】");
-						msg.setRelationId(task.getId());
-						msg.setType("confirm");
-						msgService.insertMessage(msg);
-					} else { // 给自己分配的任务不提醒
-						task.setState(3); // 完成
+		if(task.getAssignStaffId()!=null){ //仅仅在更新状态
+			ProjectTask originalTask = taskDao.selectProjectTaskByPK(task.getId());
+			if (task.getActorStaffId() != originalTask.getActorStaffId()) { // 意味着换了任务执行人
+				// 给新的任务接收人发送任务分配通知
+				Message msg = new Message();
+				msg.setFrom(task.getAssignStaffId());
+				msg.setTo(task.getActorStaffId());
+				msg.setToScope("actor");
+				msg.setTime(new Date());
+				msg.setTitle("任务分配");
+				msg.setBody("您被分配了一条新任务，任务名称为【" + task.getText() + "】");
+				msg.setRelationId(task.getId());
+				msg.setType("normal");
+				msgService.insertMessage(msg);
+			} else {
+				if (task.getProgress() == 1) {
+					if (task.getState() == 1) { // 进行中
+						if (task.getAssignStaffId() != task.getActorStaffId()) { 
+							task.setState(2); // 待确认
+							// 给任务创建人发一条请求任务完成的确认消息
+							Message msg = new Message();
+							msg.setFrom(task.getActorStaffId());
+							msg.setTo(task.getAssignStaffId());
+							msg.setToScope("actor");
+							msg.setTime(new Date());
+							msg.setTitle("任务完成确认");
+							msg.setBody("您分配的一条任务已完成，需要确认。任务名称为【" + task.getText() + "】");
+							msg.setRelationId(task.getId());
+							msg.setType("confirm");
+							msgService.insertMessage(msg);
+						} else { // 给自己分配的任务不提醒
+							task.setState(3); // 完成
+						}
 					}
 				}
 			}
