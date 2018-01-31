@@ -17,9 +17,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.idata.gtd.entity.Department;
 import com.idata.gtd.entity.Employee;
 import com.idata.gtd.entity.Project;
 import com.idata.gtd.entity.ProjectTask;
+import com.idata.gtd.entity.TaskCheck;
 import com.idata.gtd.service.TaskService;
 
 /**
@@ -36,6 +38,13 @@ public class TaskAction {
 	@Autowired
 	private TaskService taskService;
 
+	@RequestMapping(value = "/selectProjectTask", method = RequestMethod.POST)
+	public ProjectTask selectProjectTask(@RequestBody ProjectTask data) {
+
+		ProjectTask task = taskService.selectProjectTask(data.getId());
+		return task;
+	}
+	
 	@RequestMapping(value = "/selectProjectTaskList", method = RequestMethod.POST)
 	public List<ProjectTask> selectProjectTaskList(@RequestBody Project data) {
 
@@ -126,13 +135,20 @@ public class TaskAction {
 		return taskList;
 	}
 
-	public static void main(String[] args) {
-		// String s = "SAT Jan 27 2018 00:00:00 GMT+0800 (中国标准时间)";
-		// Date d = new Date(s);
-		// System.out.println();
-		Gson gson = new GsonBuilder().create();
-		String json = gson.toJson(new Date());
-		gson.fromJson(json, Date.class);
-		System.out.println(gson.fromJson(json, Date.class));
+	//////
+	@RequestMapping(value = "/selectTaskCheckList", method = RequestMethod.POST)
+	public List<TaskCheck> selectTaskCheckList(@RequestBody TaskCheck data) {
+
+		List<TaskCheck> taskCheckList = taskService.selectTaskCheckList(data);
+		return taskCheckList;
 	}
+	
+	@RequestMapping(value = "/updateTaskCheck", method = RequestMethod.POST)
+	public int updateTaskCheck(@RequestBody TaskCheck tc) {
+
+		if (tc.getId() == null)
+			return taskService.insertTaskCheck(tc);
+		else
+			return taskService.updateTaskCheck(tc);
+	};
 }

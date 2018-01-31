@@ -165,14 +165,56 @@
       <el-dialog :title="dlgTitle" :visible.sync="dlgConfirmTaskVis" width="30%">
         <el-tabs v-model="avtiveProjectTab">
           <el-tab-pane label="任务基本信息" name="info">
+            <el-form label-position="left" style="margin-left:10px">
+              <el-row>
+                <el-col :span="12">
+                  <el-form-item label="任务名称：">{{task.text}}</el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="计划工时：">{{task.planWorkload}}</el-form-item>
+                </el-col>
+              </el-row>
+              <!-- <el-row><el-col :span="12"></el-col><el-col :span="12"></el-col></el-row> -->
+              <el-row>
+                <el-col :span="12"><el-form-item label="开始时间：">{{task.start_date|fmtDateFilter}}</el-form-item></el-col>
+                <el-col :span="12"><el-form-item label="结束时间：">{{task.end_date|fmtDateFilter}}</el-form-item></el-col>
+              </el-row>
+              <el-form-item label="任务创建：">
+                {{fmtEmployee(task.assignStaffId)}}
+                <el-table :data="taskStandardFileList" :show-header="false" empty-text="没有任务要求文件" border @row-click="downloadFile">
+                  <el-table-column prop="name"></el-table-column>
+                </el-table>
+              </el-form-item>
+              <el-form-item label="任务接收：">
+                {{fmtEmployee(task.actorStaffId)}}
+                <el-table :data="taskResultFileList" :show-header="false" empty-text="没有任务结果文件" border @row-click="downloadFile">
+                  <el-table-column prop="name"></el-table-column>
+                </el-table>
+              </el-form-item>
+            </el-form>
           </el-tab-pane>
-          <el-tab-pane label="任务要求" name="group">TODO</el-tab-pane>
-          <el-tab-pane label="任务证据" name="stage">
+          <el-tab-pane label="任务过程" name="group">
+            <el-form>
+              <el-form-item label="任务创建时间：">{{task.create_date|fmtDateTimeFilter}}</el-form-item>
+              <el-form-item label="任务开始时间：">{{task.real_start_date|fmtDateTimeFilter}}</el-form-item>
+              <el-table :data="taskCheckList" :show-header="true" empty-text="尚未进行检查" border>
+                <el-table-column label="任务检查人" prop="checker"></el-table-column>
+                <el-table-column label="检查时间"  prop="check_date"></el-table-column>
+                <el-table-column label="检查结果"  prop="result"></el-table-column>
+              </el-table>
+            </el-form>
           </el-tab-pane>
         </el-tabs>
         <div slot="footer">
-          <el-button @click="auditProject(3)" size="mini" type="success" icon="el-icon-check">确认完成</el-button>
-          <el-button @click="auditProject(2)" size="mini" type="primary" icon="el-icon-share">再确认</el-button>
+          <el-button-group>
+            <el-button @click="auditProject(3)" size="mini" type="success" icon="el-icon-check">确认完成</el-button>
+            <el-button @click="auditProject(3)" size="mini" type="danger" icon="el-icon-close">拒绝</el-button>
+          </el-button-group>
+          <el-select size="mini" style="width:120px" v-model="nextChecker" clearable value-key="value">
+            <el-option label="xxx" value="xxx"/>
+            <el-option label="yyy" value="yyy"/>
+          </el-select>
+          <el-button @click="auditProject(2)" size="mini" type="primary" icon="el-icon-share" :disabled="nextChecker===''">再确认</el-button>
           <el-button @click.native="dlgConfirmTaskVis = false" size="mini" >关闭</el-button>
         </div>
       </el-dialog>
@@ -187,9 +229,15 @@ import {
   SELECT_MESSAGE_LIST,
   UPDATE_MESSAGE,
   SELECT_PROJECT_STAGE_LIST,
-  SELECT_PROJECT
+  SELECT_PROJECT,
+  SELECT_PROJECT_TASK,
+  SELECT_PROJECT_EMPLOYEE_LIST,
+  SELECT_DOCUMENT_LIST,
+  SELECT_TASK_CHECK_LIST,
+  UPDATE_TASK_CHECK
 } from "@/config/api";
 import { formatDate } from "@/util/date.js";
+import base from "@/config/remote";
 export default {
   data() {
     return {
@@ -218,7 +266,13 @@ export default {
       latestMsgList: [],
       historyMsgList: [],
       projectStageList: [],
-      project: {}
+      project: {},
+      task: {},
+      taskStandardFileList:[],
+      taskResultFileList:[],
+      projectEmployeeList:[],
+      nextChecker:'',
+      taskCheckList:[]
     };
   },
   methods: {
@@ -327,6 +381,44 @@ export default {
         _this.project = res;
       });
     },
+    selectProjectTask(taskId) {
+      var _this = this;
+      SELECT_PROJECT_TASK({ id: taskId }).then(res => {
+        _this.task = res;
+        _this.selectProjectEmployeeList(_this.task.projectId);
+        _this.selectDocumentList(_this.task.id,"2");
+        _this.selectDocumentList(_this.task.id,"3");
+      });
+    },
+    selectProjectEmployeeList(projectId) {
+      var _this = this;
+      SELECT_PROJECT_EMPLOYEE_LIST({ id: projectId }).then(res => {
+        _this.projectEmployeeList = res;
+      });
+    },
+    selectTaskCheckList(taskId) {
+      var _this = this;
+      SELECT_TASK_CHECK_LIST({ taskId: taskId }).then(res => {
+        _this.projectEmployeeList = res;
+      });
+    },
+    selectDocumentList(projectTaskId,docCategory) {
+      var _this = this;
+      SELECT_DOCUMENT_LIST({
+        belongTo: "task",
+        sourceId: projectTaskId,
+        category:docCategory
+      }).then(res => {
+        if(docCategory==="2") _this.taskStandardFileList = res;
+        if(docCategory==="3") _this.taskResultFileList = res;
+      });
+    },
+    downloadFile(row, event, column){
+      let link = document.createElement("a");
+      link.href = base + "/download?docId=" + row.id;
+      link.target = "_BLANK"
+      link.click();
+    },
     rowChange(row) {
       //更新消息isRead状态
       this.selectedMsg = row;
@@ -370,8 +462,15 @@ export default {
         this.dlgAuditProjecyVis = true;
       } else if (row.type === "confirm") {
         this.dlgTitle = "确认任务完成";
+        this.selectProjectTask(row.relationId);
         this.dlgConfirmTaskVis = true;
       }
+    },
+    fmtEmployee(empId) {
+      for(var emp of this.projectEmployeeList){
+        if(emp.id === empId) return emp.empName;
+      }
+      //return value;
     }
   },
   computed: {},
@@ -379,7 +478,11 @@ export default {
     fmtDateFilter: function(value) {
       if (value == null) return "";
       else return formatDate(new Date(value), "yyyy-MM-dd");
-    }
+    },
+    fmtDateTimeFilter: function(value) {
+      if (value == null) return "";
+      else return formatDate(new Date(value), "yyyy-MM-dd hh:mm");
+    },
   },
   mounted() {
     this.selectMyMessageList();

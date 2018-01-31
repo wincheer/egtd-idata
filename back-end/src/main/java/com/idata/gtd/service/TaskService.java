@@ -10,9 +10,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.idata.gtd.common.DocCat;
 import com.idata.gtd.dao.ProjectTaskMapper;
+import com.idata.gtd.dao.TaskCheckMapper;
 import com.idata.gtd.entity.Document;
 import com.idata.gtd.entity.Message;
 import com.idata.gtd.entity.ProjectTask;
+import com.idata.gtd.entity.TaskCheck;
 
 /**
  * <b>版权信息 :</b> 2018，广州智数信息科技有限公司<br/>
@@ -27,6 +29,8 @@ public class TaskService {
 	@Autowired
 	private ProjectTaskMapper taskDao;
 	@Autowired
+	private TaskCheckMapper taskCheckDao;
+	@Autowired
 	private DocumentService documentService;
 	@Autowired
 	private MessageService msgService;
@@ -39,6 +43,7 @@ public class TaskService {
 	}
 
 	public int insertProjectTask(ProjectTask task) {
+		task.setCreate_date(new Date()); 
 		// 如果有任务接收人，给任务接收人发送一条任务分配消息
 		if (task.getActorStaffId() != null) {
 			if (task.getAssignStaffId() != task.getActorStaffId()) { // 给自己分配的任务状态直接设置为
@@ -104,6 +109,7 @@ public class TaskService {
 
 	public int insertProjectTask(MultipartFile file, ProjectTask model) throws Exception {
 
+		//model.setCreate_date(new Date());
 		insertProjectTask(model);
 
 		Document doc = new Document();
@@ -161,6 +167,26 @@ public class TaskService {
 
 	public List<ProjectTask> selectMyTaskListOut(Integer empId) {
 		return taskDao.selectMyTaskListOut(empId);
+	}
+
+	public ProjectTask selectProjectTask(Integer taskId) {
+
+		return taskDao.selectProjectTaskByPK(taskId);
+	}
+
+	public List<TaskCheck> selectTaskCheckList(TaskCheck tc) {
+
+		return taskCheckDao.selectTaskCheckList(tc);
+	}
+
+	public int insertTaskCheck(TaskCheck tc) {
+
+		return taskCheckDao.insertTaskCheck(tc);
+	}
+
+	public int updateTaskCheck(TaskCheck tc) {
+
+		return taskCheckDao.updateTaskCheck(tc);
 	}
 
 }

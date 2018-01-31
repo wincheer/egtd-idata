@@ -6,6 +6,7 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="task_id" jdbcType="INTEGER" property="taskId" />
     <result column="checker" jdbcType="INTEGER" property="checker" />
+    <result column="result" jdbcType="VARCHAR" property="result" />
     <result column="check_date" jdbcType="TIMESTAMP" property="checkDate" />
   </resultMap>
 
@@ -26,12 +27,14 @@
       <if test="id != null">id,</if>
       <if test="taskId != null">task_id,</if>
       <if test="checker != null">checker,</if>
+      <if test="result != null">result,</if>
       <if test="checkDate != null">check_date,</if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">#{id,jdbcType=INTEGER},</if>
       <if test="taskId != null">#{taskId,jdbcType=INTEGER},</if>
       <if test="checker != null">#{checker,jdbcType=INTEGER},</if>
+      <if test="result != null">#{result,jdbcType=VARCHAR},</if>
       <if test="checkDate != null">#{checkDate,jdbcType=TIMESTAMP},</if>
     </trim>
   </insert>
@@ -41,9 +44,22 @@
     <set>
       <if test="taskId != null">task_id = #{taskId,jdbcType=INTEGER},</if>
       <if test="checker != null">checker = #{checker,jdbcType=INTEGER},</if>
+      <if test="result != null">result = #{result,jdbcType=VARCHAR},</if>
       <if test="checkDate != null">check_date = #{checkDate,jdbcType=TIMESTAMP},</if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <select id="selectTaskCheckList" parameterType="com.idata.gtd.entity.TaskCheck" resultMap="BaseResultMap">
+    select * 
+    from task_check
+    where 1=1 
+    <trim prefix=" and (" suffix=")" suffixOverrides="and">
+		<if test="taskId != null">task_id = #{taskId,jdbcType=INTEGER} and </if>
+		<if test="checker != null">checker = #{checker,jdbcType=INTEGER} and </if>
+		<if test="result != null">result = #{result,jdbcType=VARCHAR} and </if>
+		<if test="checkDate != null">check_date = #{checkDate,jdbcType=TIMESTAMP} and </if>
+    </trim>
+  </select>
 
 </mapper>

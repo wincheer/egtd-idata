@@ -7,6 +7,7 @@ public class TaskCheck {
 	private Integer id;
     private Integer taskId;
     private Integer checker;
+    private String result;
     private Date checkDate;
 
     public Integer getId() {
@@ -33,7 +34,15 @@ public class TaskCheck {
         this.checker = checker;
     }
 
-    public Date getCheckDate() {
+    public String getResult() {
+		return result;
+	}
+
+	public void setResult(String result) {
+		this.result = result;
+	}
+
+	public Date getCheckDate() {
         return checkDate;
     }
 

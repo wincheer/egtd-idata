@@ -37,7 +37,7 @@ let routes = [
         blackList:[],
         children: [
             { path: '/project', component: Project, name: '项目进程' ,iconCls:'el-icon-date',blackList:[]},
-            { path: '/project-init', component: ProjectInit, name: '项目信息维护' ,iconCls:'el-icon-refresh',blackList:["R01","R04","R10","R99"]}
+            { path: '/project-init', component: ProjectInit, name: '项目管理' ,iconCls:'el-icon-refresh',blackList:["R01","R04","R10","R99"]}
         ]
     },
     {

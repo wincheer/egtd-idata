@@ -124,8 +124,8 @@
 		employee.*
 	FROM
 		employee
-	INNER JOIN project_staff ON employee.id = project_staff.emp_id
-	INNER JOIN project_group ON project_staff.group_id = project_group.id
+	LEFT JOIN project_staff ON employee.id = project_staff.emp_id
+	LEFT JOIN project_group ON project_staff.group_id = project_group.id
 	WHERE
 		project_group.project_id = #{projectId,jdbcType=INTEGER}
   </select>

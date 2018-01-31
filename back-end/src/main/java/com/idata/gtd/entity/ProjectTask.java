@@ -25,6 +25,7 @@ public class ProjectTask {
     private Integer projectId;
     private Date real_start_date;
     private Date real_end_date;
+    private Date create_date;
 
     public Integer getId() {
         return id;
@@ -193,5 +194,13 @@ public class ProjectTask {
 
 	public void setReal_end_date(Date real_end_date) {
 		this.real_end_date = real_end_date;
+	}
+
+	public Date getCreate_date() {
+		return create_date;
+	}
+
+	public void setCreate_date(Date create_date) {
+		this.create_date = create_date;
 	}
 }
