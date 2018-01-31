@@ -165,7 +165,7 @@
       <el-dialog :title="dlgTitle" :visible.sync="dlgConfirmTaskVis" width="30%">
         <el-tabs v-model="avtiveProjectTab">
           <el-tab-pane label="任务基本信息" name="info">
-            <el-form label-position="left" style="margin-left:10px">
+            <el-form label-position="left" style="margin-left:10px" label-width="110px">
               <el-row>
                 <el-col :span="12">
                   <el-form-item label="任务名称：">{{task.text}}</el-form-item>
@@ -176,17 +176,23 @@
               </el-row>
               <!-- <el-row><el-col :span="12"></el-col><el-col :span="12"></el-col></el-row> -->
               <el-row>
-                <el-col :span="12"><el-form-item label="开始时间：">{{task.start_date|fmtDateFilter}}</el-form-item></el-col>
-                <el-col :span="12"><el-form-item label="结束时间：">{{task.end_date|fmtDateFilter}}</el-form-item></el-col>
+                <el-col :span="12"><el-form-item label="计划开始时间：">{{task.start_date|fmtDateFilter}}</el-form-item></el-col>
+                <el-col :span="12"><el-form-item label="计划结束时间：">{{task.end_date|fmtDateFilter}}</el-form-item></el-col>
               </el-row>
-              <el-form-item label="任务创建：">
-                {{fmtEmployee(task.assignStaffId)}}
+              <el-row>
+                <el-col :span="12">
+                  <el-form-item label="任务创建人：">{{fmtEmployee(task.assignStaffId)}}</el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="任务接收人：">{{fmtEmployee(task.actorStaffId)}}</el-form-item>
+                </el-col>
+              </el-row>
+              <el-form-item label="任务要求附件：">  
                 <el-table :data="taskStandardFileList" :show-header="false" empty-text="没有任务要求文件" border @row-click="downloadFile">
                   <el-table-column prop="name"></el-table-column>
                 </el-table>
               </el-form-item>
-              <el-form-item label="任务接收：">
-                {{fmtEmployee(task.actorStaffId)}}
+              <el-form-item label="任务结果附件：">
                 <el-table :data="taskResultFileList" :show-header="false" empty-text="没有任务结果文件" border @row-click="downloadFile">
                   <el-table-column prop="name"></el-table-column>
                 </el-table>
@@ -194,9 +200,9 @@
             </el-form>
           </el-tab-pane>
           <el-tab-pane label="任务过程" name="group">
-            <el-form>
+            <el-form label-width="120px">
               <el-form-item label="任务创建时间：">{{task.create_date|fmtDateTimeFilter}}</el-form-item>
-              <el-form-item label="任务开始时间：">{{task.real_start_date|fmtDateTimeFilter}}</el-form-item>
+              <el-form-item label="实际开始时间：">{{task.real_start_date|fmtDateTimeFilter}}</el-form-item>
               <el-table :data="taskCheckList" :show-header="true" empty-text="尚未进行检查" border>
                 <el-table-column label="任务检查人" prop="checker"></el-table-column>
                 <el-table-column label="检查时间"  prop="check_date"></el-table-column>
