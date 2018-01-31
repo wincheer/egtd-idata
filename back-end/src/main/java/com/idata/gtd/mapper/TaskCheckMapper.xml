@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.idata.gtd.dao.TaskCheckMapper">
+
+  <resultMap id="BaseResultMap" type="com.idata.gtd.entity.TaskCheck">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="task_id" jdbcType="INTEGER" property="taskId" />
+    <result column="checker" jdbcType="INTEGER" property="checker" />
+    <result column="check_date" jdbcType="TIMESTAMP" property="checkDate" />
+  </resultMap>
+
+  <select id="selectTaskCheckByPK" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select * 
+    from task_check
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteTaskCheckByPrimaryKey" parameterType="java.lang.Integer">
+    delete from task_check
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insertTaskCheck" parameterType="com.idata.gtd.entity.TaskCheck">
+    insert into task_check
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">id,</if>
+      <if test="taskId != null">task_id,</if>
+      <if test="checker != null">checker,</if>
+      <if test="checkDate != null">check_date,</if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">#{id,jdbcType=INTEGER},</if>
+      <if test="taskId != null">#{taskId,jdbcType=INTEGER},</if>
+      <if test="checker != null">#{checker,jdbcType=INTEGER},</if>
+      <if test="checkDate != null">#{checkDate,jdbcType=TIMESTAMP},</if>
+    </trim>
+  </insert>
+  
+  <update id="updateTaskCheck" parameterType="com.idata.gtd.entity.TaskCheck">
+    update task_check
+    <set>
+      <if test="taskId != null">task_id = #{taskId,jdbcType=INTEGER},</if>
+      <if test="checker != null">checker = #{checker,jdbcType=INTEGER},</if>
+      <if test="checkDate != null">check_date = #{checkDate,jdbcType=TIMESTAMP},</if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+</mapper>

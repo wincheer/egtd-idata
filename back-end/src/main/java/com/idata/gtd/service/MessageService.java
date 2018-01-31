@@ -35,22 +35,31 @@ public class MessageService {
 	public int insertMessage(Message msg) {
 
 		msg.setTime(new Date());
-		if (msg.getType().equals("audit")) {
+		if (msg.getType().equals("audit")) { // 提醒审核的消息
 			msg.setTo(projectService.selectProjectLeader(msg.getRelationId()).getId());
-		} // 提醒审核的消息
+			// 同时更新项目的审批状态状态为 "wait"
+			Project project = new Project();
+			project.setId(msg.getRelationId());
+			project.setAuditState("wait");
+			projectService.updateProject(project);
+		}
+		
+		if (msg.getType().equals("confirm")) { // 提醒任务确认的消息
+			// 同时更新task状态为完成待检查
+			ProjectTask task = new ProjectTask();
+			task.setId(msg.getRelationId());
+			task.setState(2); // 未开始0，进行中1，已完成待检查2，确认完成3
+			taskService.updateProjectTask(task);
+		}
+				
 		msgDao.insertMessage(msg);
-		// 同时更新项目的审批状态状态为 "wait"
-		Project project = new Project();
-		project.setId(msg.getRelationId());
-		project.setAuditState("wait");
-		projectService.updateProject(project);
 
 		return msg.getId();
 	}
 
 	public int updateMessage(Message msg) {
 
-		if (msg.getIsExec()!=null && msg.getIsExec() > 1) {
+		if (msg.getIsExec() != null && msg.getIsExec() > 1) {
 			if (msg.getType().equals("audit")) {
 				Project project = new Project();
 				project.setId(msg.getRelationId());

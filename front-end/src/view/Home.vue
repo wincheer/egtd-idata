@@ -162,21 +162,20 @@
         </div>
       </el-dialog>
       <!--任务确认-->
-      <!-- <el-dialog :title="dlgTitle" :visible.sync="dlgConfirmTaskVis" width="30%">
+      <el-dialog :title="dlgTitle" :visible.sync="dlgConfirmTaskVis" width="30%">
         <el-tabs v-model="avtiveProjectTab">
-          <el-tab-pane label="项目基本信息" name="info">
+          <el-tab-pane label="任务基本信息" name="info">
           </el-tab-pane>
-          <el-tab-pane label="项目组" name="group">TODO</el-tab-pane>
-          <el-tab-pane label="项目阶段划分" name="stage">
-            
+          <el-tab-pane label="任务要求" name="group">TODO</el-tab-pane>
+          <el-tab-pane label="任务证据" name="stage">
           </el-tab-pane>
         </el-tabs>
         <div slot="footer">
-          <el-button @click="auditProject(3)" size="mini" type="success" icon="el-icon-check">同意</el-button>
-          <el-button @click="auditProject(2)" size="mini" type="primary" icon="el-icon-close">拒绝</el-button>
+          <el-button @click="auditProject(3)" size="mini" type="success" icon="el-icon-check">确认完成</el-button>
+          <el-button @click="auditProject(2)" size="mini" type="primary" icon="el-icon-share">再确认</el-button>
           <el-button @click.native="dlgConfirmTaskVis = false" size="mini" >关闭</el-button>
         </div>
-      </el-dialog> -->
+      </el-dialog>
     </section>
     
 </template>
