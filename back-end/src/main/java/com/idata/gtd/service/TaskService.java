@@ -51,6 +51,7 @@ public class TaskService {
 				taskDao.insertProjectTask(task);
 			} else {
 				taskDao.insertProjectTask(task);
+				
 				Message msg = new Message();
 				msg.setFrom(task.getAssignStaffId());
 				msg.setTo(task.getActorStaffId());
@@ -63,7 +64,8 @@ public class TaskService {
 				msgService.insertMessage(msg);
 			}
 		}
-		//taskDao.insertProjectTask(task);
+		else
+			taskDao.insertProjectTask(task);
 		return task.getId();
 	}
 

@@ -15,6 +15,7 @@ public class Message {
     private Date time;
     private Integer isRead;
     private Integer isExec;
+    private String note;
 
     public Integer getId() {
         return id;
@@ -102,5 +103,13 @@ public class Message {
 
 	public void setIsExec(Integer isExec) {
 		this.isExec = isExec;
+	}
+
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
 	}
 }

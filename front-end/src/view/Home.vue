@@ -92,7 +92,7 @@
               <el-table-column label="时间" prop="time" :formatter="fmtDate"></el-table-column>
               <el-table-column label="操作">
                 <template slot-scope="scope">
-                  <el-button size="mini" type="primary" @click="viewDetail(scope.row)">详情</el-button>
+                  <el-button size="mini" type="primary" @click="viewDetail(scope.row)" v-if="scope.row.type!=='normal'">详情</el-button> 
                 </template>
               </el-table-column>
             </el-table>
@@ -157,7 +157,7 @@
         </el-tabs>
         <div slot="footer">
           <el-button @click="execMessage(3)" size="mini" type="success" icon="el-icon-check">同意</el-button>
-          <el-button @click="execMessage(2)" size="mini" type="primary" icon="el-icon-close">拒绝</el-button>
+          <el-button @click="refuseMessage(2)" size="mini" type="primary" icon="el-icon-close">拒绝</el-button>
           <el-button @click.native="dlgAuditProjecyVis = false" size="mini" >关闭</el-button>
         </div>
       </el-dialog>
@@ -214,11 +214,11 @@
         <div slot="footer">
           <el-button-group v-if="selectedMsg.type!=='normal'">
             <el-button @click="execMessage(3)" size="mini" type="success" icon="el-icon-check">确认完成</el-button>
-            <el-button @click="refuseTask(2)" size="mini" type="danger" icon="el-icon-close">拒绝</el-button>
+            <el-button @click="refuseMessage(4)" size="mini" type="danger" icon="el-icon-close">拒绝</el-button>
             <el-select size="mini" style="width:120px" v-model="nextChecker" clearable value-key="id">
               <el-option v-for="item in projectEmployeeList" :key="item.id" :label="item.empName" :value="item" />
             </el-select>
-            <el-button @click="execMessage(2)" size="mini" type="primary" icon="el-icon-share" :disabled="nextChecker===''">再确认</el-button>
+            <el-button @click="forwardTask(2)" size="mini" type="primary" icon="el-icon-share" :disabled="nextChecker===''">再确认</el-button>
           </el-button-group>
           <el-button @click.native="dlgConfirmTaskVis = false" size="mini" >关闭</el-button>
         </div>
@@ -461,20 +461,23 @@ export default {
       var _this = this;
       var params = Object.assign(_this.selectedMsg);
       params.isExec = exec;
-      if(reason) params.title = reason;
+      if(reason) params.note = reason;
       UPDATE_MESSAGE(params).then(res => {
-        if (row.type === "audit") _this.dlgAuditProjecyVis = false;
+        if (this.selectedMsg.type === "audit") _this.dlgAuditProjecyVis = false;
         else _this.dlgConfirmTaskVis = false;
-        _this.selectMyMessageList();
+        //_this.selectMyMessageList();
       });
     },
-    refuseTask() {
+    refuseMessage(exec) {
       this.$prompt("请输入拒绝的理由", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消"
       }).then(({ value }) => {
-        this.execMessage(2,value)
+        this.execMessage(exec,value)
       });
+    },
+    forwardTask(exec){
+      this.execMessage(exec,this.nextChecker.id+"")
     },
     fmtEmployee(empId) {
       for (var emp of this.projectEmployeeList) {

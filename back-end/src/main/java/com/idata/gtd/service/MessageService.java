@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.idata.gtd.dao.MessageMapper;
+import com.idata.gtd.dao.ProjectTaskMapper;
+import com.idata.gtd.dao.TaskCheckMapper;
 import com.idata.gtd.entity.Message;
 import com.idata.gtd.entity.Project;
 import com.idata.gtd.entity.ProjectTask;
@@ -22,6 +24,10 @@ public class MessageService {
 	private final static Logger logger = LoggerFactory.getLogger(MessageService.class);
 	@Autowired
 	private MessageMapper msgDao;
+	@Autowired
+	private TaskCheckMapper tcDao;
+	@Autowired
+	private ProjectTaskMapper taskDao;
 	@Autowired
 	private ProjectService projectService;
 	@Autowired
@@ -64,33 +70,78 @@ public class MessageService {
 			if (msg.getType().equals("audit")) {
 				Project project = new Project();
 				project.setId(msg.getRelationId());
-				project.setAuditState(msg.getIsExec() == 2 ? "refuse" : "ready"); // 2拒绝，3同意
+				project.setAuditState(msg.getIsExec() == 2 ? "init" : "ready"); // 2拒绝，3同意
 				projectService.updateProject(project);
+				if(msg.getIsExec() == 2){
+					//发送一条消息，通知项目审核未通过
+					Message _msg = new Message();
+					_msg.setFrom(msg.getTo());
+					_msg.setTo(msg.getFrom());
+					_msg.setTitle("项目计划审核被拒绝");
+					String projectName = msg.getBody().substring(msg.getBody().indexOf("【")+1,msg.getBody().indexOf("】"));
+					_msg.setBody("您提交的项目"+projectName+"的计划审核申请被拒绝，理由是【"+msg.getNote()+"】");
+					_msg.setToScope("actor"); 
+					_msg.setRelationId(msg.getRelationId());
+					_msg.setType("normal");
+					_msg.setTime(new Date());
+					msgDao.insertMessage(_msg);
+				}
 			}
 			if (msg.getType().equals("confirm")) {
 				ProjectTask task = new ProjectTask();
 				task.setId(msg.getRelationId());
-				task.setState(msg.getIsExec());
+				
 				
 				TaskCheck tc = new TaskCheck();
 				tc.setTaskId(msg.getRelationId());
 				tc.setChecker(msg.getTo()); 
-				tc.setResult(msg.getTitle()); //临时借用title
-				msg.setTitle(null); //防止误更新
 				tc.setCheckDate(new Date());
 				
+				Message _msg = new Message();
+				_msg.setFrom(msg.getTo());
+				_msg.setToScope("actor");
+				_msg.setTime(new Date());
+				_msg.setRelationId(msg.getRelationId());
+				
+				ProjectTask originalTask = taskDao.selectProjectTaskByPK(msg.getRelationId());
 				if (msg.getIsExec() == 2) { // 转发继续确认
 					//给下一个检查人发消息
+					_msg.setTo(Integer.parseInt(msg.getNote()));
+					_msg.setTitle(msg.getTitle());
+					String taskName = msg.getBody().substring(msg.getBody().indexOf("【")+1,msg.getBody().indexOf("】"));
+					_msg.setBody("任务【"+taskName+"】已完成，需要您再次确认。");
+					_msg.setType("confirm");
+					
+					task.setState(2);
 				}
 				if (msg.getIsExec() == 3) { // 同意
 					task.setReal_end_date(new Date());
 					//给任务接收人发消息
+					_msg.setTo(originalTask.getActorStaffId()); 
+					_msg.setTitle("任务完成");
+					String taskName = msg.getBody().substring(msg.getBody().indexOf("【")+1,msg.getBody().indexOf("】"));
+					_msg.setBody("您承接的任务【"+taskName+"】确认完成");
+					_msg.setType("normal");
+					
+					task.setState(3);
 				}
 				if (msg.getIsExec() == 4) { // 拒绝了
 					//给任务接收人发消息
+					_msg.setTo(originalTask.getActorStaffId());
+					_msg.setTitle("任务检查未通过");
+					_msg.setBody("您标记完成的任务检查没有通过，原因是【"+msg.getNote()+"】");
+					_msg.setType("normal");
+					
+					task.setState(1);
+					task.setProgress(0.8F); 
+					
+					tc.setResult(msg.getNote()); 
 				}
 				taskService.updateProjectTask(task);
+				tcDao.insertTaskCheck(tc);
+				msgDao.insertMessage(_msg);
 			}
+			
 			msg.setIsExec(1);
 		}
 		if (msg.getType().equals("normal")) {

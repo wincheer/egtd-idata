@@ -181,8 +181,9 @@ export default {
       this.$message("申请已发出,审核通过后会自动变更任务状态。");
     },
     confirmTask(task){
-      //更新任务状态为待检查(3) 未开始0，进行中1，已完成2，待检查3，确认完成4
-      UPDATE_PROJECT_TASK({id:task.id,state:4}).then(res =>{
+      var _this = this;
+      //更新任务状态为待检查(3) 未开始0，进行中1，已完成待检查2，确认完成3
+      UPDATE_PROJECT_TASK({id:task.id,state:3}).then(res =>{
         _this.actionInfo = "完成确认";
       })
       this.$message("任务已确认，状态为正式完成。");

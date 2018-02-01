@@ -28,7 +28,8 @@
             </el-dropdown-menu>
           </el-dropdown>
           <el-button size="mini" type="danger" @click="delProject(scope.row)" :disabled="scope.row.ownerId !== $store.state.loginUser.id">删除</el-button>
-          <el-button size="mini" type="warning" @click="applyAudit(scope.row)" :disabled="(scope.row.ownerId !== $store.state.loginUser.id) || scope.row.auditState==='wait' || scope.row.auditState==='ready'">申请审批</el-button>
+          <!-- <el-button size="mini" type="warning" @click="applyAudit(scope.row)" :disabled="(scope.row.ownerId !== $store.state.loginUser.id) || scope.row.auditState==='wait' || scope.row.auditState==='ready'">申请审批</el-button> -->
+          <el-button size="mini" type="warning" @click="applyAudit(scope.row)" v-if="(scope.row.ownerId === $store.state.loginUser.id) && scope.row.auditState==='init'">申请审批</el-button>
         </template>
       </el-table-column>
     </el-table>

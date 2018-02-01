@@ -97,6 +97,9 @@ public class TaskAction {
 
 		data.put("start_date", gson.toJson(new Date(data.get("start_date").toString())));
 		data.put("end_date", gson.toJson(new Date(data.get("end_date").toString())));
+		data.put("real_start_date", null);
+		data.put("real_end_date", null);
+		data.put("create_date", null);
 		if(data.get("delayReason").toString().trim().equals(""))
 			data.put("delayReason", null);
 

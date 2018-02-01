@@ -14,6 +14,7 @@
     <result column="time" jdbcType="TIMESTAMP" property="time" />
     <result column="is_read" jdbcType="INTEGER" property="isRead" />
     <result column="is_exce" jdbcType="INTEGER" property="isExec" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
   </resultMap>
 
   <select id="selectMessageByPK" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -41,6 +42,7 @@
       <if test="time != null">time,</if>
       <if test="isRead != null">is_read,</if>
       <if test="isExec != null">is_exec,</if>
+      <if test="note != null">note,</if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">#{id,jdbcType=INTEGER},</if>
@@ -54,6 +56,7 @@
       <if test="time != null">#{time,jdbcType=TIMESTAMP},</if>
       <if test="isRead != null">#{isRead,jdbcType=INTEGER},</if>
       <if test="isExec != null">#{isExec,jdbcType=INTEGER},</if>
+      <if test="note != null">#{note,jdbcType=VARCHAR},</if>
     </trim>
   </insert>
   
@@ -70,6 +73,7 @@
       <if test="time != null">time = #{time,jdbcType=TIMESTAMP},</if>
       <if test="isRead != null">is_read = #{isRead,jdbcType=INTEGER},</if>
       <if test="isExec != null">is_exec = #{isExec,jdbcType=INTEGER},</if>
+      <if test="note != null">note = #{note,jdbcType=VARCHAR},</if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -88,6 +92,7 @@
 		<if test="time != null">time = #{time,jdbcType=TIMESTAMP} and </if>
 		<if test="isRead != null">is_read = #{isRead,jdbcType=INTEGER} and </if>
 		<if test="isExec != null">is_exec = #{isExec,jdbcType=INTEGER} and </if>
+		<if test="note != null">note = #{note,jdbcType=VARCHAR} and </if>
 	</trim>
 	ORDER BY time DESC
   </select>

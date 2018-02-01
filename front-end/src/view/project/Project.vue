@@ -268,7 +268,8 @@ export default {
     /**上传文件，同时包含表单内容 */
     uploadFile() {
       var _uploadFiles = this.$refs.uploadStandard.uploadFiles;
-      if (_uploadFiles.length == 0) this.updateTask();
+
+      if (_uploadFiles.length === 0) this.updateTask();
       else {
         for (var i = 0; i < _uploadFiles.length; i++) {
           var _uploadFile = _uploadFiles[i];
