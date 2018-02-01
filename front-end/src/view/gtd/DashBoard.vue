@@ -23,6 +23,7 @@
               @click="applyConfirm(scope.row)">
               {{actionInfo}}
             </el-button>
+            <el-button size="mini" >详情</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -49,6 +50,7 @@
               @click="confirmTask(scope.row)">
               确认完成
             </el-button>
+            <el-button size="mini" >详情</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -174,7 +176,7 @@ export default {
     },
     applyConfirm(task){
       var _this = this;
-      //更新任务状态为待检查(3) 未开始0，进行中1，已完成2，待检查3，确认完成4
+      //更新任务状态为待检查(3) 未开始0，进行中1，已完成待检查2，确认完成3
       UPDATE_PROJECT_TASK({id:task.id,state:3}).then(res =>{
         _this.actionInfo = "等待确认";
       })
