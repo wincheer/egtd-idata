@@ -204,8 +204,8 @@
               <el-form-item label="任务创建时间：">{{task.create_date|fmtDateTimeFilter}}</el-form-item>
               <el-form-item label="实际开始时间：">{{task.real_start_date|fmtDateTimeFilter}}</el-form-item>
               <el-table :data="taskCheckList" :show-header="true" empty-text="尚未进行检查" border>
-                <el-table-column label="任务检查人" prop="checker"></el-table-column>
-                <el-table-column label="检查时间"  prop="check_date"></el-table-column>
+                <el-table-column label="任务检查人" prop="checker" :formatter="fmtEmp"></el-table-column>
+                <el-table-column label="检查时间"  prop="checkDate" :formatter="fmtDate"></el-table-column>
                 <el-table-column label="检查结果"  prop="result"></el-table-column>
               </el-table>
             </el-form>
@@ -404,7 +404,7 @@ export default {
     selectTaskCheckList(taskId) {
       var _this = this;
       SELECT_TASK_CHECK_LIST({ taskId: taskId }).then(res => {
-        _this.projectEmployeeList = res;
+        _this.taskCheckList = res;
       });
     },
     selectDocumentList(projectTaskId, docCategory) {
@@ -455,6 +455,7 @@ export default {
         this.dlgTitle = "确认任务完成";
         this.selectProjectTask(row.relationId);
         this.dlgConfirmTaskVis = true;
+        this.selectTaskCheckList(row.relationId);
       }
     },
     execMessage(exec,reason) {
@@ -484,7 +485,12 @@ export default {
         if (emp.id === empId) return emp.empName;
       }
       //return value;
-    }
+    },
+    fmtEmp(row, column, cellValue) {
+      for (var emp of this.projectEmployeeList) {
+        if (emp.id === cellValue) return emp.empName;
+      }
+    },
   },
   computed: {},
   filters: {
