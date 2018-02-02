@@ -26,7 +26,7 @@ import "dhtmlx-scheduler/codebase/ext/dhtmlxscheduler_quick_info.js";
 import "dhtmlx-scheduler/codebase/ext/dhtmlxscheduler_year_view.js";
 import "dhtmlx-scheduler/codebase/ext/dhtmlxscheduler_agenda_view.js";
 import "dhtmlx-scheduler/codebase/ext/dhtmlxscheduler_tooltip.js";
-// import "dhtmlx-scheduler/codebase/ext/dhtmlxscheduler_grid_view.js"; 
+// import "dhtmlx-scheduler/codebase/ext/dhtmlxscheduler_grid_view.js";
 
 export default {
   name: "scheduler",
@@ -69,11 +69,15 @@ export default {
     //根据任务的属性使用不同的样式表
     scheduler.templates.event_class = function(start, end, event) {
       var css = "";
-      if (event.state == 0) css = "init_event";
-      else if (event.state == 1) css = "process_event";
-      else if (event.state == 2) css = "wait_event";
-      else if (event.state == 3) css = "finished_event";
-      return css
+
+      if (event.isDelay === 0) {
+        if (event.state === 0) css = "init_event";
+        else if (event.state === 1) css = "process_event";
+        else if (event.state === 2) css = "wait_event";
+        else if (event.state === 3) css = "finished_event";
+      } else css = "delay_event";
+
+      return css;
     };
 
     scheduler.locale.labels.year_tab = "年";
@@ -102,7 +106,7 @@ export default {
         scheduler.clearAll();
         scheduler.parse(this.$props.events, "json");
       },
-      deep: false   //如果不能正常更新,改为true
+      deep: false //如果不能正常更新,改为true
     }
   }
 };
@@ -134,15 +138,19 @@ body {
   color: black !important;
 }
 .dhx_cal_event_line.process_event {
-  background-color: #fa9b0e !important;
+  background-color: #0e61fa !important;
   color: black !important;
 }
 .dhx_cal_event_line.wait_event {
   background-color: #78ce9c !important;
-  color: black !important;
+  color: white !important;
 }
 .dhx_cal_event_line.finished_event {
   background-color: #1b7013 !important;
+  color: rgb(255, 255, 255) !important;
+}
+.dhx_cal_event_line.delay_event {
+  background-color: #f16609 !important;
   color: rgb(255, 255, 255) !important;
 }
 
@@ -153,6 +161,4 @@ body {
 .dhx_cal_event_clear.employee_event {
   color: black !important;
 }
-
-
 </style>
