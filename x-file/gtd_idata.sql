@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2018-02-01 19:27:57
+Date: 2018-02-02 19:17:35
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -46,7 +46,7 @@ CREATE TABLE `document` (
   `source_id` int(11) DEFAULT NULL,
   `category` varchar(255) DEFAULT '1' COMMENT '文档分类：1普通文档、2任务要求、3任务结果',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of document
@@ -59,7 +59,7 @@ INSERT INTO `document` VALUES ('15', 'templates_06.png', '1517473600289', 'task'
 INSERT INTO `document` VALUES ('16', '精通D3.js交互式数据可视化高级编程.pdf', '1517477083313', 'task', '9', '3');
 INSERT INTO `document` VALUES ('17', '抽样样本量的确定.ppt', '1517478476700', 'task', '10', '2');
 INSERT INTO `document` VALUES ('18', 'matplotlib Plotting Cookbook.pdf', '1517479042869', 'task', '11', '2');
-INSERT INTO `document` VALUES ('19', '中低频量化交易策略研发（上）.pdf', '1517479254338', 'task', '11', '3');
+INSERT INTO `document` VALUES ('20', '中低频量化交易策略研发（上）.pdf', '1517550851470', 'contract', '4', '1');
 
 -- ----------------------------
 -- Table structure for document_version
@@ -144,7 +144,7 @@ CREATE TABLE `log` (
   `target` varchar(255) DEFAULT NULL,
   `detail` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=160 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=172 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of log
@@ -308,6 +308,18 @@ INSERT INTO `log` VALUES ('156', '10', '2018-02-01 18:05:14', '登录', '系统'
 INSERT INTO `log` VALUES ('157', '1', '2018-02-01 18:21:29', '登录', '系统', '成功');
 INSERT INTO `log` VALUES ('158', '10', '2018-02-01 18:23:13', '登录', '系统', '成功');
 INSERT INTO `log` VALUES ('159', '2', '2018-02-01 18:35:32', '登录', '系统', '成功');
+INSERT INTO `log` VALUES ('160', '1', '2018-02-01 20:55:52', '登录', '系统', '成功');
+INSERT INTO `log` VALUES ('161', '2', '2018-02-01 20:56:15', '登录', '系统', '成功');
+INSERT INTO `log` VALUES ('162', '2', '2018-02-01 21:01:34', '登录', '系统', '成功');
+INSERT INTO `log` VALUES ('163', '3', '2018-02-01 21:02:32', '登录', '系统', '成功');
+INSERT INTO `log` VALUES ('164', '2', '2018-02-01 21:03:22', '登录', '系统', '成功');
+INSERT INTO `log` VALUES ('165', '2', '2018-02-01 21:03:58', '登录', '系统', '成功');
+INSERT INTO `log` VALUES ('166', '3', '2018-02-01 21:05:25', '登录', '系统', '成功');
+INSERT INTO `log` VALUES ('167', '2', '2018-02-02 10:32:03', '登录', '系统', '成功');
+INSERT INTO `log` VALUES ('168', '3', '2018-02-02 10:33:34', '登录', '系统', '成功');
+INSERT INTO `log` VALUES ('169', '2', '2018-02-02 10:43:28', '登录', '系统', '成功');
+INSERT INTO `log` VALUES ('170', '3', '2018-02-02 15:38:09', '登录', '系统', '成功');
+INSERT INTO `log` VALUES ('171', '3', '2018-02-02 15:47:19', '登录', '系统', '成功');
 
 -- ----------------------------
 -- Table structure for message
@@ -327,7 +339,7 @@ CREATE TABLE `message` (
   `is_exec` int(11) DEFAULT '0',
   `note` varchar(255) DEFAULT NULL COMMENT '用来临时储存信息，属于辅助字段。',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of message
@@ -359,8 +371,13 @@ INSERT INTO `message` VALUES ('34', '2', '14', 'actor', '任务分配', '您被�
 INSERT INTO `message` VALUES ('35', '2', '3', 'actor', '任务分配', '您被分配了一条新任务，任务名称为【task_1_3_2】', 'normal', '11', '2018-02-01 17:59:20', '1', '1', null);
 INSERT INTO `message` VALUES ('36', '3', '2', 'actor', '任务完成确认', '您分配的一条任务已完成，需要确认。任务名称为【task_1_3_2】', 'confirm', '11', '2018-02-01 18:00:56', '1', '1', '10');
 INSERT INTO `message` VALUES ('37', '2', '10', 'actor', '任务完成确认', '任务【task_1_3_2】已完成，需要您再次确认。', 'confirm', '11', '2018-02-01 18:02:21', '1', '1', null);
-INSERT INTO `message` VALUES ('38', '10', '3', 'actor', '任务完成', '您承接的任务【task_1_3_2】确认完成', 'normal', '11', '2018-02-01 18:06:23', '0', '0', null);
-INSERT INTO `message` VALUES ('39', '10', '3', 'actor', '任务完成', '您承接的任务【task_1_3_2】确认完成', 'normal', '11', '2018-02-01 18:27:06', '0', '0', null);
+INSERT INTO `message` VALUES ('38', '10', '3', 'actor', '任务完成', '您承接的任务【task_1_3_2】确认完成', 'normal', '11', '2018-02-01 18:06:23', '1', '1', null);
+INSERT INTO `message` VALUES ('39', '10', '3', 'actor', '任务完成', '您承接的任务【task_1_3_2】确认完成', 'normal', '11', '2018-02-01 18:27:06', '1', '1', null);
+INSERT INTO `message` VALUES ('40', '2', '3', 'actor', '任务分配', '您被分配了一条新任务，任务名称为【qaz】', 'normal', '12', '2018-02-01 21:02:05', '1', '1', null);
+INSERT INTO `message` VALUES ('41', '3', '2', 'actor', '任务完成确认', '您分配的一条任务已完成，需要确认。任务名称为【qaz】', 'confirm', '12', '2018-02-01 21:03:03', '1', '1', null);
+INSERT INTO `message` VALUES ('42', '2', '3', 'actor', '任务完成', '您承接的任务【qaz】确认完成', 'normal', '12', '2018-02-01 21:03:43', '1', '1', null);
+INSERT INTO `message` VALUES ('43', '2', '3', 'actor', '任务完成', '您承接的任务【qaz】确认完成', 'normal', '12', '2018-02-02 10:32:21', '1', '1', null);
+INSERT INTO `message` VALUES ('44', '3', '2', 'actor', '任务完成确认', '您分配的一条任务已完成，需要确认。任务名称为【Task_1_1】', 'confirm', '6', '2018-02-02 18:58:24', '0', '0', null);
 
 -- ----------------------------
 -- Table structure for param_key
@@ -424,12 +441,13 @@ CREATE TABLE `project` (
   `dep_id` int(11) DEFAULT NULL,
   `owner_id` int(11) DEFAULT NULL COMMENT '项目创建人',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of project
 -- ----------------------------
 INSERT INTO `project` VALUES ('1', '雪亮工程一期', '', '', '1', '0', '2017-12-17 00:00:00', '2018-01-01 00:00:00', '2018-05-01 00:00:00', '2', '', '500', 'ready', '2', '2');
+INSERT INTO `project` VALUES ('4', '来自模板的项目', null, null, null, '0', null, null, null, '2', null, null, 'init', null, '2');
 
 -- ----------------------------
 -- Table structure for project_contract
@@ -441,7 +459,7 @@ CREATE TABLE `project_contract` (
   `vendor_id` int(11) DEFAULT NULL,
   `contract_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of project_contract
@@ -449,6 +467,7 @@ CREATE TABLE `project_contract` (
 INSERT INTO `project_contract` VALUES ('1', '1', '1', '监理合同1');
 INSERT INTO `project_contract` VALUES ('2', '1', '2', '与供应商1的合同');
 INSERT INTO `project_contract` VALUES ('3', '1', '3', '与供应商2的合同');
+INSERT INTO `project_contract` VALUES ('4', '4', '3', 'qaz');
 
 -- ----------------------------
 -- Table structure for project_group
@@ -462,7 +481,7 @@ CREATE TABLE `project_group` (
   `group_desc` varchar(255) DEFAULT NULL,
   `parent_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of project_group
@@ -472,6 +491,11 @@ INSERT INTO `project_group` VALUES ('2', '1', '项目经理', 'R02', '单独组�
 INSERT INTO `project_group` VALUES ('3', '1', '项目助理', 'R03', '单独组，一个人。协助项目经理工作', '2');
 INSERT INTO `project_group` VALUES ('4', '1', '监理', 'R04', '单独组，若干人。参与任务的二次审核', '2');
 INSERT INTO `project_group` VALUES ('5', '1', '实施组1', 'R10', '常规的项目组。一般增加实施组即可', '2');
+INSERT INTO `project_group` VALUES ('6', '4', '分管领导', 'R01', null, '0');
+INSERT INTO `project_group` VALUES ('7', '4', '项目经理', 'R02', null, '6');
+INSERT INTO `project_group` VALUES ('8', '4', '项目助理', 'R03', null, '7');
+INSERT INTO `project_group` VALUES ('9', '4', '监理', 'R04', null, '7');
+INSERT INTO `project_group` VALUES ('10', '4', '施工单位A', 'R10', null, '7');
 
 -- ----------------------------
 -- Table structure for project_staff
@@ -560,18 +584,21 @@ CREATE TABLE `project_task` (
   `real_end_date` datetime DEFAULT NULL,
   `create_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of project_task
 -- ----------------------------
 INSERT INTO `project_task` VALUES ('1', 'Stage1_1', '2018-01-01 00:00:00', '2018-01-31 00:00:00', '0', '1', null, null, '0.00', '1', null, '2', '0', '0', '0', null, '0', '1', 'task', '2018-02-01 15:23:43', null, '2018-01-01 09:12:33');
-INSERT INTO `project_task` VALUES ('6', 'Task_1_1', '2018-01-31 00:00:00', '2018-02-03 00:00:00', '1', '1', '按照要求填写', '60', '1.00', '4', '2', '3', '10', '0', '0', null, '0', '1', 'task', '2018-01-31 19:40:59', null, '2018-01-31 19:09:27');
+INSERT INTO `project_task` VALUES ('6', 'Task_1_1', '2018-01-31 00:00:00', '2018-02-03 00:00:00', '1', '1', '按照要求填写', '60', '1.00', '2', '2', '3', '10', '0', '0', null, '0', '1', 'task', '2018-01-31 19:40:59', null, '2018-01-31 19:09:27');
 INSERT INTO `project_task` VALUES ('7', 'Task_1_2', '2018-01-01 00:00:00', '2018-01-15 00:00:00', '1', '1', '根据附件要求完成', '60', '1.00', '3', '2', '3', '10', '0', '0', null, '0', '1', 'task', '2018-02-01 15:36:06', '2018-02-01 16:12:56', '2018-02-01 15:33:27');
 INSERT INTO `project_task` VALUES ('8', 'Task_1_2_1', '2018-01-08 00:00:00', '2018-01-13 00:00:00', '7', '1', '去买一杯咖啡回来', '60', '1.00', '1', '3', '2', '20', '0', '0', null, '0', '1', 'task', '2018-02-01 17:18:09', '2018-02-01 17:07:57', '2018-02-01 16:23:11');
-INSERT INTO `project_task` VALUES ('9', 'Task_1_3', '2018-01-18 00:00:00', '2018-01-25 00:00:00', '1', '1', '这是一个多次确认的任务', '60', '1.00', '1', '2', '3', '20', '0', '0', null, '0', '1', 'task', '2018-02-01 17:48:28', '2018-02-01 17:32:26', '2018-02-01 17:22:23');
-INSERT INTO `project_task` VALUES ('10', 'Tasj_1_3_1', '2018-02-01 00:00:00', '2018-02-07 00:00:00', '9', '1', '继续测试多重确认', '60', '1.00', '1', '2', '3', '5', '0', '0', null, '0', '1', 'task', '2018-02-01 17:51:05', '2018-02-01 17:50:39', '2018-02-01 17:47:56');
-INSERT INTO `project_task` VALUES ('11', 'task_1_3_2', '2018-02-13 00:00:00', '2018-02-17 00:00:00', '9', '1', '没啥要求，就是想看看多重确认', '60', '1.00', '3', '2', '3', '13', '0', '0', null, '0', '1', 'task', '2018-02-01 18:00:11', '2018-02-01 18:27:06', '2018-02-01 17:57:22');
+INSERT INTO `project_task` VALUES ('9', 'Task_1_3', '2018-01-18 00:00:00', '2018-01-25 00:00:00', '1', '1', '这是一个多次确认的任务', '60', '1.00', '0', '2', '3', '20', '0', '0', null, '0', '1', 'task', '2018-02-01 17:48:28', '2018-02-01 17:32:26', '2018-02-01 17:22:23');
+INSERT INTO `project_task` VALUES ('10', 'Tasj_1_3_1', '2018-02-01 00:00:00', '2018-02-05 00:00:00', '9', '1', '继续测试多重确认', '60', '1.00', '3', '2', '3', '5', '0', '0', null, '0', '1', 'task', '2018-02-01 17:51:05', '2018-02-01 17:50:39', '2018-02-01 17:47:56');
+INSERT INTO `project_task` VALUES ('11', 'task_1_3_2', '2018-02-13 00:00:00', '2018-02-17 00:00:00', '9', '1', '没啥要求，就是想看看多重确认', '60', '0.80', '2', '2', '3', '13', '0', '0', null, '0', '1', 'task', '2018-02-01 21:02:43', '2018-02-01 18:27:06', '2018-02-01 17:57:22');
+INSERT INTO `project_task` VALUES ('13', '立项', null, null, '0', '4', null, null, '0.00', '0', null, '2', '0', '0', '0', null, '0', '1', 'task', null, null, '2018-02-02 13:42:26');
+INSERT INTO `project_task` VALUES ('14', '实施', null, null, '0', '4', null, null, '0.00', '0', null, '2', '0', '0', '0', null, '0', '1', 'task', null, null, '2018-02-02 13:42:26');
+INSERT INTO `project_task` VALUES ('15', '运维', null, null, '0', '4', null, null, '0.00', '0', null, '2', '0', '0', '0', null, '0', '1', 'task', null, null, '2018-02-02 13:42:26');
 
 -- ----------------------------
 -- Table structure for task_check
@@ -584,7 +611,7 @@ CREATE TABLE `task_check` (
   `result` varchar(255) DEFAULT '通过',
   `check_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of task_check
@@ -603,6 +630,8 @@ INSERT INTO `task_check` VALUES ('11', '10', '10', '通过', '2018-02-01 17:50:3
 INSERT INTO `task_check` VALUES ('12', '11', '2', '通过', '2018-02-01 18:02:10');
 INSERT INTO `task_check` VALUES ('13', '11', '10', '通过', '2018-02-01 18:06:20');
 INSERT INTO `task_check` VALUES ('14', '11', '10', '通过', '2018-02-01 18:27:06');
+INSERT INTO `task_check` VALUES ('15', '12', '2', '通过', '2018-02-01 21:03:43');
+INSERT INTO `task_check` VALUES ('16', '12', '2', '通过', '2018-02-02 10:32:21');
 
 -- ----------------------------
 -- Table structure for task_link
@@ -636,11 +665,11 @@ CREATE TABLE `tpl_group` (
 -- ----------------------------
 -- Records of tpl_group
 -- ----------------------------
-INSERT INTO `tpl_group` VALUES ('1', '1', '分管领导', null, '0');
-INSERT INTO `tpl_group` VALUES ('2', '1', '项目经理', null, '1');
-INSERT INTO `tpl_group` VALUES ('3', '1', '项目助理', null, '2');
-INSERT INTO `tpl_group` VALUES ('4', '1', '监理', null, '2');
-INSERT INTO `tpl_group` VALUES ('5', '1', '施工单位A', null, '2');
+INSERT INTO `tpl_group` VALUES ('1', '1', '分管领导', 'R01', '0');
+INSERT INTO `tpl_group` VALUES ('2', '1', '项目经理', 'R02', '1');
+INSERT INTO `tpl_group` VALUES ('3', '1', '项目助理', 'R03', '2');
+INSERT INTO `tpl_group` VALUES ('4', '1', '监理', 'R04', '2');
+INSERT INTO `tpl_group` VALUES ('5', '1', '施工单位A', 'R10', '2');
 
 -- ----------------------------
 -- Table structure for tpl_project
