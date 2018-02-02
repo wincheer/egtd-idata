@@ -79,7 +79,10 @@ import Scheduler from "@/component/Scheduler.vue";
 import {
   SELECT_TASK_LIST,
   SELECT_DOCUMENT_LIST,
-  SELECT_PROJECT_EMPLOYEE_LIST
+  SELECT_PROJECT_EMPLOYEE_LIST,
+  UPDATE_PROJECT_TASK,
+  DELETE_DOCUMENT,
+  UPDATE_PROJECT_TASK_WITH_FILE_RESULT
 } from "@/config/api";
 import { formatDate } from "@/util/date.js";
 import base from "@/config/remote";
@@ -217,7 +220,7 @@ export default {
               });
             } else {
               _this.dlgTaskEditVis = false;
-              _this.selectTaskList(_this.selectedProject);
+              _this.selectMyTaskList();
             }
           });
         }
