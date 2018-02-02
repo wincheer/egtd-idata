@@ -131,17 +131,45 @@
   <select id="selectMyTaskList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select * 
     from project_task
-    where actor_staff_id = #{empId,jdbcType=INTEGER} OR assign_staff_id = #{empId,jdbcType=INTEGER}
+    where parent !=0 and actor_staff_id = #{empId,jdbcType=INTEGER} OR assign_staff_id = #{empId,jdbcType=INTEGER}
   </select>
   <select id="selectMyTaskListIn" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select * 
     from project_task
-    where actor_staff_id = #{empId,jdbcType=INTEGER}
+    where parent !=0 and actor_staff_id = #{empId,jdbcType=INTEGER}
   </select>
   <select id="selectMyTaskListOut" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select * 
     from project_task
-    where assign_staff_id = #{empId,jdbcType=INTEGER}
+    where parent !=0 and assign_staff_id = #{empId,jdbcType=INTEGER}
   </select>
-
+  
+  <select id="selectTaskList" parameterType="com.idata.gtd.entity.ProjectTask" resultMap="BaseResultMap">
+  	select * 
+    from project_task
+    where 1=1
+    <trim prefix=" and (" suffix=")" suffixOverrides="and">
+		<if test="text != null">text = #{text,jdbcType=VARCHAR} and </if>
+		<if test="start_date != null">start_date = #{start_date,jdbcType=TIMESTAMP} and </if>
+		<if test="end_date != null">end_date = #{end_date,jdbcType=TIMESTAMP} and </if>
+		<if test="real_start_date != null">real_start_date = #{real_start_date,jdbcType=TIMESTAMP} and </if>
+		<if test="real_end_date != null">real_end_date = #{real_end_date,jdbcType=TIMESTAMP} and </if>
+		<if test="parent != null">parent = #{parent,jdbcType=INTEGER} and </if>
+		<if test="taskDesc != null">task_desc = #{taskDesc,jdbcType=VARCHAR} and </if>
+		<if test="priority != null">priority = #{priority,jdbcType=INTEGER} and </if>
+		<if test="progress != null">progress = #{progress,jdbcType=FLOAT} and </if>
+		<if test="state != null">state = #{state,jdbcType=INTEGER} and </if>
+		<if test="assignStaffId != null">assign_staff_id = #{assignStaffId,jdbcType=INTEGER} and </if>
+		<if test="actorStaffId != null">actor_staff_id = #{actorStaffId,jdbcType=INTEGER} and </if>
+		<if test="planWorkload != null">plan_workload = #{planWorkload,jdbcType=INTEGER} and </if>
+		<if test="realWorkload != null">real_workload = #{realWorkload,jdbcType=INTEGER} and </if>
+		<if test="isDelay != null">is_delay = #{isDelay,jdbcType=INTEGER} and </if>
+		<if test="delayReason != null">delay_reason = #{delayReason,jdbcType=VARCHAR} and </if>
+		<if test="readonly != null">readonly = #{readonly,jdbcType=INTEGER} and </if>
+		<if test="editable != null">editable = #{editable,jdbcType=INTEGER} and </if>
+		<if test="type != null">type = #{type,jdbcType=VARCHAR} and </if>
+		<if test="projectId != null">project_id = #{projectId,jdbcType=INTEGER} and </if>
+		<if test="create_date != null">create_date = #{create_date,jdbcType=TIMESTAMP} and </if>
+	</trim>
+  </select>
 </mapper>

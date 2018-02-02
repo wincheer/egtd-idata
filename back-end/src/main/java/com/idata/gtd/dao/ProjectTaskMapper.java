@@ -22,4 +22,6 @@ public interface ProjectTaskMapper {
 	List<ProjectTask> selectMyTaskListIn(Integer empId);
 
 	List<ProjectTask> selectMyTaskListOut(Integer empId); 
+	
+	List<ProjectTask> selectTaskList(ProjectTask record); 
 }

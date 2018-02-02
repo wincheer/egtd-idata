@@ -1,5 +1,6 @@
 package com.idata.gtd.common;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -10,7 +11,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-
 /**
  * <b>版权信息 :</b> 2018，广州智数信息科技有限公司<br/>
  * <b>功能描述 :</b> 辅助类，其中行记录转换为树节点比较重要<br/>
@@ -18,8 +18,32 @@ import org.apache.log4j.Logger;
  * 杨文清 | 2018年1月13日 上午11:41:48 | 创建
  */
 public class Utils {
-	
-	private static Logger log = Logger.getLogger(Utils.class);
+
+	private static Logger logger = Logger.getLogger(Utils.class);
+
+	/**
+	 * 删除文件
+	 * @param fileName
+	 *  String file = "c:/test/test.txt";
+	 *  deleteFile(file);
+	 * @return
+	 */
+	public static boolean deleteFile(String fileName) {
+		File file = new File(fileName);
+		// 如果文件路径所对应的文件存在，并且是一个文件，则直接删除
+		if (file.exists() && file.isFile()) {
+			if (file.delete()) {
+				logger.info("删除单个文件" + fileName + "成功！");
+				return true;
+			} else {
+				logger.info("删除单个文件" + fileName + "失败！");
+				return false;
+			}
+		} else {
+			System.out.println("删除单个文件失败：" + fileName + "不存在！");
+			return false;
+		}
+	}
 
 	/**
 	 * 将map中value等于空的key去掉
@@ -29,7 +53,7 @@ public class Utils {
 	public static Map<String, Object> cleanMap(Map<String, Object> map) {
 		Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
 		for (String key : map.keySet()) {
-			log.info(key + " = " + map.get(key));
+			logger.info(key + " = " + map.get(key));
 			if (map.get(key) != null && map.get(key).toString() != "") {
 				resultMap.put(key, map.get(key));
 			}
@@ -86,8 +110,8 @@ public class Utils {
 
 		return map;
 	}
-	
-	/************************* 下面的方法用来将模板目录表记录构建为树  ***************************/
+
+	/************************* 下面的方法用来将模板目录表记录构建为树 ***************************/
 
 	public static List<TreeNode> builderTree(List<TreeNode> nodeList) {
 

@@ -37,6 +37,12 @@ public class TaskAction {
 	@Autowired
 	private TaskService taskService;
 
+	@RequestMapping(value = "/selectTaskList", method = RequestMethod.POST)
+	public List<ProjectTask> selectTaskList(@RequestBody ProjectTask data) {
+
+		return taskService.selectTaskList(data);
+	}
+	
 	@RequestMapping(value = "/selectProjectTask", method = RequestMethod.POST)
 	public ProjectTask selectProjectTask(@RequestBody ProjectTask data) {
 

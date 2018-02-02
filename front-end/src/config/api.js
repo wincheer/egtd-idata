@@ -75,6 +75,7 @@ export const SELECT_MY_TASK_LIST_IN = (params) => { return axios.post(`${base}/s
 export const SELECT_MY_TASK_LIST_OUT = (params) => { return axios.post(`${base}/selectMyTaskListOut`,params).then(res => res.data); };
 export const SELECT_TASK_CHECK_LIST = (params) => { return axios.post(`${base}/selectTaskCheckList`,params).then(res => res.data); };
 export const UPDATE_TASK_CHECK = (params) => { return axios.post(`${base}/updateTaskCheck`,params).then(res => res.data); };
+export const SELECT_TASK_LIST = (params) => { return axios.post(`${base}/selectTaskList`,params).then(res => res.data); };
 
 
 // 消息

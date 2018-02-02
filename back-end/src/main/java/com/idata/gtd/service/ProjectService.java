@@ -51,13 +51,13 @@ public class ProjectService {
 	@Autowired
 	private ProjectMapper projectDao;
 	@Autowired
-	private ProjectContractMapper projectContractDao;
+	private ProjectContractMapper contractDao;
 	@Autowired
 	private ProjectGroupMapper groupDao;
 	@Autowired
 	private ProjectTaskMapper taskDao;
 	@Autowired
-	private ProjectStaffMapper projectStaffDao;
+	private ProjectStaffMapper staffDao;
 	@Autowired
 	private DocumentService documentService;
 	@Autowired
@@ -94,14 +94,20 @@ public class ProjectService {
 	public int deleteProject(Integer projectId) {
 
 		projectDao.deleteProjectByPK(projectId);
-		// TODO 同时删除当前项目下的相关内容
+		//TODO 同时删除当前项目下的相关内容
+		//项目合同、项目组、项目组成员、项目任务
+//		groupDao.deleteProjectGroups(projectId);
+//		staffDao.deleteStaffs(projectId);
+//		taskDao.deleteProjectTasks(projectId);
+//		contractDao.deleteProjectContracts(projectId);
+//		documentService.deleteDocuments(projectId);
 
 		return 0;
 	}
 
 	public int insertProjectContract(MultipartFile file, ProjectContract data) throws Exception {
 
-		projectContractDao.insertProjectContract(data);
+		contractDao.insertProjectContract(data);
 
 		Document doc = new Document();
 		doc.setName(file.getOriginalFilename());
@@ -117,12 +123,12 @@ public class ProjectService {
 
 	public int insertProjectContract(ProjectContract data) {
 
-		return projectContractDao.insertProjectContract(data);
+		return contractDao.insertProjectContract(data);
 	}
 
 	public int updateProjectContract(MultipartFile file, ProjectContract data) throws Exception {
 
-		projectContractDao.updateProjectContract(data);
+		contractDao.updateProjectContract(data);
 
 		Document doc = new Document();
 		doc.setName(file.getOriginalFilename());
@@ -137,12 +143,12 @@ public class ProjectService {
 
 	public int updateProjectContract(ProjectContract data) {
 
-		return projectContractDao.updateProjectContract(data);
+		return contractDao.updateProjectContract(data);
 	}
 
 	public int deleteProjectContract(Integer id) {
 
-		projectContractDao.deleteProjectContractByPK(id);
+		contractDao.deleteProjectContractByPK(id);
 
 		Document doc = new Document();
 		doc.setBelongTo("contract");
@@ -154,7 +160,7 @@ public class ProjectService {
 
 	public List<ProjectContract> selectProjectContractList(Integer projectId) {
 
-		return projectContractDao.selectProjectContractList(projectId);
+		return contractDao.selectProjectContractList(projectId);
 	}
 
 	public List<ProjectGroup> selectProjectGroupList(Integer projectId) {
@@ -177,7 +183,7 @@ public class ProjectService {
 		// 删除当前组
 		groupDao.deleteProjectGroupByPK(groupId);
 		// 删除当前组下面的项目组成员
-		projectStaffDao.deleteStaffsByGroupId(groupId);
+		staffDao.deleteStaffsByGroupId(groupId);
 
 		return 1;
 	}
@@ -250,7 +256,7 @@ public class ProjectService {
 
 		int groupId = (Integer) map.get("groupId");
 		// 删除组内所有成员
-		projectStaffDao.deleteStaffsByGroupId(groupId);
+		staffDao.deleteStaffsByGroupId(groupId);
 
 		@SuppressWarnings("unchecked")
 		List<Map<String, Object>> _staffList = (List<Map<String, Object>>) map.get("staffList");
@@ -262,7 +268,7 @@ public class ProjectService {
 			staff.setGroupId(groupId);
 			staff.setEmpId((Integer) _map.get("id"));
 
-			projectStaffDao.insertStaff(staff);
+			staffDao.insertStaff(staff);
 		}
 
 		return 1;

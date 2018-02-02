@@ -25,8 +25,8 @@ let routes = [
         blackList:[],
         children: [
             // { path: '/todo', component: DOING, name: '待办事项列表' ,iconCls:'el-icon-time'},
-            // { path: '/todo2', component: Calendar, name: '工作日历' ,iconCls:'el-icon-date'},
             { path: '/dashboard', component: DashBoard, name: '工作台' ,iconCls: 'el-icon-time',blackList:[]},
+            { path: '/calendar', component: Calendar, name: '工作日历' ,iconCls:'el-icon-date',blackList:[]},
         ]
     },
     {

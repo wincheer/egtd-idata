@@ -194,4 +194,8 @@ public class TaskService {
 		return taskCheckDao.updateTaskCheck(tc);
 	}
 
+	public List<ProjectTask> selectTaskList(ProjectTask data) {
+		return taskDao.selectTaskList(data);
+	}
+
 }
