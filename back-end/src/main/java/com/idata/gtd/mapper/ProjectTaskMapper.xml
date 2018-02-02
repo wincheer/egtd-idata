@@ -123,6 +123,11 @@
     where project_id = #{projectId,jdbcType=INTEGER}
   </select>
   
+  <select id="selectProjectStageList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select * from project_task
+    where project_id = #{projectId,jdbcType=INTEGER} and parent=0
+  </select>
+  
   <select id="selectMyTaskList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select * 
     from project_task

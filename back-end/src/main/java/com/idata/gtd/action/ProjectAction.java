@@ -47,7 +47,7 @@ public class ProjectAction {
 
 		return projectService.selectProject(project.getId());
 	}
-	
+
 	@RequestMapping(value = "/selectProjectList", method = RequestMethod.POST)
 	public List<Project> selectProjectList() throws Exception {
 
@@ -71,6 +71,17 @@ public class ProjectAction {
 	};
 
 	////////
+	// 根据模板创建项目
+	@RequestMapping(value = "/createProjectFromTpl", method = RequestMethod.POST)
+	public int createProjectFromTpl(@RequestBody Map<String, Object> data) {
+
+		Integer tplId = (Integer) data.get("tplId");
+		Integer empId = (Integer) data.get("empId");
+		String ProjectName = data.get("projectName") == null ? "未命名项目" : data.get("projectName").toString();
+		return projectService.createProjectFromTpl(tplId,ProjectName,empId);
+	};
+	
+	////////
 
 	@RequestMapping(value = "/selectProjectContractList", method = RequestMethod.POST)
 	public List<ProjectContract> selectProjectContractList(@RequestBody ProjectContract data) throws Exception {
@@ -80,7 +91,8 @@ public class ProjectAction {
 	}
 
 	@RequestMapping(value = "/updateProjectContract", method = RequestMethod.POST)
-	public int updateProjectContract(@RequestParam Map<String, Object> data, @RequestParam MultipartFile file) throws Exception {
+	public int updateProjectContract(@RequestParam Map<String, Object> data, @RequestParam MultipartFile file)
+			throws Exception {
 
 		logger.info("合同上传的附件 = " + file.getOriginalFilename());
 		Gson gson = new GsonBuilder().setDateFormat(DateFormat.FULL).create();
@@ -179,9 +191,11 @@ public class ProjectAction {
 		List<Employee> employeeList = projectService.selectAvailableProjectEmployeeList(data.getId());
 		return employeeList;
 	}
+
 	// 项目中所有可用的人员（按公司分组） - available
 	@RequestMapping(value = "/selectAvailableGroupProjectEmployeeList", method = RequestMethod.POST)
-	public List<Map<String, Object>> selectAvailableGroupProjectEmployeeList(@RequestBody Project data) throws Exception {
+	public List<Map<String, Object>> selectAvailableGroupProjectEmployeeList(@RequestBody Project data)
+			throws Exception {
 
 		List<Map<String, Object>> employeeList = projectService.selectAvailableGroupProjectEmployeeList(data.getId());
 		return employeeList;
@@ -202,7 +216,7 @@ public class ProjectAction {
 		List<Employee> staffList = projectService.selectEmployeeList();
 		return staffList;
 	}
-	
+
 	// 甲方项目中已经分配的人员
 	@RequestMapping(value = "/selectOwnerProjectEmpList", method = RequestMethod.POST)
 	public List<Employee> selectOwnerProjectEmpList(@RequestBody Project data) throws Exception {

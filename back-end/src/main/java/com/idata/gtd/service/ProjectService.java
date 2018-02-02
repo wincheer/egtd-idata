@@ -1,6 +1,7 @@
 package com.idata.gtd.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,12 +14,16 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.idata.gtd.common.DocCat;
+import com.idata.gtd.common.TreeNode;
+import com.idata.gtd.common.Utils;
 import com.idata.gtd.dao.EmployeeMapper;
 import com.idata.gtd.dao.ProjectContractMapper;
 import com.idata.gtd.dao.ProjectGroupMapper;
 import com.idata.gtd.dao.ProjectMapper;
 import com.idata.gtd.dao.ProjectStaffMapper;
 import com.idata.gtd.dao.ProjectTaskMapper;
+import com.idata.gtd.dao.TplGroupMapper;
+import com.idata.gtd.dao.TplStageMapper;
 import com.idata.gtd.dao.VendorMapper;
 import com.idata.gtd.entity.Document;
 import com.idata.gtd.entity.Employee;
@@ -27,6 +32,8 @@ import com.idata.gtd.entity.ProjectContract;
 import com.idata.gtd.entity.ProjectGroup;
 import com.idata.gtd.entity.ProjectStaff;
 import com.idata.gtd.entity.ProjectTask;
+import com.idata.gtd.entity.TplGroup;
+import com.idata.gtd.entity.TplStage;
 import com.idata.gtd.entity.Vendor;
 
 /**
@@ -46,9 +53,9 @@ public class ProjectService {
 	@Autowired
 	private ProjectContractMapper projectContractDao;
 	@Autowired
-	private ProjectGroupMapper projectGroupDao;
+	private ProjectGroupMapper groupDao;
 	@Autowired
-	private ProjectTaskMapper projectStageDao;
+	private ProjectTaskMapper taskDao;
 	@Autowired
 	private ProjectStaffMapper projectStaffDao;
 	@Autowired
@@ -57,12 +64,16 @@ public class ProjectService {
 	private VendorMapper vendorDao;
 	@Autowired
 	private EmployeeMapper empDao;
+	@Autowired
+	private TplGroupMapper tplGroupDao;
+	@Autowired
+	private TplStageMapper tplStageDao;
 
 	public Project selectProject(Integer projectId) {
 
 		return projectDao.selectProjectByPK(projectId);
 	}
-	
+
 	public List<Project> selectProjectList() {
 
 		logger.info("查询项目");
@@ -148,23 +159,23 @@ public class ProjectService {
 
 	public List<ProjectGroup> selectProjectGroupList(Integer projectId) {
 
-		return projectGroupDao.selectProjectGroupList(projectId);
+		return groupDao.selectProjectGroupList(projectId);
 	}
 
 	public int insertProjectGroup(ProjectGroup data) {
 
-		return projectGroupDao.insertProjectGroup(data);
+		return groupDao.insertProjectGroup(data);
 	}
 
 	public int updateProjectGroup(ProjectGroup data) {
 
-		return projectGroupDao.updateProjectGroup(data);
+		return groupDao.updateProjectGroup(data);
 	}
 
 	public int deleteProjectGroup(Integer groupId) {
 
 		// 删除当前组
-		projectGroupDao.deleteProjectGroupByPK(groupId);
+		groupDao.deleteProjectGroupByPK(groupId);
 		// 删除当前组下面的项目组成员
 		projectStaffDao.deleteStaffsByGroupId(groupId);
 
@@ -173,24 +184,24 @@ public class ProjectService {
 
 	public List<ProjectTask> selectProjectStageList(Integer projectId) {
 
-		return projectStageDao.selectProjectTaskList(projectId);
+		return taskDao.selectProjectStageList(projectId);
 	}
 
 	public int insertProjectStage(ProjectTask data) {
 
-		projectStageDao.insertProjectTask(data);
+		taskDao.insertProjectTask(data);
 		return data.getId();
 	}
 
 	public int updateProjectStage(ProjectTask data) {
 
-		projectStageDao.updateProjectTask(data);
+		taskDao.updateProjectTask(data);
 		return data.getId();
 	}
 
 	public int deleteProjectStage(Integer id) {
 
-		return projectStageDao.deleteProjectTaskByPK(id);
+		return taskDao.deleteProjectTaskByPK(id);
 	}
 
 	public List<Employee> selectGroupEmpList(Integer groupId) {
@@ -199,11 +210,11 @@ public class ProjectService {
 	}
 
 	public List<Employee> selectAvailableProjectEmployeeList(Integer projectId) {
-		
+
 		List<Employee> projectEmpList = empDao.selectAvailableProjectEmployeeList(projectId);
 		return projectEmpList;
 	}
-	
+
 	public List<Map<String, Object>> selectAvailableGroupProjectEmployeeList(Integer projectId) {
 
 		List<Map<String, Object>> employeeGroupList = new ArrayList<Map<String, Object>>();
@@ -279,10 +290,84 @@ public class ProjectService {
 
 		return empDao.selectOwnerProjectEmpList(projectId);
 	}
-	
-	public Employee selectProjectLeader(Integer projectId){
-		
+
+	public Employee selectProjectLeader(Integer projectId) {
+
 		return empDao.selectProjectLeader(projectId);
+	}
+
+	// 从模板创建项目
+	public int createProjectFromTpl(Integer tplId, String projectName, Integer empId) {
+
+		// 1 、创建项目
+		Project project = new Project();
+		project.setProjectName(projectName);
+		project.setAuditState("init");
+		project.setOwnerId(empId);
+		project.setActorStaffId(empId);
+		projectDao.insertProject(project);
+		// 2、创建项目组：查询模板中的项目组，迭代新建
+		List<TplGroup> tplGroupList = tplGroupDao.selectTplGroupList(tplId);
+		List<TreeNode> tplGroupTreeNodeList = new ArrayList<TreeNode>();
+		for (TplGroup group : tplGroupList) {
+			TreeNode treeNode = new TreeNode(group.getId(), group.getGroupName(), group.getParentId(), group);
+			tplGroupTreeNodeList.add(treeNode);
+		}
+		List<TreeNode> tplGroupTreeList = Utils.builderTree(tplGroupTreeNodeList);
+		for (TreeNode node : tplGroupTreeList) {
+			traverseTree(node, project.getId(), "group", empId);
+		}
+		// 3、创建项目阶段(有可能包含一级任务)
+		List<TplStage> tplStageList = tplStageDao.selectTplStageList(tplId);
+		List<TreeNode> tplStageTreeNodeList = new ArrayList<TreeNode>();
+		for (TplStage stage : tplStageList) {
+			TreeNode treeNode = new TreeNode(stage.getId(), stage.getStageName(), stage.getParentId(), stage);
+			tplStageTreeNodeList.add(treeNode);
+		}
+		List<TreeNode> tplStageTreeList = Utils.builderTree(tplStageTreeNodeList);
+		for (TreeNode node : tplStageTreeList) {
+			traverseTree(node, project.getId(), "task", empId);
+		}
+
+		return project.getId();
+	}
+
+	// 通过递归遍历指定节点的子节点
+	private void traverseTree(TreeNode node, int projectId, String objName, Integer empId) {
+
+		int parentId = 0;
+
+		if (objName.equals("task")) { // 转化为(任务)阶段节点
+			ProjectTask task = new ProjectTask();
+			task.setProjectId(projectId);
+			task.setText(node.getLabel());
+			task.setParent(node.getParentId());
+			task.setState(0);
+			task.setCreate_date(new Date());
+			task.setActorStaffId(empId);
+
+			taskDao.insertProjectTask(task);
+			parentId = task.getId();
+
+		} else if (objName.equals("group")) { // 转化为项目组节点
+			ProjectGroup group = new ProjectGroup();
+			group.setProjectId(projectId);
+			group.setParentId(node.getParentId());
+			group.setGroupName(node.getLabel());
+			group.setGroupRole(((TplGroup) node.getData()).getGroupRole());
+
+			groupDao.insertProjectGroup(group);
+
+			parentId = group.getId();
+		}
+
+		// 递归调用
+		if (node.getChildren() != null) {
+			for (TreeNode _node : node.getChildren()) {
+				_node.setParentId(parentId);
+				traverseTree(_node, projectId, objName, empId);
+			}
+		}
 	}
 
 }

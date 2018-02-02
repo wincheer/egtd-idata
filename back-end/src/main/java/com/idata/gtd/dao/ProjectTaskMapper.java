@@ -15,6 +15,7 @@ public interface ProjectTaskMapper {
 	int updateProjectTask(ProjectTask record);
 
 	List<ProjectTask> selectProjectTaskList(Integer projectId);
+	List<ProjectTask> selectProjectStageList(Integer projectId);
 
 	List<ProjectTask> selectMyTaskList(Integer empId);
 

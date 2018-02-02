@@ -79,6 +79,11 @@
         <el-form-item label="项目组名称" prop="groupName">
           <el-input type="text" v-model="tplGroupObj.groupName"></el-input>
         </el-form-item>
+        <el-form-item label="角色" prop="groupRole">
+          <el-select v-model="tplGroupObj.groupRole" placeholder="请选择">
+            <el-option v-for="item in builtinRoleParamList" :key="item.id" :label="item.paramDesc" :value="item.paramValue" />
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="updateTplGroup" :loading="logining">保存</el-button>
           <el-button @click="dlgTplGroupEditVis = false">取消</el-button>
@@ -99,7 +104,8 @@ import {
   DELETE_TPL_STAGE,
   SELECT_TPL_GROUP_TREE_LIST,
   UPDATE_TPL_GROUP,
-  DELETE_TPL_GROUP
+  DELETE_TPL_GROUP,
+  SELECT_PARAM_VALUE_LIST,
 } from "@/config/api";
 import { getNodePath } from "@/util/treeUtil.js";
 export default {
@@ -110,6 +116,7 @@ export default {
       tplProjectList: [],
       tplStageTreeList: [],
       tplGroupTreeList: [],
+      builtinRoleParamList: [],
       dlgTplProjectEditVis: false,
       dlgTplStageEditVis: false,
       dlgTplGroupEditVis: false,
@@ -136,6 +143,7 @@ export default {
         id: 0,
         tplId: "",
         groupName: "",
+        groupRole: "",
         parentId: null
       },
       tplGroupObjRules: {
@@ -172,6 +180,21 @@ export default {
           _this.$message({ message: "获取模板项目组失败，请联系系统管理员。", type: "error" });
         else {
           _this.tplGroupTreeList = res;
+        }
+      });
+    },
+    selectParamValueList(paramKeyObj) {
+      var _this = this;
+      SELECT_PARAM_VALUE_LIST(paramKeyObj).then(res => {
+        if (!Array.isArray(res))
+          _this.$message({
+            message: "获取参数列表失败，请联系系统管理员。",
+            type: "error"
+          });
+        else {
+          if (paramKeyObj.paramKey === "category") _this.categoryParamList = res;
+          else if (paramKeyObj.paramKey === "built-in-role")
+            _this.builtinRoleParamList = res;
         }
       });
     },
@@ -212,6 +235,7 @@ export default {
     openEditTplGroup(node, data){
       this.tplGroupObj.id = data.id;
       this.tplGroupObj.groupName = data.label;
+      this.tplGroupObj.groupRole = data.data.groupRole;
       this.tplGroupObj.tplId = parseInt(data.data.desc);
       this.tplGroupObj.parentId = data.parentId;
       this.groupParentIds = getNodePath(this.tplGroupTreeList,data.parentId);
@@ -389,6 +413,7 @@ export default {
   },
   mounted() {
     this.selectTplProjectList();
+    this.selectParamValueList({ paramKey: "built-in-role" });
   }
 };
 </script>

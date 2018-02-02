@@ -62,6 +62,7 @@ export const SELECT_PROJECT_EMPLOYEE_LIST = (params) => { return axios.post(`${b
 export const SELECT_OWNER_PROJECT_EMPLOYEE_LIST = (params) => { return axios.post(`${base}/selectOwnerProjectEmpList`,params).then(res => res.data); };
 export const UPDATE_PROJECT_STAFFS = (params) => { return axios.post(`${base}/updateProjectStaffs`,params).then(res => res.data); };
 export const SELECT_EMPLOYEE_LIST = () => { return axios.post(`${base}/selectEmployeeList`).then(res => res.data); };
+export const CREATE_PROJECT_FROM_TPL = (params) => { return axios.post(`${base}/createProjectFromTpl`, params).then(res => res.data); };
 
 // 项目任务
 export const SELECT_PROJECT_TASK = (params) => { return axios.post(`${base}/selectProjectTask`,params).then(res => res.data); };

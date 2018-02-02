@@ -7,7 +7,15 @@
       <el-step title="分解项目阶段" :status="projectStageStatus" description="分解项目阶段及任务，指派责任人以及配置检查链"></el-step>
       <el-step title="项目就绪" :status="projectReadyStatus"></el-step>
     </el-steps>
+
     <el-button style="margin-top: 12px;" @click="openAddProject" type="primary" ref="btnCreateProject">新建项目</el-button>
+    <el-dropdown  trigger="click" @command="createProjectFromTpl">
+      <el-button type="success">从模板新建项目<i class="el-icon-arrow-down el-icon--right"></i></el-button>
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item v-for="item in tplList" :key="item.id" :command="item.id">{{item.tplName}}</el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
+
     <el-table border stripe :data="projectList" style="margin-top: 20px;" highlight-current-row @current-change="onProjectChange" ref="projectTable">
       <el-table-column type="index" width="30"></el-table-column>
       <el-table-column prop="projectName" label="项目名称"></el-table-column>
@@ -29,7 +37,7 @@
           </el-dropdown>
           <el-button size="mini" type="danger" @click="delProject(scope.row)" :disabled="scope.row.ownerId !== $store.state.loginUser.id">删除</el-button>
           <!-- <el-button size="mini" type="warning" @click="applyAudit(scope.row)" :disabled="(scope.row.ownerId !== $store.state.loginUser.id) || scope.row.auditState==='wait' || scope.row.auditState==='ready'">申请审批</el-button> -->
-          <el-button size="mini" type="warning" @click="applyAudit(scope.row)" v-if="(scope.row.ownerId === $store.state.loginUser.id) && scope.row.auditState==='init'">申请审批</el-button>
+          <el-button size="mini" type="warning" @click="applyAudit(scope.row)" v-if="projectReadyStatus === 'success' && (scope.row.ownerId === $store.state.loginUser.id) && scope.row.auditState==='init'">申请审批</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -285,7 +293,9 @@ import {
   SELECT_PROJECT_EMPLOYEE_LIST,
   SELECT_OWNER_PROJECT_EMPLOYEE_LIST,
   SELECT_DEP_TREE_LIST,
-  UPDATE_MESSAGE
+  UPDATE_MESSAGE,
+  SELECT_TPL_PROJECT_LIST,
+  CREATE_PROJECT_FROM_TPL
 } from "@/config/api";
 import { formatDate } from "@/util/date.js";
 import { getNodePath, getNode } from "@/util/treeUtil.js";
@@ -413,7 +423,8 @@ export default {
       builtinRoleParamList: [],
       vendorList: [],
       projectVendorList: [],
-      ownerProjectEmpList: []
+      ownerProjectEmpList: [],
+      tplList: []
     };
   },
   methods: {
@@ -473,6 +484,19 @@ export default {
           });
         else {
           _this.vendorList = res;
+        }
+      });
+    },
+    selectTplProjectList() {
+      var _this = this;
+      SELECT_TPL_PROJECT_LIST().then(res => {
+        if (!Array.isArray(res))
+          _this.$message({
+            message: "获取项目模板失败，请联系系统管理员。",
+            type: "error"
+          });
+        else {
+          _this.tplList = res;
         }
       });
     },
@@ -1003,9 +1027,13 @@ export default {
         to: 0, //后台确定
         toScope: "actor",
         title: "项目计划审批",
-        body: this.$store.state.loginUser.empName + "已完成项目 【"+row.projectName+"】的项目计划，请您进行审批",
+        body:
+          this.$store.state.loginUser.empName +
+          "已完成项目 【" +
+          row.projectName +
+          "】的项目计划，请您进行审批",
         type: "audit",
-        relationId: row.id,
+        relationId: row.id
       };
       UPDATE_MESSAGE(params).then(data => {
         if (data === "") {
@@ -1014,9 +1042,26 @@ export default {
             type: "error"
           });
         } else {
-          _this.$notify({title:"发送成功",message:"您的申请已发出，请等待审批结果。",type:"success"});
+          _this.$notify({
+            title: "发送成功",
+            message: "您的申请已发出，请等待审批结果。",
+            type: "success"
+          });
           _this.selectProjectList();
         }
+      });
+    },
+    createProjectFromTpl(command) {
+      var _this = this;
+      this.$prompt("请输入项目名称", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消"
+      }).then(({ value }) => {
+        var params = { tplId: command, projectName: value,empId:_this.$store.state.loginUser.id };
+        CREATE_PROJECT_FROM_TPL(params).then(res => {
+          _this.$notify({title: '创建项目成功', message: '项目根据模板创建成功，请自行维护项目属性和组成员',type: "success"});
+          _this.selectProjectList();
+        });
       });
     }
   },
@@ -1058,6 +1103,7 @@ export default {
     this.selectVendorList();
     this.selectAllDepEmpList(); //业主的所有员工
     this.selectDepTreeList(); //业主的所有部门
+    this.selectTplProjectList(); // 项目模板
 
     //this.authCheck("btnCreateProject"); //检查组件权限
   }

@@ -46,7 +46,7 @@
       <if test="actorStaffId != null">actor_staff_id,</if>
       <if test="icon != null">icon,</if>
       <if test="amount != null">amount,</if>
-      <if test="audit_state != null">auditState,</if>
+      <if test="auditState != null">audit_state,</if>
       <if test="depId != null">dep_id,</if>
       <if test="ownerId != null">owner_id,</if>
     </trim>
