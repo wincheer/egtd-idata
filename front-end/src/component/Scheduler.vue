@@ -102,7 +102,7 @@ export default {
         scheduler.clearAll();
         scheduler.parse(this.$props.events, "json");
       },
-      deep: true
+      deep: false   //如果不能正常更新,改为true
     }
   }
 };
