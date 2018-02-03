@@ -4,10 +4,12 @@ import VueRouter from 'vue-router'
 import routes from '@/config/routes'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+import VCharts from 'v-charts'
 import store from '@/config/store'
 
 Vue.use(VueRouter)
 Vue.use(ElementUI)
+Vue.use(VCharts)
 
 const router = new VueRouter({
     mode: 'hash',

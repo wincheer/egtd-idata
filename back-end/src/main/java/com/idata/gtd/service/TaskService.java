@@ -2,6 +2,7 @@ package com.idata.gtd.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -196,6 +197,16 @@ public class TaskService {
 
 	public List<ProjectTask> selectTaskList(ProjectTask data) {
 		return taskDao.selectTaskList(data);
+	}
+
+	/**
+	 * 查询满足条件的状态数量 - 用来绘制图表
+	 * @param task
+	 * @return
+	 */
+	public List<Map<String, Object>> selectTaskStateCount4Chart(ProjectTask task) {
+
+		return taskDao.selectTaskStateCount4Chart(task); 
 	}
 
 }

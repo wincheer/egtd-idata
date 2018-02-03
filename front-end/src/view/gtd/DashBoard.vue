@@ -1,6 +1,9 @@
 <template>
   <section>
     <el-tabs v-model="activeName" @tab-click="handleClick" style="margin-top: 20px;">
+      <el-tab-pane label="项目概况" name="third">
+        <simple-chart :taskParams="{projectId:1}"></simple-chart>
+      </el-tab-pane>
       <el-tab-pane label="我承接的任务" name="first">
         <el-table :data="myTaskListIn" stripe>
         <el-table-column prop="text" label="任务"></el-table-column>
@@ -41,9 +44,6 @@
         </el-table-column>
       </el-table>
       </el-tab-pane>
-      <!-- <el-tab-pane label="工作日志" name="second">配置管理</el-tab-pane> -->
-      <el-tab-pane label="项目概况" name="third">Coming Soon</el-tab-pane>
-      <!-- <el-tab-pane label="人员效率" name="fourth">定时任务补偿</el-tab-pane> -->
     </el-tabs>
     <!--任务编辑对话框-->
     <task-edit-form :task="selectedTask" :isShow="taskFormVis" @close="closeTaskForm"></task-edit-form>
@@ -52,6 +52,7 @@
 
 <script>
 import TaskEditForm from "@/component/TaskEditForm.vue";
+import SimpleChart from "@/component/SimpleChart.vue";
 import {
   SELECT_MY_TASK_LIST_IN,
   SELECT_MY_TASK_LIST_OUT,
@@ -61,13 +62,13 @@ import {
 } from "@/config/api";
 import { formatDate } from "@/util/date.js";
 export default {
-  components: { TaskEditForm },
+  components: { TaskEditForm,SimpleChart },
   data() {
     return {
       selectedTask: [],
       taskFormVis: false,
 
-      activeName: "first",
+      activeName: "third",
       employeeList: [],
       projectList: [],
       myTaskList: [],

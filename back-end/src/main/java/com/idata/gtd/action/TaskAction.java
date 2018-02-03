@@ -159,4 +159,12 @@ public class TaskAction {
 		else
 			return taskService.updateTaskCheck(tc);
 	};
+	
+	//////用在统计图上
+	@RequestMapping(value = "/selectTaskStateCount4Chart", method = RequestMethod.POST)
+	public List<Map<String,Object>> selectTaskStateCount4Chart(@RequestBody ProjectTask task) {
+
+		List<Map<String,Object>> result = taskService.selectTaskStateCount4Chart(task);
+		return result;
+	}
 }

@@ -35,6 +35,7 @@
     "file-loader": "^1.1.4",
     "node-sass": "^4.5.3",
     "sass-loader": "^6.0.6",
+    "v-charts": "^1.15.6",
     "vue-loader": "^13.0.5",
     "vue-template-compiler": "^2.4.4",
     "vuex": "^3.0.1",

@@ -76,6 +76,8 @@ export const SELECT_MY_TASK_LIST_OUT = (params) => { return axios.post(`${base}/
 export const SELECT_TASK_CHECK_LIST = (params) => { return axios.post(`${base}/selectTaskCheckList`,params).then(res => res.data); };
 export const UPDATE_TASK_CHECK = (params) => { return axios.post(`${base}/updateTaskCheck`,params).then(res => res.data); };
 export const SELECT_TASK_LIST = (params) => { return axios.post(`${base}/selectTaskList`,params).then(res => res.data); };
+/////统计图数据
+export const SELECT_TASK_STATE_COUNT_LIST = (params) => { return axios.post(`${base}/selectTaskStateCount4Chart`,params).then(res => res.data); };
 
 
 // 消息

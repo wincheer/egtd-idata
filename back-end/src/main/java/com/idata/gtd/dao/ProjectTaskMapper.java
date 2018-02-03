@@ -1,6 +1,7 @@
 package com.idata.gtd.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.idata.gtd.entity.ProjectTask;
 
@@ -23,5 +24,7 @@ public interface ProjectTaskMapper {
 
 	List<ProjectTask> selectMyTaskListOut(Integer empId); 
 	
-	List<ProjectTask> selectTaskList(ProjectTask record); 
+	List<ProjectTask> selectTaskList(ProjectTask record);
+
+	List<Map<String, Object>> selectTaskStateCount4Chart(ProjectTask task);  //项目状态数量，用来绘制统计图表
 }
