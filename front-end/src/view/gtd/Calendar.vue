@@ -1,6 +1,6 @@
 <template>
   <section>
-    <scheduler :events="events" class="scheduler" @onBeforeLightbox="openTaskEdit"/>
+    <scheduler :events="events" class="scheduler" @onBeforeLightbox="openTaskEdit"  style="margin-top: 20px;"/>
     <!--任务编辑对话框-->
     <task-edit-form :task="selectedTask" :isShow="taskFormVis" @close="closeTaskForm"></task-edit-form>
   </section>

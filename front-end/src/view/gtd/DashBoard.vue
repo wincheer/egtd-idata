@@ -2,7 +2,10 @@
   <section>
     <el-tabs v-model="activeName" @tab-click="handleClick" style="margin-top: 20px;">
       <el-tab-pane label="项目概况" name="third">
-        <simple-chart :taskParams="{projectId:1}"></simple-chart>
+        <el-select v-model="selectedProject" placeholder="请选择项目" @change="onProjectChange" value-key="id">
+          <el-option v-for="item in myProjectList" :key="item.id" :label="item.projectName" :value="item" />
+        </el-select>
+        <simple-chart :taskParams="taskParams"></simple-chart>
       </el-tab-pane>
       <el-tab-pane label="我承接的任务" name="first">
         <el-table :data="myTaskListIn" stripe>
@@ -58,7 +61,8 @@ import {
   SELECT_MY_TASK_LIST_OUT,
   SELECT_EMPLOYEE_LIST,
   SELECT_PROJECT_LIST,
-  UPDATE_PROJECT_TASK
+  UPDATE_PROJECT_TASK,
+  SELECT_MY_PROJECT_LIST
 } from "@/config/api";
 import { formatDate } from "@/util/date.js";
 export default {
@@ -67,10 +71,12 @@ export default {
     return {
       selectedTask: [],
       taskFormVis: false,
+      taskParams:{id:0},
+      selectedProject:{},
 
       activeName: "third",
       employeeList: [],
-      projectList: [],
+      myProjectList: [],
       myTaskList: [],
       myTaskListIn: [],
       myTaskListOut: [],
@@ -81,6 +87,11 @@ export default {
     closeTaskForm(){
       this.taskFormVis = false;
       //this.selectMyTaskList();
+    },
+    onProjectChange(project) {
+      if (project) {
+       this.taskParams = {projectId:project.id}
+      }
     },
     handleClick(tab, event) {
       console.log(tab, event);
@@ -112,9 +123,9 @@ export default {
     },
     fmtProject(row, column, cellValue) {
       var projectName = cellValue;
-      for (var i = 0; i < this.projectList.length; i++) {
-        if (this.projectList[i].id == cellValue) {
-          projectName = this.projectList[i].projectName;
+      for (var i = 0; i < this.myProjectList.length; i++) {
+        if (this.myProjectList[i].id == cellValue) {
+          projectName = this.myProjectList[i].projectName;
           break;
         }
       }
@@ -153,7 +164,11 @@ export default {
             type: "error"
           });
         else {
-          _this.projectList = res;
+          _this.myProjectList = res;
+          if (res.length) {
+            _this.selectedProject = _this.myProjectList[0];
+            _this.taskParams = {projectId:_this.selectedProject.id}
+          }
         }
       });
     },

@@ -2,7 +2,7 @@
     <section>
       <el-row style="margin-top: 20px;margin-bottom: 10px;">
         <el-select v-model="selectedProject" placeholder="请选择项目" @change="onProjectChange" value-key="id">
-          <el-option v-for="item in myProjectList" :key="item.id" :label="item.projectName" :value="item" />
+          <el-option v-for="item in myProjectList" :key="item.id" :label="item.projectName" :value="item"></el-option>
         </el-select>
         <el-button icon="el-icon-edit" type="primary" plain @click="openTaskEdit" :disabled="caniOpen || selectedTask.parent==0"> 编辑任务</el-button>
         <el-button icon="el-icon-share" type="primary" plain @click="openTaskAdd" :disabled="caniOpen">分配子任务</el-button>

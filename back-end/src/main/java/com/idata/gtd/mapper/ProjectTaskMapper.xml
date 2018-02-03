@@ -147,7 +147,7 @@
   <select id="selectTaskList" parameterType="com.idata.gtd.entity.ProjectTask" resultMap="BaseResultMap">
   	select * 
     from project_task
-    where 1=1
+    where project_task.parent !=0
     <trim prefix=" and (" suffix=")" suffixOverrides="and">
 		<if test="text != null">text = #{text,jdbcType=VARCHAR} and </if>
 		<if test="start_date != null">start_date = #{start_date,jdbcType=TIMESTAMP} and </if>
