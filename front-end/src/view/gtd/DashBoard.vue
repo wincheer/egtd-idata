@@ -9,21 +9,14 @@
         <el-table-column prop="priority" label="优先级" :formatter="fmtPriority"></el-table-column>
         <el-table-column prop="progress" label="进度" sortable>
           <template slot-scope="scope">
-            <el-progress :status="scope.row.state==4?'success':''" :text-inside="true" :stroke-width="18" :percentage="scope.row.progress * 100" />
+            <el-progress :status="scope.row.state==3?'success':''" :text-inside="true" :stroke-width="18" :percentage="scope.row.progress * 100" />
           </template>
         </el-table-column>
         <el-table-column prop="projectId" label="所属项目" sortable :formatter="fmtProject"></el-table-column>
         <el-table-column prop="assignStaffId" label="任务发布人" sortable :formatter="fmtEmployee"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button 
-              :disabled="scope.row.progress!=1 || scope.row.state==3 ||scope.row.state==4" 
-              type="success" 
-              size="mini" 
-              @click="applyConfirm(scope.row)">
-              {{actionInfo}}
-            </el-button>
-            <el-button size="mini" >详情</el-button>
+            <el-button type="primary" size="mini" @click="viewTask(scope.row)">详情</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -43,14 +36,7 @@
         <el-table-column prop="actorStaffId" label="任务承接者" sortable :formatter="fmtEmployee"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button 
-              :disabled="scope.row.progress!=1 || scope.row.state!=3" 
-              type="success" 
-              size="mini" 
-              @click="confirmTask(scope.row)">
-              确认完成
-            </el-button>
-            <el-button size="mini" >详情</el-button>
+             <el-button type="primary" size="mini" @click="viewTask(scope.row)">详情</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -59,10 +45,13 @@
       <el-tab-pane label="项目概况" name="third">Coming Soon</el-tab-pane>
       <!-- <el-tab-pane label="人员效率" name="fourth">定时任务补偿</el-tab-pane> -->
     </el-tabs>
+    <!--任务编辑对话框-->
+    <task-edit-form :task="selectedTask" :isShow="taskFormVis" @close="closeTaskForm"></task-edit-form>
   </section>
 </template>
 
 <script>
+import TaskEditForm from "@/component/TaskEditForm.vue";
 import {
   SELECT_MY_TASK_LIST_IN,
   SELECT_MY_TASK_LIST_OUT,
@@ -72,9 +61,12 @@ import {
 } from "@/config/api";
 import { formatDate } from "@/util/date.js";
 export default {
-  props: {},
+  components: { TaskEditForm },
   data() {
     return {
+      selectedTask: [],
+      taskFormVis: false,
+
       activeName: "first",
       employeeList: [],
       projectList: [],
@@ -85,6 +77,10 @@ export default {
     };
   },
   methods: {
+    closeTaskForm(){
+      this.taskFormVis = false;
+      //this.selectMyTaskList();
+    },
     handleClick(tab, event) {
       console.log(tab, event);
     },
@@ -174,21 +170,9 @@ export default {
         }
       );
     },
-    applyConfirm(task){
-      var _this = this;
-      //更新任务状态为待检查(3) 未开始0，进行中1，已完成待检查2，确认完成3
-      UPDATE_PROJECT_TASK({id:task.id,state:3}).then(res =>{
-        _this.actionInfo = "等待确认";
-      })
-      this.$message("申请已发出,审核通过后会自动变更任务状态。");
-    },
-    confirmTask(task){
-      var _this = this;
-      //更新任务状态为待检查(3) 未开始0，进行中1，已完成待检查2，确认完成3
-      UPDATE_PROJECT_TASK({id:task.id,state:3}).then(res =>{
-        _this.actionInfo = "完成确认";
-      })
-      this.$message("任务已确认，状态为正式完成。");
+    viewTask(task){
+      this.selectedTask = task;
+      this.taskFormVis = true;
     }
   },
   computed: {},

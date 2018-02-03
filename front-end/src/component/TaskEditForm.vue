@@ -77,7 +77,8 @@ import {
   SELECT_PROJECT_EMPLOYEE_LIST,
   UPDATE_PROJECT_TASK,
   DELETE_DOCUMENT,
-  UPDATE_PROJECT_TASK_WITH_FILE_RESULT
+  UPDATE_PROJECT_TASK_WITH_FILE_RESULT,
+  UPDATE_PROJECT_TASK_WITH_FILE
 } from "@/config/api";
 import { formatDate } from "@/util/date.js";
 import base from "@/config/remote";
@@ -116,6 +117,8 @@ export default {
     },
     selectDocumentList(projectTaskId, docCategory) {
       var _this = this;
+      if (docCategory === "2") _this.taskStandardFileList = [];
+      if (docCategory === "3") _this.taskResultFileList = [];
       SELECT_DOCUMENT_LIST({
         belongTo: "task",
         sourceId: projectTaskId,
@@ -229,6 +232,7 @@ export default {
     },
     selectProjectStaffList(projectId) {
       var _this = this;
+      _this.projectStaffList = [];
       SELECT_PROJECT_EMPLOYEE_LIST({ id: projectId }).then(res => {
         _this.projectStaffList = res;
       });
@@ -253,8 +257,7 @@ export default {
       else return "update";
     }
   },
-  mounted() {
-  },
+  mounted() {},
   watch: {
     task: {
       handler: function() {
