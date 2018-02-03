@@ -52,11 +52,11 @@
             </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="接收人"  prop="actorStaffId">
-                <el-select v-model="taskObj.actorStaffId" clearable placeholder="请选择"  :disabled="whoami=='actor'">
-                  <el-option v-for="item in projectStaffList" :key="item.id" :label="item.empName" :value="item.id" />
-                </el-select>
-            </el-form-item>
+              <el-form-item label="接收人"  prop="actorStaffId" v-if="selectedProject.auditState === 'ready'">
+                  <el-select v-model="taskObj.actorStaffId" clearable placeholder="请选择"  :disabled="whoami=='actor'">
+                    <el-option v-for="item in projectStaffList" :key="item.id" :label="item.empName" :value="item.id" />
+                  </el-select>
+              </el-form-item>
             </el-col>
           </el-row>
           <el-form-item label="优先级" prop="priority">

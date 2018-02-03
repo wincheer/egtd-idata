@@ -124,7 +124,7 @@
 	LEFT JOIN project_staff ON project_staff.group_id = project_group.id
 	LEFT JOIN employee ON project_staff.emp_id = employee.id
 	WHERE
-		project.is_forzen != 1 AND project.audit_state = 'ready' AND employee.id = #{empId,jdbcType=INTEGER}
+		project.is_forzen != 1 AND employee.id = #{empId,jdbcType=INTEGER}
   </select>
 
 </mapper>
