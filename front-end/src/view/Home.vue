@@ -97,7 +97,24 @@
               </el-table-column>
             </el-table>
           </el-tab-pane>
-          <!-- <el-tab-pane label="历史消息" name="history">TODO</el-tab-pane> -->
+          <el-tab-pane label="历史消息" name="history">
+            <el-table :data="historyMsgList" stripe :show-header="false" highlight-current-row @current-change="rowChange">
+              <el-table-column type="expand">
+                <template slot-scope="props">
+                  <span>{{ props.row.body }}</span>
+                </template>
+              </el-table-column>
+              <!-- <el-table-column label="来自" prop="from"></el-table-column> -->
+              <el-table-column label="主题" prop="title"></el-table-column>
+              <el-table-column label="时间" prop="time" :formatter="fmtDate"></el-table-column>
+              <el-table-column label="操作">
+                <template slot-scope="scope">
+                  <el-button size="mini" type="primary" @click="viewDetail(scope.row)" v-if="scope.row.type!=='normal'">详情</el-button> 
+                  <el-button size="mini" type="danger" @click="deleteMsg(scope.row)">删除</el-button> 
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
         </el-tabs>
         <div slot="footer">
           <!-- <el-button @click="sendMsg" size="mini" type="primary" icon="el-icon-edit">发布消息</el-button> -->
@@ -212,7 +229,7 @@
           </el-tab-pane>
         </el-tabs>
         <div slot="footer">
-          <el-button-group v-if="selectedMsg.type!=='normal'">
+          <el-button-group v-if="selectedMsg && selectedMsg.type!=='normal'">
             <el-button @click="execMessage(3)" size="mini" type="success" icon="el-icon-check">确认完成</el-button>
             <el-button @click="refuseMessage(4)" size="mini" type="danger" icon="el-icon-close">拒绝</el-button>
             <el-select size="mini" style="width:120px" v-model="nextChecker" clearable value-key="id">
@@ -233,6 +250,7 @@ import {
   UPDATE_EMPLOYEE,
   SELECT_MESSAGE_LIST,
   UPDATE_MESSAGE,
+  DELETE_MESSAGE,
   SELECT_PROJECT_STAGE_LIST,
   SELECT_PROJECT,
   SELECT_PROJECT_TASK,
@@ -269,6 +287,7 @@ export default {
       avtiveProjectTab: "info",
       dlgTitle: "",
       latestMsgList: [],
+      historyMsgList: [],
       historyMsgList: [],
       projectStageList: [],
       project: {},
@@ -367,6 +386,22 @@ export default {
         }
       });
     },
+    selectHistoryMessageList() {
+      var _this = this;
+      SELECT_MESSAGE_LIST({
+        to: this.$store.state.loginUser.id,
+        isExec: 1
+      }).then(res => {
+        if (res === "") {
+          _this.$message({
+            message: "获取消息列表失败，请联系系统管理员。",
+            type: "error"
+          });
+        } else {
+          _this.historyMsgList = res;
+        }
+      });
+    },
     selectProjectStageList(projectId) {
       var _this = this;
       SELECT_PROJECT_STAGE_LIST({ projectId: projectId }).then(res => {
@@ -458,15 +493,28 @@ export default {
         this.selectTaskCheckList(row.relationId);
       }
     },
-    execMessage(exec,reason) {
+    deleteMsg(row) {
+      var _this = this;
+      _this
+        .$confirm("确认删除该记录吗?", "提示", {
+          type: "warning"
+        })
+        .then(() => {
+          DELETE_MESSAGE({ id: row.id }).then(res => {
+            _this.$message({ message: "删除成功", type: "success" });
+            _this.selectHistoryMessageList();
+          });
+        });
+    },
+    execMessage(exec, reason) {
       var _this = this;
       var params = Object.assign(_this.selectedMsg);
       params.isExec = exec;
-      if(reason) params.note = reason;
+      if (reason) params.note = reason;
       UPDATE_MESSAGE(params).then(res => {
         if (this.selectedMsg.type === "audit") _this.dlgAuditProjecyVis = false;
         else _this.dlgConfirmTaskVis = false;
-        //_this.selectMyMessageList();
+        _this.selectHistoryMessageList();
       });
     },
     refuseMessage(exec) {
@@ -474,11 +522,11 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消"
       }).then(({ value }) => {
-        this.execMessage(exec,value)
+        this.execMessage(exec, value);
       });
     },
-    forwardTask(exec){
-      this.execMessage(exec,this.nextChecker.id+"")
+    forwardTask(exec) {
+      this.execMessage(exec, this.nextChecker.id + "");
     },
     fmtEmployee(empId) {
       for (var emp of this.projectEmployeeList) {
@@ -490,7 +538,7 @@ export default {
       for (var emp of this.projectEmployeeList) {
         if (emp.id === cellValue) return emp.empName;
       }
-    },
+    }
   },
   computed: {},
   filters: {
@@ -505,6 +553,7 @@ export default {
   },
   mounted() {
     this.selectMyMessageList();
+    this.selectHistoryMessageList();
   }
 };
 </script>
