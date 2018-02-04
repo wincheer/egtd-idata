@@ -69,27 +69,46 @@ public class TaskAction {
 	};
 
 	// 上传的是任务要求规范的附件
-	@SuppressWarnings("deprecation")
 	@RequestMapping(value = "/updateProjectTaskWithFile", method = RequestMethod.POST)
 	public int updateProjectTaskWithFile(@RequestParam Map<String, Object> data, @RequestParam MultipartFile file)
 			throws Exception {
+	
+		ProjectTask task = new ProjectTask();
 
-		Gson gson = new GsonBuilder().create();
+		task.setId(data.get("id").equals("null")?null:Integer.parseInt(data.get("parent").toString()));
+		
+		if(data.get("start_date").toString().length()>20)
+			task.setStart_date(new Date(data.get("start_date").toString()));
+		else
+			task.setStart_date(new Date(Long.parseLong(data.get("start_date").toString())));
+		
+		if(data.get("end_date").toString().length()>20)
+			task.setEnd_date(new Date(data.get("end_date").toString()));
+		else
+			task.setEnd_date(new Date(Long.parseLong(data.get("start_date").toString())));
+		
+		
+		task.setText(data.get("text").equals("null")?null:(String)data.get("text"));
+		task.setParent(data.get("parent").equals("null")?null:Integer.parseInt(data.get("parent").toString()));
+		task.setTaskDesc(data.get("taskDesc").equals("null")?null:(String)data.get("taskDesc"));
+		task.setPriority(data.get("priority").equals("null")?null:Integer.parseInt(data.get("priority").toString()));
+		task.setProgress(data.get("progress").equals("null")?null:Float.parseFloat(data.get("progress").toString()));
+		task.setState(data.get("state").equals("null")?null:Integer.parseInt(data.get("state").toString()));
+		task.setAssignStaffId(data.get("assignStaffId").equals("")?null:Integer.parseInt(data.get("assignStaffId").toString()));
+		task.setActorStaffId(data.get("actorStaffId").equals("")?null:Integer.parseInt(data.get("actorStaffId").toString()));
+		task.setPlanWorkload(data.get("planWorkload").equals("null")?null:Integer.parseInt(data.get("planWorkload").toString()));
+		task.setRealWorkload(data.get("realWorkload").equals("null")?null:Integer.parseInt(data.get("realWorkload").toString()));
+		task.setIsDelay(data.get("isDelay").equals("null")?null:Integer.parseInt(data.get("isDelay").toString()));
+		task.setDelayReason(data.get("delayReason").equals("null")?null:(String)data.get("delayReason"));
+		task.setReadonly(data.get("readonly").equals("null")?null:Integer.parseInt(data.get("readonly").toString()));
+		task.setEditable(data.get("editable").equals("null")?null:Integer.parseInt(data.get("editable").toString()));
+		task.setType(data.get("type").equals("null")?null:(String)data.get("type"));
+		task.setProjectId(data.get("projectId").equals("null")?null:Integer.parseInt(data.get("projectId").toString()));
 
-		data.put("start_date", gson.toJson(new Date(data.get("start_date").toString())));
-		data.put("end_date", gson.toJson(new Date(data.get("end_date").toString())));
-		if(data.get("delayReason").toString().trim().equals(""))
-			data.put("delayReason", null);
-
-		logger.info("任务上传的附件 = " + file.getOriginalFilename());
-
-		ProjectTask model = gson.fromJson(data.toString(), ProjectTask.class);
-
-		if (model.getId() == null) {
-			model.setId(null);
-			return taskService.insertProjectTask(file, model);
+		if (task.getId() == null) {
+			return taskService.insertProjectTask(file, task);
 		} else
-			return taskService.updateProjectTask(file, model);
+			return taskService.updateProjectTask(file, task);
 
 	};
 
