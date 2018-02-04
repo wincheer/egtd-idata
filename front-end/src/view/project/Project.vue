@@ -94,13 +94,57 @@ import {
   DELETE_DOCUMENT,
   SELECT_DOCUMENT_LIST,
   SELECT_PROJECT_EMPLOYEE_LIST,
-  SELECT_GROUP_EMP_LIST,
+  SELECT_GROUP_EMP_LIST
 } from "@/config/api";
 import { formatDate } from "@/util/date.js";
 import base from "@/config/remote";
 export default {
   components: { Gantt },
   data() {
+    var validateStartDate = (rule, value, callback) => {
+      if (this.taskObj.id) {
+        // 更新
+        if (value === "") {
+          callback(new Error("请输入开始日期"));
+        } else if (value < this.selectedTaskParent.start_date || value > this.selectedTaskParent.end_date) {
+          callback(new Error( "超过了上级任务的时间范围内"));
+        } else {
+          callback();
+        }
+      } else {
+        // 分配
+        if (value === "") {
+          callback(new Error("请输入开始日期"));
+        } else if (value < this.selectedTask.start_date || value > this.selectedTask.end_date) {
+          callback(new Error( "超过了上级任务的时间范围内"));
+        } else {
+          callback();
+        }
+      }
+    };
+    var validateEndDate = (rule, value, callback) => {
+      if (this.taskObj.id) {
+        // 更新
+        if (value === "") {
+          callback(new Error("请输入开始日期"));
+        } else if (value < this.selectedTaskParent.start_date || value > this.selectedTaskParent.end_date) {
+          callback(new Error( "开始日期必须在上级任务【" + this.selectedTaskParent.text + "】的时间范围内"));
+        } else {
+          callback();
+        }
+      } else {
+        // 分配
+        if (value === "") {
+          callback(new Error("请输入开始日期"));
+        } else if (value < this.selectedTask.start_date || value > this.selectedTask.end_date) {
+          callback(new Error( "开始日期必须在上级任务【" + this.selectedTask.text + "】的时间范围内"));
+        } else if (value <= this.taskObj.start_date){
+          callback(new Error( "结束日期不能早于开始日期"));
+        } else {
+          callback();
+        }
+      }
+    };
     return {
       tasks: {
         data: [],
@@ -125,26 +169,29 @@ export default {
         delayReason: null, //隐藏字段：延期原因
         readonly: "", //隐藏字段，附加字段
         editable: "", //隐藏字段，附加字段
-        type: "task", //隐藏字段，标记任务类型
+        type: "task" //隐藏字段，标记任务类型
       },
       taskObjRules: {
         text: [
           { required: true, message: "任务名称不能为空", trigger: "blur" }
         ],
         start_date: [
-          { required: true, message: "任务开始时间不能为空", trigger: "blur" }
+          // { required: true, message: "任务开始时间不能为空", trigger: "blur" }
+          { validator: validateStartDate, trigger: "blur" }
         ],
         end_date: [
-          { required: true, message: "任务结束时间不能为空", trigger: "blur" }
+          // { required: true, message: "任务结束时间不能为空", trigger: "blur" }
+          { validator: validateEndDate, trigger: "blur" }
         ]
       },
       myProjectList: [],
       selectedProject: {},
       selectedTask: {},
+      selectedTaskParent: {},
       dlgTaskEditVis: false,
       projectStaffList: [],
-      taskStandardFileList:[],
-      taskResultFileList:[],
+      taskStandardFileList: [],
+      taskResultFileList: [],
       taskMode: "" //任务模式编辑 edit 或者分配子任务 asign,与登录者身份(whoami)配合用来检测可编辑状态
       //isLightBoxActive: false
     };
@@ -195,12 +242,12 @@ export default {
         _this.projectStaffList = res;
       });
     },
-    selectDocumentList(projectTaskId,docCategory) {
+    selectDocumentList(projectTaskId, docCategory) {
       var _this = this;
       SELECT_DOCUMENT_LIST({
         belongTo: "task",
         sourceId: projectTaskId,
-        category:docCategory
+        category: docCategory
       }).then(res => {
         if (!Array.isArray(res))
           _this.$message({
@@ -209,8 +256,8 @@ export default {
           });
         else {
           _this.contractFileList = res;
-          if(docCategory==="2") _this.taskStandardFileList = res;
-          if(docCategory==="3") _this.taskResultFileList = res;
+          if (docCategory === "2") _this.taskStandardFileList = res;
+          if (docCategory === "3") _this.taskResultFileList = res;
         }
       });
     },
@@ -223,14 +270,15 @@ export default {
         this.selectedTask = {};
       }
     },
-    onSelectTask(task) {
+    onSelectTask(task, parentTask) {
       this.selectedTask = task;
+      this.selectedTaskParent = parentTask;
     },
     openTaskEdit() {
       this.taskMode = "update";
       this.taskObj = Object.assign(this.selectedTask);
-      this.selectDocumentList(this.selectedTask.id,"2");
-      this.selectDocumentList(this.selectedTask.id,"3");
+      this.selectDocumentList(this.selectedTask.id, "2");
+      this.selectDocumentList(this.selectedTask.id, "3");
       this.dlgTaskEditVis = true;
     },
     openTaskAdd() {
@@ -305,7 +353,7 @@ export default {
         if (valid) {
           var formData = new FormData();
           for (var key in _this.taskObj) {
-            if(key.substr(0,1)!=="$")
+            if (key.substr(0, 1) !== "$")
               formData.append(key, _this.taskObj[key]);
           }
           formData.append("file", item.file);
@@ -329,7 +377,7 @@ export default {
         if (valid) {
           var formData = new FormData();
           for (var key in _this.taskObj) {
-            if(key.substr(0,1)!=="$")
+            if (key.substr(0, 1) !== "$")
               formData.append(key, _this.taskObj[key]);
           }
           formData.append("file", item.file);
@@ -357,22 +405,27 @@ export default {
       }
       this.selectedFile = null;
     },
-    downloadFile(file){
+    downloadFile(file) {
       //console.log("Hello,Baby");
       let link = document.createElement("a");
       link.href = base + "/download?docId=" + file.id;
-      link.target = "_BLANK"
+      link.target = "_BLANK";
       link.click();
-    },
+    }
   },
   computed: {
     caniOpen() {
       //我可以打开吗 - 除了常规员工外，领导(r01)、项目经理、项目助理、监理也可以查看
       var isSpecial = false;
       var allMyRoles = this.$store.state.myRoles;
-      for(var _role of allMyRoles){
-        if(_role.projectId===this.selectedProject.id){
-          if(_role.group_role==='R01' || _role.group_role==='R02' || _role.group_role==='R03' || _role.group_role==='R04'){
+      for (var _role of allMyRoles) {
+        if (_role.projectId === this.selectedProject.id) {
+          if (
+            _role.group_role === "R01" ||
+            _role.group_role === "R02" ||
+            _role.group_role === "R03" ||
+            _role.group_role === "R04"
+          ) {
             isSpecial = true;
             break;
           }
@@ -380,33 +433,33 @@ export default {
       }
       return !(
         this.selectedTask.assignStaffId === this.$store.state.loginUser.id ||
-        this.selectedTask.actorStaffId === this.$store.state.loginUser.id || isSpecial
+        this.selectedTask.actorStaffId === this.$store.state.loginUser.id ||
+        isSpecial
       );
     },
     whoami() {
       //我是谁 - 任务发布者 asigner ? 任务接受者 actor?
-      var myRole = [] //默认是无关者（非任务直接参与人）
-      if(this.taskMode=="update"){
+      var myRole = []; //默认是无关者（非任务直接参与人）
+      if (this.taskMode == "update") {
         if (this.selectedTask.assignStaffId === this.$store.state.loginUser.id)
           myRole.push("asigner");
         if (this.selectedTask.actorStaffId === this.$store.state.loginUser.id)
           myRole.push("actor");
-      }
-      else{
-          myRole.push("asigner");
+      } else {
+        myRole.push("asigner");
       }
       return myRole;
     },
-    taskTitle(){
-      var title = ""
-      if(this.taskMode == "update") title = this.selectedTask.text + "：更新";
+    taskTitle() {
+      var title = "";
+      if (this.taskMode == "update") title = this.selectedTask.text + "：更新";
       else title = this.selectedTask.text + "：分配子任务";
       return title;
     }
   },
   mounted() {
     var loginUser = this.$store.state.loginUser;
-    this.selectMyProjectList(loginUser.code.substr(0,1) + loginUser.id);
+    this.selectMyProjectList(loginUser.code.substr(0, 1) + loginUser.id);
     this.tasks = { data: [], links: [] };
   }
 };

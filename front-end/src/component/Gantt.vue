@@ -30,7 +30,9 @@ export default {
   mounted() {
     gantt.attachEvent("onTaskSelected", id => {
       let task = gantt.getTask(id);
-      this.$emit("task-selected", task);
+      let parentTask = {}
+      if(task.parent!==0) parentTask = gantt.getTask(task.parent);
+      this.$emit("task-selected", task, parentTask);
     });
     gantt.attachEvent("onTaskUnselected", id => {
       let task = gantt.getTask(id);
