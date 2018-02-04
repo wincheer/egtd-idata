@@ -264,7 +264,7 @@ import base from "@/config/remote";
 export default {
   data() {
     return {
-      appName: "项目管理软件",
+      appName: "项目管理系统",
       loginUser: this.$store.state.loginUser,
       myRoles: this.$store.state.myRoles,
       isCollapse: false,
@@ -589,7 +589,7 @@ export default {
     .logo {
       //width:230px;
       height: 60px;
-      font-size: 22px;
+      font-size: 20px;
       padding-left: 2px;
       padding-right: 20px;
       border-color: rgba(238, 241, 146, 0.3);

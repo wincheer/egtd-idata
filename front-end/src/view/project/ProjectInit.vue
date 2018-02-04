@@ -18,7 +18,11 @@
 
     <el-table border stripe :data="projectList" style="margin-top: 20px;" highlight-current-row @current-change="onProjectChange" ref="projectTable">
       <el-table-column type="index" width="30"></el-table-column>
-      <el-table-column prop="projectName" label="项目名称"></el-table-column>
+      <el-table-column prop="projectName" label="项目名称">
+        <template slot-scope="scope">
+        <el-button type="text" @click="openEditProject(scope.row)">{{ scope.row.projectName }}</el-button>
+      </template>
+      </el-table-column>
       <el-table-column prop="createDate" label="立项时间" :formatter="fmtDate"></el-table-column>
       <el-table-column prop="depId" label="所属部门"  :formatter="fmtDep"></el-table-column>
       <el-table-column prop="actorStaffId" label="项目经理" :formatter="fmtEmp"></el-table-column>
@@ -29,7 +33,7 @@
           <el-dropdown  trigger="click">
             <el-button size="mini" type="primary" :disabled="scope.row.ownerId !== $store.state.loginUser.id">编辑<i class="el-icon-arrow-down el-icon--right"></i></el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="openEditProject(scope.row)">项目</el-dropdown-item>
+              <!-- <el-dropdown-item @click.native="openEditProject(scope.row)">项目</el-dropdown-item> -->
               <el-dropdown-item @click.native="openProjectContractList(scope.row)">合同</el-dropdown-item>
               <el-dropdown-item @click.native="openProjectGroupList(scope.row)">项目组</el-dropdown-item>
               <el-dropdown-item @click.native="openProjectStageList(scope.row)">项目阶段</el-dropdown-item>
@@ -229,6 +233,7 @@
         </div>
         <el-table :data="projectStageList" highlight-current-row >
           <el-table-column label="阶段" prop="text"></el-table-column>
+          <el-table-column label="负责人" prop="actorStaffId" :formatter="fmtEmp"></el-table-column>
           <el-table-column label="开始日期" prop="start_date" :formatter="fmtDate"></el-table-column>
           <el-table-column label="结束日期" prop="end_date" :formatter="fmtDate"></el-table-column>
           <el-table-column label="操作" width="160">

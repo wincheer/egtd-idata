@@ -10,9 +10,9 @@
       <el-tab-pane label="我承接的任务" name="first">
         <el-table :data="myTaskListIn" stripe>
         <el-table-column prop="text" label="任务"></el-table-column>
-        <el-table-column prop="start_date" label="开始时间" :formatter="fmtDate"></el-table-column>
-        <el-table-column prop="end_date" label="结束时间" :formatter="fmtDate"></el-table-column>
-        <el-table-column prop="priority" label="优先级" :formatter="fmtPriority"></el-table-column>
+        <el-table-column prop="start_date" label="开始时间" sortable :formatter="fmtDate"></el-table-column>
+        <el-table-column prop="end_date" label="结束时间" sortable :formatter="fmtDate"></el-table-column>
+        <el-table-column prop="priority" label="优先级" sortable :formatter="fmtPriority"></el-table-column>
         <el-table-column prop="progress" label="进度" sortable>
           <template slot-scope="scope">
             <el-progress :status="scope.row.state==3?'success':''" :text-inside="true" :stroke-width="18" :percentage="scope.row.progress * 100" />
@@ -30,9 +30,9 @@
       <el-tab-pane label="我分配的任务" name="second">
         <el-table :data="myTaskListOut" stripe>
         <el-table-column prop="text" label="任务"></el-table-column>
-        <el-table-column prop="start_date" label="开始时间" :formatter="fmtDate"></el-table-column>
-        <el-table-column prop="end_date" label="结束时间" :formatter="fmtDate"></el-table-column>
-        <el-table-column prop="priority" label="优先级" :formatter="fmtPriority"></el-table-column>
+        <el-table-column prop="start_date" label="开始时间" sortable :formatter="fmtDate"></el-table-column>
+        <el-table-column prop="end_date" label="结束时间" sortable :formatter="fmtDate"></el-table-column>
+        <el-table-column prop="priority" label="优先级" sortable :formatter="fmtPriority"></el-table-column>
         <el-table-column prop="progress" label="进度" sortable>
           <template slot-scope="scope">
             <el-progress :text-inside="true" :stroke-width="18" :percentage="scope.row.progress * 100" />

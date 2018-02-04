@@ -30,8 +30,8 @@ export default {
   mounted() {
     gantt.attachEvent("onTaskSelected", id => {
       let task = gantt.getTask(id);
-      let parentTask = {}
-      if(task.parent!==0) parentTask = gantt.getTask(task.parent);
+      let parentTask = {};
+      if (task.parent !== 0) parentTask = gantt.getTask(task.parent);
       this.$emit("task-selected", task, parentTask);
     });
     gantt.attachEvent("onTaskUnselected", id => {
@@ -94,29 +94,30 @@ export default {
     };
     //配合样式表，自定义任务的外观（根据任务类型）--甚至可以根据条件来动态改变外观
     gantt.templates.task_class = function(start, end, task) {
-      switch (task.priority) {
-        case 100:
-          return "high";
-          break;
-        case 80:
-          return "high";
-          break;
-        case 60:
-          return "medium";
-          break;
-        case 40:
-          return "low";
-          break;
-        case 20:
-          return "low";
-          break;
+      if (task.isDelay == 1) {
+        return "delay";
+      } else {
+        switch (task.state) {
+          case 0:
+            return "init";
+            break;
+          case 1:
+            return "process";
+            break;
+          case 2:
+            return "wait";
+            break;
+          case 3:
+            return "finished";
+            break;
+        }
       }
     };
     //配合样式表，定义任务行颜色：白色进行中，红色为开始，绿色已完成
-    gantt.templates.task_row_class = function(start_date, end_date, item) {
-      if (item.progress == 0) return "red";
-      if (item.progress >= 1) return "green";
-    };
+    // gantt.templates.task_row_class = function(start_date, end_date, item) {
+    //   if (item.progress == 0) return "red";
+    //   if (item.progress >= 1) return "green";
+    // };
     //配置左侧列，默认显示任务名称、开始时间、持续时间
     gantt.config.columns = [
       {
@@ -140,7 +141,7 @@ export default {
         label: "开始日期",
         width: "80",
         resize: true,
-        align: "center",
+        align: "center"
       },
       {
         name: "progress",
@@ -153,7 +154,7 @@ export default {
           if (item.progress == 0) return "未开始";
           return Math.round(item.progress * 100) + "%";
         }
-      },
+      }
       // {
       //   name:"add", width:40
       // }
@@ -166,18 +167,18 @@ export default {
     gantt.config.drag_move = false;
     gantt.config.drag_links = false;
     //gantt.config.show_chart = false; 不显示 gantt 图
-    gantt.config.root_id = 0; 
+    gantt.config.root_id = 0;
     gantt.config.open_tree_initially = true; //展开全部
     gantt.init(this.$refs.gantt);
     gantt.parse(this.$props.tasks);
   },
   watch: {
     tasks: {
-        handler: function () {
-          gantt.clearAll(); 
-          gantt.parse(this.$props.tasks);
-        },
-        deep: true
+      handler: function() {
+        gantt.clearAll();
+        gantt.parse(this.$props.tasks);
+      },
+      deep: true
     }
   }
 };
@@ -196,40 +197,59 @@ body {
 .odd.red .gantt_cell,
 .red .gantt_task_cell,
 .odd.red .gantt_task_cell {
-  background-color: #fde0e0;
+  background-color: #fdf9f9;
 }
 .green .gantt_cell,
 .odd.green .gantt_cell,
 .green .gantt_task_cell,
 .odd.green .gantt_task_cell {
-  background-color: #bee4be;
+  background-color: #edfaed;
 }
-.high {
-  border: 2px solid #d96c49;
-  color: #d96c49;
-  background: #d96c49;
+.init {
+  border: 2px solid #e7e7e7;
+  color: #e7e7e7;
+  background: #e7e7e7;
 }
-.high .gantt_task_progress {
-  background: #db2536;
-}
-
-.medium {
-  border: 2px solid #34c461;
-  color: #34c461;
-  background: #34c461;
-}
-.medium .gantt_task_progress {
-  background: #23964d;
+.init .gantt_task_progress {
+  background: #bebcbc;
 }
 
-.low {
-  border: 2px solid #6ba8e3;
-  color: #6ba8e3;
-  background: #6ba8e3;
+.process {
+  border: 2px solid #67b1f7;
+  color: #67b1f7;
+  background: #67b1f7;
 }
-.low .gantt_task_progress {
-  background: #547dab;
+.process .gantt_task_progress {
+  background: rgb(52, 117, 177);
 }
+
+.wait {
+  border: 2px solid #78ce9c;
+  color: #78ce9c;
+  background: #3bc574;
+}
+.wait .gantt_task_progress {
+  background: #518b69;
+}
+
+.finished {
+  border: 2px solid #1b7013;
+  color: #1b7013;
+  background: #1b7013;
+}
+.finished .gantt_task_progress {
+  background: #093f04;
+}
+
+.delay {
+  border: 2px solid #eb8465d7;
+  color: #eb8465d7;
+  background: #eb8465d7;
+}
+.delay .gantt_task_progress {
+  background: #b32f0e;
+}
+
 .weekend {
   background: #f4f7ff;
 }

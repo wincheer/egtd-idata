@@ -1,6 +1,6 @@
 <template>
     <el-form :model="loginForm" :rules="loginFormRules" ref="loginForm" class="login-container">
-        <h3 class="title" v-text="'系统登录'"></h3>
+        <h3 class="title" v-text="'黄埔公安分局指挥中心项目管理系统'"></h3>
         <el-form-item prop="empMobile">
             <el-input type="text" placeholder="手机号" v-model="loginForm.empMobile"></el-input>
         </el-form-item>

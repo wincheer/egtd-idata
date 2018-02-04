@@ -2,7 +2,7 @@
   <section>
     <el-tabs type="border-card" v-model="activeName" style="margin-top: 20px;">
       <el-tab-pane name="first">
-        <span slot="label"><i class="el-icon-service"></i>业主组织结构</span>
+        <span slot="label"><i class="el-icon-service"></i>建设单位</span>
         <el-row :gutter="20">
           <el-col :span="8">
             <el-card>
@@ -38,12 +38,12 @@
         </el-row>
       </el-tab-pane>
       <el-tab-pane name="second">
-        <span slot="label"><i class="el-icon-menu"></i> 供应商资源管理</span>
+        <span slot="label"><i class="el-icon-menu"></i> 服务单位</span>
         <el-row :gutter="20">
           <el-col :span="10">
             <el-card>
               <div slot="header" class="clearfix">
-                <span>供应商</span>
+                <span>服务单位</span>
                 <el-button @click="openAddVendor" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加供应商</el-button>
               </div>
               <el-table :data="vendorList" highlight-current-row @current-change="onVendorChange">
