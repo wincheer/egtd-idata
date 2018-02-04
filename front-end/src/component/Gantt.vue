@@ -238,7 +238,7 @@ body {
   background: #1b7013;
 }
 .finished .gantt_task_progress {
-  background: #093f04;
+  background: #177a0d;
 }
 
 .delay {
