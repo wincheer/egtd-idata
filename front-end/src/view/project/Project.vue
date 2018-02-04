@@ -367,10 +367,20 @@ export default {
   },
   computed: {
     caniOpen() {
-      //我可以打开吗
+      //我可以打开吗 - 除了常规员工外，领导(r01)、项目经理、项目助理、监理也可以查看
+      var isSpecial = false;
+      var allMyRoles = this.$store.state.myRoles;
+      for(var _role of allMyRoles){
+        if(_role.projectId===this.selectedProject.id){
+          if(_role.group_role==='R01' || _role.group_role==='R02' || _role.group_role==='R03' || _role.group_role==='R04'){
+            isSpecial = true;
+            break;
+          }
+        }
+      }
       return !(
         this.selectedTask.assignStaffId === this.$store.state.loginUser.id ||
-        this.selectedTask.actorStaffId === this.$store.state.loginUser.id
+        this.selectedTask.actorStaffId === this.$store.state.loginUser.id || isSpecial
       );
     },
     whoami() {

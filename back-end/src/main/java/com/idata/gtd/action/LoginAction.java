@@ -40,13 +40,16 @@ public class LoginAction {
 		//查询我的角色
 		Map<String,Object> map = new HashMap<String ,Object>();
 		if(loginUser!=null) {
-			List<String> myRoles = loginService.selectMyRoles(loginUser.getId());
+			List<Map<String,Object>> myRoles = loginService.selectMyRoles(loginUser.getId());
 			map.put("loginUser", loginUser);
 			if(myRoles.size()== 0) {
+				Map<String,Object> _speciaRole = new HashMap<String,Object>();
+				_speciaRole.put("project_id", 0);
 				if(loginUser.getCode().toLowerCase().equals("o0")) 
-					myRoles.add(GTDRole.ADMIN); //超级用户 
+					_speciaRole.put("group_role", GTDRole.ADMIN); //myRoles.add(GTDRole.ADMIN); //超级用户 
 				else
-					myRoles.add(GTDRole.IDLER); //非项目用户
+					_speciaRole.put("group_role", GTDRole.IDLER); //myRoles.add(GTDRole.IDLER); //非项目用户
+				myRoles.add(_speciaRole);
 			}
 			map.put("myRoles", myRoles);
 		}

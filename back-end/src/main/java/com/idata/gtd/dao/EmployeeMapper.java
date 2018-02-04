@@ -1,6 +1,7 @@
 package com.idata.gtd.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.idata.gtd.entity.Employee;
 
@@ -42,7 +43,7 @@ public interface EmployeeMapper {
 
 	List<Employee> selectOwnerProjectEmpList(Integer projectId);
 
-	List<String> selectMyRoles(Integer empId);
+	List<Map<String,Object>> selectMyRoles(Integer empId);
 
 	Employee selectProjectLeader(Integer projectId);    
 }

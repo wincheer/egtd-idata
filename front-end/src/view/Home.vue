@@ -356,7 +356,7 @@ export default {
       //任意一个角色不在黑名单就可以显示
       for (var i = 0; i < this.myRoles.length; i++) {
         var myRole = this.myRoles[i];
-        if (menu.blackList.indexOf(myRole) == -1) {
+        if (menu.blackList.indexOf(myRole.group_role) == -1) {
           allowed = true;
           break;
         }

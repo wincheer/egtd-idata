@@ -1,6 +1,7 @@
 package com.idata.gtd.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +34,7 @@ public class LoginService {
 		return emp;
 	}
 
-	public List<String> selectMyRoles(Integer empId) {
+	public List<Map<String,Object>> selectMyRoles(Integer empId) {
 
 		return empDao.selectMyRoles(empId);
 	}

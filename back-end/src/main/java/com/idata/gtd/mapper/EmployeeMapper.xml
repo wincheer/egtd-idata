@@ -176,9 +176,9 @@
 	AND project_group.project_id = #{projectId,jdbcType=INTEGER}
   </select>
   
-  <select id="selectMyRoles" parameterType="java.lang.Integer" resultType="java.lang.String">
+  <select id="selectMyRoles" parameterType="java.lang.Integer" resultType="java.util.Map">
 	SELECT DISTINCT
-		project_group.group_role
+		project_group.project_id,project_group.group_role
 	FROM
 		project_group
 	INNER JOIN project_staff ON project_group.id = project_staff.group_id

@@ -1012,7 +1012,7 @@ export default {
       //任意一个角色在白名单就不拒绝
       for (var i = 0; i < myRoles.length; i++) {
         var myRole = myRoles[i];
-        if (whiteList.indexOf(myRole) != -1) {
+        if (whiteList.indexOf(myRole.group_role) != -1) {
           denied = false;
           break;
         }
