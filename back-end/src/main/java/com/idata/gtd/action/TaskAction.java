@@ -1,5 +1,6 @@
 package com.idata.gtd.action;
 
+import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import com.idata.gtd.entity.Employee;
 import com.idata.gtd.entity.Project;
 import com.idata.gtd.entity.ProjectTask;
@@ -69,20 +74,20 @@ public class TaskAction {
 	};
 
 	// 上传的是任务要求规范的附件
-	@SuppressWarnings("deprecation")
 	@RequestMapping(value = "/updateProjectTaskWithFile", method = RequestMethod.POST)
 	public int updateProjectTaskWithFile(@RequestParam Map<String, Object> data, @RequestParam MultipartFile file)
 			throws Exception {
 
-		Gson gson = new GsonBuilder().create();
-
-		data.put("start_date", gson.toJson(new Date(data.get("start_date").toString())));
-		data.put("end_date", gson.toJson(new Date(data.get("end_date").toString())));
-		if(data.get("delayReason").toString().trim().equals(""))
-			data.put("delayReason", null);
-
 		logger.info("任务上传的附件 = " + file.getOriginalFilename());
-
+		
+		GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+            public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                return new Date(json.getAsJsonPrimitive().getAsLong());
+            }
+        });
+        Gson gson = builder.create();
+		
 		ProjectTask model = gson.fromJson(data.toString(), ProjectTask.class);
 
 		if (model.getId() == null) {
@@ -94,22 +99,20 @@ public class TaskAction {
 	};
 
 	// 上传的是任务执行结果的附件，比如照片啥的
-	@SuppressWarnings("deprecation")
 	@RequestMapping(value = "/updateProjectTaskWithFileResult", method = RequestMethod.POST)
 	public int updateProjectTaskWithFileResult(@RequestParam Map<String, Object> data, @RequestParam MultipartFile file)
 			throws Exception {
 
-		Gson gson = new GsonBuilder().create();
-
-		data.put("start_date", gson.toJson(new Date(data.get("start_date").toString())));
-		data.put("end_date", gson.toJson(new Date(data.get("end_date").toString())));
-		data.put("real_start_date", null);
-		data.put("real_end_date", null);
-		data.put("create_date", null);
-		if(data.get("delayReason").toString().trim().equals(""))
-			data.put("delayReason", null);
-
 		logger.info("任务结果上传的附件 = " + file.getOriginalFilename());
+		
+		GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+            public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                return new Date(json.getAsJsonPrimitive().getAsLong());
+            }
+        });
+        Gson gson = builder.create();
+		
 		ProjectTask model = gson.fromJson(data.toString(), ProjectTask.class);
 
 		return taskService.updateProjectTaskWithResult(file, model);

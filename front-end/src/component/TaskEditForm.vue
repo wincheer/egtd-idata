@@ -172,7 +172,8 @@ export default {
       var _this = this;
       this.$refs.taskForm.validate(valid => {
         if (valid) {
-          UPDATE_PROJECT_TASK(_this.task).then(data => {
+          var params = Object.assign({},_this.task);
+          UPDATE_PROJECT_TASK(params).then(data => {
             if (data == "") {
               _this.$message({
                 message: "更新任务失败，请联系系统管理员。",
@@ -191,7 +192,14 @@ export default {
         if (valid) {
           var formData = new FormData();
           for (var key in _this.task) {
-            if (key.substr(0, 1) !== "$") formData.append(key, _this.task[key]);
+            if (key.substr(0, 1) !== "$") {
+              if(key==="start_date" || key==="end_date") {
+                var d = new Date(_this.task[key]);
+                var ts = Math.round(d.getTime());
+                formData.append(key, ts);
+              }
+              else formData.append(key, _this.task[key]);
+            }
           }
           formData.append("file", item.file);
           UPDATE_PROJECT_TASK_WITH_FILE(formData).then(data => {
@@ -213,7 +221,14 @@ export default {
         if (valid) {
           var formData = new FormData();
           for (var key in _this.task) {
-            if (key.substr(0, 1) !== "$") formData.append(key, _this.task[key]);
+            if (key.substr(0, 1) !== "$") {
+              if(key==="start_date" || key==="end_date") {
+                var d = new Date(_this.task[key]);
+                var ts = Math.round(d.getTime());
+                formData.append(key, ts);
+              }
+              else formData.append(key, _this.task[key]);
+            }
           }
           formData.append("file", item.file);
           UPDATE_PROJECT_TASK_WITH_FILE_RESULT(formData).then(data => {
@@ -259,11 +274,18 @@ export default {
   },
   mounted() {},
   watch: {
-    task: {
+    isShow: {
       handler: function() {
-        this.selectProjectStaffList(this.$props.task.projectId);
-        this.selectDocumentList(this.$props.task.id, "2");
-        this.selectDocumentList(this.$props.task.id, "3");
+        if(this.$props.isShow){
+          this.selectProjectStaffList(this.$props.task.projectId);
+          if(this.$props.task.id){
+            this.selectDocumentList(this.$props.task.id, "2");
+            this.selectDocumentList(this.$props.task.id, "3");
+          } else {
+            this.taskStandardFileList = [];
+            this.taskResultFileList = [];
+          }
+        }
       },
       deep: false //如果不能正常更新,改为true
     }
