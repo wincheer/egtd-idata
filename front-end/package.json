@@ -14,6 +14,7 @@
     "dhtmlx-gantt": "^4.2.1",
     "dhtmlx-scheduler": "^4.4.0",
     "element-ui": "^2.0.11",
+    "v-charts": "^1.16.1",
     "vue": "^2.5.0",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
@@ -35,10 +36,9 @@
     "file-loader": "^1.1.4",
     "node-sass": "^4.5.3",
     "sass-loader": "^6.0.6",
-    "v-charts": "^1.15.6",
+    "v-charts": "^1.16.1",
     "vue-loader": "^13.0.5",
     "vue-template-compiler": "^2.4.4",
-    "vuex": "^3.0.1",
     "webpack": "^3.6.0",
     "webpack-dev-server": "^2.9.1"
   }
