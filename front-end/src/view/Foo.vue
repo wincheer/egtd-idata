@@ -13,7 +13,8 @@ export default {
     methods: {},
     watch:{},
     computed:{},
-    mounted() {}
+    mounted() {},
+    destroyed(){}
 };
 </script>
 
