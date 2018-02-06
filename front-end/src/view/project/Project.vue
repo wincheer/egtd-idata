@@ -106,8 +106,11 @@ export default {
         // 更新
         if (value === "") {
           callback(new Error("请输入开始日期"));
-        } else if (value < this.selectedTaskParent.start_date || value > this.selectedTaskParent.end_date) {
-          callback(new Error( "超过了上级任务的时间范围内"));
+        } else if (
+          value < this.selectedTaskParent.start_date ||
+          value > this.selectedTaskParent.end_date
+        ) {
+          callback(new Error("超过了上级任务的时间范围内"));
         } else {
           callback();
         }
@@ -115,8 +118,11 @@ export default {
         // 分配
         if (value === "") {
           callback(new Error("请输入开始日期"));
-        } else if (value < this.selectedTask.start_date || value > this.selectedTask.end_date) {
-          callback(new Error( "超过了上级任务的时间范围内"));
+        } else if (
+          value < this.selectedTask.start_date ||
+          value > this.selectedTask.end_date
+        ) {
+          callback(new Error("超过了上级任务的时间范围内"));
         } else {
           callback();
         }
@@ -127,8 +133,17 @@ export default {
         // 更新
         if (value === "") {
           callback(new Error("请输入开始日期"));
-        } else if (value < this.selectedTaskParent.start_date || value > this.selectedTaskParent.end_date) {
-          callback(new Error( "开始日期必须在上级任务【" + this.selectedTaskParent.text + "】的时间范围内"));
+        } else if (
+          value < this.selectedTaskParent.start_date ||
+          value > this.selectedTaskParent.end_date
+        ) {
+          callback(
+            new Error(
+              "开始日期必须在上级任务【" +
+                this.selectedTaskParent.text +
+                "】的时间范围内"
+            )
+          );
         } else {
           callback();
         }
@@ -136,10 +151,19 @@ export default {
         // 分配
         if (value === "") {
           callback(new Error("请输入开始日期"));
-        } else if (value < this.selectedTask.start_date || value > this.selectedTask.end_date) {
-          callback(new Error( "开始日期必须在上级任务【" + this.selectedTask.text + "】的时间范围内"));
-        } else if (value <= this.taskObj.start_date){
-          callback(new Error( "结束日期不能早于开始日期"));
+        } else if (
+          value < this.selectedTask.start_date ||
+          value > this.selectedTask.end_date
+        ) {
+          callback(
+            new Error(
+              "开始日期必须在上级任务【" +
+                this.selectedTask.text +
+                "】的时间范围内"
+            )
+          );
+        } else if (value <= this.taskObj.start_date) {
+          callback(new Error("结束日期不能早于开始日期"));
         } else {
           callback();
         }
@@ -455,12 +479,21 @@ export default {
       if (this.taskMode == "update") title = this.selectedTask.text + "：更新";
       else title = this.selectedTask.text + "：分配子任务";
       return title;
+    },
+    handleMyEvent(msg) {
+      console.log("订阅my-event事件：" + msg);
     }
   },
   mounted() {
     var loginUser = this.$store.state.loginUser;
     this.selectMyProjectList(loginUser.code.substr(0, 1) + loginUser.id);
     this.tasks = { data: [], links: [] };
+
+    this.$bus.$on("my-event", this.handleMyEvent); // 订阅消息
+  },
+  destroyed() {
+    console.log("释放订阅 my-event事件");
+    this.$bus.$off("my-event", this.handleMyEvent); // 释放/取消订阅
   }
 };
 </script>

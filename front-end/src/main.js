@@ -17,7 +17,7 @@ const router = new VueRouter({
     routes: routes
 })
 
-// 全局事件总线
+// global event bus 
 const EventBus = new Vue()
 Object.defineProperties(Vue.prototype, {
   $bus: {

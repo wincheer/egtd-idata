@@ -1111,6 +1111,9 @@ export default {
     this.selectTplProjectList(); // 项目模板
 
     //this.authCheck("btnCreateProject"); //检查组件权限
+
+    console.log("发布 my-event事件");
+    this.$bus.$emit('my-event', { msg:"Hello,From Project Init" }) // 消息发布
   }
 };
 </script>
