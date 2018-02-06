@@ -18,14 +18,11 @@
 <script>
 import Gantt from "@/component/Gantt.vue";
 import TaskEditForm from "@/component/TaskEditForm.vue";
-import {
-  SELECT_MY_PROJECT_LIST,
-  SELECT_PROJECT_TASK_LIST
-} from "@/config/api";
+import { SELECT_MY_PROJECT_LIST, SELECT_PROJECT_TASK_LIST } from "@/config/api";
 import { formatDate } from "@/util/date.js";
 import base from "@/config/remote";
 export default {
-  components: { Gantt,TaskEditForm },
+  components: { Gantt, TaskEditForm },
   data() {
     return {
       tasks: {
@@ -36,11 +33,11 @@ export default {
       myProjectList: [],
       selectedProject: {},
       selectedTask: {},
-      taskFormVis: false,
+      taskFormVis: false
     };
   },
   methods: {
-    closeTaskForm(){
+    closeTaskForm() {
       this.taskFormVis = false;
       //this.selectMyTaskList();
     },
@@ -95,18 +92,18 @@ export default {
       this.selectedTask = task;
     },
     openTaskEdit() {
-      this.taskObj = Object.assign({},this.selectedTask);
-      this.taskObj.start_date = Date.parse(this.taskObj.start_date)
-      this.taskObj.end_date = Date.parse(this.taskObj.end_date)
+      this.taskObj = Object.assign({}, this.selectedTask);
+      this.taskObj.start_date = Date.parse(this.taskObj.start_date);
+      this.taskObj.end_date = Date.parse(this.taskObj.end_date);
       this.taskFormVis = true;
     },
     openTaskAdd() {
       this.taskObj = {
-        text:'新任务',
-        start_date:new Date(),
+        text: "新任务",
+        start_date: new Date(),
         projectId: this.selectedProject.id,
         parent: this.selectedTask.id, //隐藏字段
-        assignStaffId: this.$store.state.loginUser.id,
+        assignStaffId: this.$store.state.loginUser.id
       };
       this.taskFormVis = true;
     }
