@@ -36,7 +36,7 @@ let routes = [
         iconCls: 'el-icon-view',
         blackList:[],
         children: [
-            { path: '/project-init', component: ProjectInit, name: '项目管理' ,iconCls:'el-icon-refresh',blackList:["R01","R04","R10","R99"]},
+            { path: '/project-init', component: ProjectInit, name: '项目管理' ,iconCls:'el-icon-refresh',blackList:["R10","R30"]},
             { path: '/project', component: Project, name: '项目进程' ,iconCls:'el-icon-date',blackList:[]},
         ]
     },
@@ -45,11 +45,11 @@ let routes = [
         component: Home,
         name: '系统配置',
         iconCls: 'el-icon-setting',
-        blackList:["R01","R10","R99"],
+        blackList:["R01","R10","R20","R30","R40"],
         children: [
-            { path: '/resource', component: Resource, name: '资源管理',iconCls:'el-icon-goods',blackList:["R01","R04","R10","R99"] },
-            { path: '/template', component: Template, name: '项目模板定义' ,iconCls:'el-icon-star-on',blackList:["R01","R10","R99"]},
-            { path: '/param-config', component: ParamConfig, name: '系统参数' ,iconCls:'el-icon-edit-outline',blackList:["R01","R02","R03","R04","R10","R99"]}
+            { path: '/resource', component: Resource, name: '资源管理',iconCls:'el-icon-goods',blackList:["R01","R10","R20","R30","R40"] },
+            { path: '/template', component: Template, name: '项目模板定义' ,iconCls:'el-icon-star-on',blackList:["R01","R10","R20","R30","R40"]},
+            { path: '/param-config', component: ParamConfig, name: '系统参数' ,iconCls:'el-icon-edit-outline',blackList:["R01","R02","R03","R04","R10","R20","R30","R40"]}
         ]
     }
 ];

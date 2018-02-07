@@ -20,7 +20,7 @@
       <el-table-column type="index" width="30"></el-table-column>
       <el-table-column prop="projectName" label="项目名称">
         <template slot-scope="scope">
-        <el-button type="text" @click="openEditProject(scope.row)">{{ scope.row.projectName }}</el-button>
+        <el-button type="text" :disabled="scope.row.ownerId !== $store.state.loginUser.id" @click="openEditProject(scope.row)">{{ scope.row.projectName }}</el-button>
       </template>
       </el-table-column>
       <el-table-column prop="createDate" label="立项时间" :formatter="fmtDate"></el-table-column>
@@ -327,11 +327,15 @@ export default {
         endDate: "",
         actorStaffId: "",
         icon: "",
-        amount: ""
+        amount: "",
+        ownerId:""
       },
       projectObjRules: {
         projectName: [
           { required: true, message: "请输入项目名称", trigger: "blur" }
+        ],
+        actorStaffId: [
+          { required: true, message: "请选择项目经理", trigger: "blur" }
         ],
         startDate: [
           { required: true, message: "请输入项目开始时间", trigger: "blur" }
@@ -713,6 +717,7 @@ export default {
       var _this = this;
       this.$refs.projectForm.validate(valid => {
         if (valid) {
+          _this.projectObj.ownerId = _this.$store.state.loginUser.id
           UPDATE_PROJECT(_this.projectObj).then(data => {
             if (data === "") {
               _this.$message({

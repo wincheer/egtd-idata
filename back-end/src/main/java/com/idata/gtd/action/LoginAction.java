@@ -40,18 +40,27 @@ public class LoginAction {
 		//查询我的角色
 		Map<String,Object> map = new HashMap<String ,Object>();
 		if(loginUser!=null) {
-			List<Map<String,Object>> myRoles = loginService.selectMyRoles(loginUser.getId());
+			List<Map<String,Object>> myProjectRoles = loginService.selectMyRoles(loginUser.getId());
 			map.put("loginUser", loginUser);
-			if(myRoles.size()== 0) {
-				Map<String,Object> _speciaRole = new HashMap<String,Object>();
-				_speciaRole.put("project_id", 0);
+			if(myProjectRoles.size()== 0) {
+				Map<String,Object> _systemRole = new HashMap<String,Object>();
+				_systemRole.put("project_id", 0);
 				if(loginUser.getCode().toLowerCase().equals("o0")) 
-					_speciaRole.put("group_role", GTDRole.ADMIN); //myRoles.add(GTDRole.ADMIN); //超级用户 
+					_systemRole.put("group_role", GTDRole.ADMIN);  
+				else if(loginUser.getCode().toLowerCase().equals("o")){
+					_systemRole.put("group_role", GTDRole.LEFT);  
+				}
+				else if(loginUser.getCode().toLowerCase().equals("s")){
+					_systemRole.put("group_role", GTDRole.RIGHT);  
+				}
+				else if(loginUser.getCode().toLowerCase().equals("m")){
+					_systemRole.put("group_role", GTDRole.MIDDLE);  
+				}
 				else
-					_speciaRole.put("group_role", GTDRole.IDLER); //myRoles.add(GTDRole.IDLER); //非项目用户
-				myRoles.add(_speciaRole);
+					_systemRole.put("group_role", GTDRole.IDLER); 
+				myProjectRoles.add(_systemRole);
 			}
-			map.put("myRoles", myRoles);
+			map.put("myRoles", myProjectRoles);
 		}
 		// 记录日志
 		Integer actor;
