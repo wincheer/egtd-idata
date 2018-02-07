@@ -3,12 +3,9 @@
       <el-row class="container">
         <el-col :span="24" class="header">
             <el-col :span="10" class="logo" :class="isCollapse?'logo-collapse-width':'logo-width'">
-                <img :src="this.sysUserAvatar" />{{isCollapse?'':this.appName}}
+                <div @click="collapse" style="cursor: pointer;"><img :src="this.sysUserAvatar"/>{{isCollapse?'':this.appName}}</div>
             </el-col>
             <el-col :span="10">
-                <div class="tools" @click="collapse">
-                    <i class="el-icon-menu"></i>
-                </div>
             </el-col>
             <el-col :span="4" class="userinfo">
                 <el-dropdown trigger="hover">
@@ -594,7 +591,7 @@ export default {
       padding-right: 20px;
       border-color: rgba(238, 241, 146, 0.3);
       border-right-width: 1px;
-      border-right-style: solid;
+      // border-right-style: solid;
       img {
         width: 40px;
         float: left;
@@ -604,15 +601,15 @@ export default {
         color: #fff;
       }
     }
-    .logo-width {
-      width: 230px;
-    }
+    // .logo-width {
+    //   width: 230px;
+    // }
     .logo-collapse-width {
       width: 65px;
     }
     .tools {
       padding: 0px 23px;
-      width: 14px;
+      // width: 14px;
       height: 60px;
       line-height: 60px;
       cursor: pointer;
