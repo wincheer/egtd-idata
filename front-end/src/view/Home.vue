@@ -264,7 +264,7 @@ import base from "@/config/remote";
 export default {
   data() {
     return {
-      appName: "项目管理系统",
+      appName: "黄埔区公安分局信息化项目管理系统",
       loginUser: this.$store.state.loginUser,
       myRoles: this.$store.state.myRoles,
       isCollapse: false,

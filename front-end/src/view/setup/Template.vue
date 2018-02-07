@@ -9,7 +9,7 @@
           </div>
           <el-table :data="tplProjectList" highlight-current-row @current-change="onTplProjectChange">
             <el-table-column label="模板名称" prop="tplName"></el-table-column>
-            <el-table-column label="模板类型" prop="tplCategory"></el-table-column>
+            <el-table-column label="模板类型" prop="tplCategory" :formatter="fmtTplCat"></el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
                 <el-button size="mini" type="primary" @click="openEditTplProject(scope.row)">编辑</el-button>
@@ -47,7 +47,10 @@
           <el-input type="text" v-model="tplProjectObj.tplName"></el-input>
         </el-form-item>
         <el-form-item label="模板分类" prop="tplCategory">
-          <el-input type="text" v-model="tplProjectObj.tplCategory"></el-input>
+          <!-- <el-input type="text" v-model="tplProjectObj.tplCategory"></el-input> -->
+          <el-select v-model="tplProjectObj.tplCategory" placeholder="请选择">
+            <el-option v-for="item in categoryParamList" :key="item.id" :label="item.paramDesc" :value="item.paramValue" />
+          </el-select>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="updateTplProject" :loading="logining">保存</el-button>
@@ -105,18 +108,19 @@ import {
   SELECT_TPL_GROUP_TREE_LIST,
   UPDATE_TPL_GROUP,
   DELETE_TPL_GROUP,
-  SELECT_PARAM_VALUE_LIST,
+  SELECT_PARAM_VALUE_LIST
 } from "@/config/api";
 import { getNodePath } from "@/util/treeUtil.js";
 export default {
   data() {
     return {
       logining: false,
-      selectTplProject:{},
+      selectTplProject: {},
       tplProjectList: [],
       tplStageTreeList: [],
       tplGroupTreeList: [],
       builtinRoleParamList: [],
+      categoryParamList: [],
       dlgTplProjectEditVis: false,
       dlgTplStageEditVis: false,
       dlgTplGroupEditVis: false,
@@ -126,8 +130,12 @@ export default {
         tplCategory: ""
       },
       tplProjectObjRules: {
-        tplName: [{ required: true, message: "请输入模板名称", trigger: "blur" }],
-        tplCategory: [{ required: true, message: "请输模板类别", trigger: "blur" }]
+        tplName: [
+          { required: true, message: "请输入模板名称", trigger: "blur" }
+        ],
+        tplCategory: [
+          { required: true, message: "请输模板类别", trigger: "blur" }
+        ]
       },
       tplStageObj: {
         id: 0,
@@ -136,9 +144,11 @@ export default {
         parentId: null
       },
       tplStageObjRules: {
-        stageName: [{ required: true, message: "请输入阶段/任务名称", trigger: "blur" }]
+        stageName: [
+          { required: true, message: "请输入阶段/任务名称", trigger: "blur" }
+        ]
       },
-      stageParentIds:[],
+      stageParentIds: [],
       tplGroupObj: {
         id: 0,
         tplId: "",
@@ -147,9 +157,11 @@ export default {
         parentId: null
       },
       tplGroupObjRules: {
-        groupName: [{ required: true, message: "请输入项目组/小组名称", trigger: "blur" }]
+        groupName: [
+          { required: true, message: "请输入项目组/小组名称", trigger: "blur" }
+        ]
       },
-      groupParentIds:[],
+      groupParentIds: []
     };
   },
   methods: {
@@ -157,27 +169,36 @@ export default {
       var _this = this;
       SELECT_TPL_PROJECT_LIST().then(res => {
         if (!Array.isArray(res))
-          _this.$message({ message: "获取项目模板失败，请联系系统管理员。", type: "error" });
+          _this.$message({
+            message: "获取项目模板失败，请联系系统管理员。",
+            type: "error"
+          });
         else {
           _this.tplProjectList = res;
         }
       });
     },
-    selectTplStageTreeList(tplId){
+    selectTplStageTreeList(tplId) {
       var _this = this;
-      SELECT_TPL_STAGE_TREE_LIST({tplId:tplId}).then(res => {
+      SELECT_TPL_STAGE_TREE_LIST({ tplId: tplId }).then(res => {
         if (!Array.isArray(res))
-          _this.$message({ message: "获取模板项目阶段失败，请联系系统管理员。", type: "error" });
+          _this.$message({
+            message: "获取模板项目阶段失败，请联系系统管理员。",
+            type: "error"
+          });
         else {
           _this.tplStageTreeList = res;
         }
       });
     },
-    selectTplGroupTreeList(tplId){
+    selectTplGroupTreeList(tplId) {
       var _this = this;
-      SELECT_TPL_GROUP_TREE_LIST({tplId:tplId}).then(res => {
+      SELECT_TPL_GROUP_TREE_LIST({ tplId: tplId }).then(res => {
         if (!Array.isArray(res))
-          _this.$message({ message: "获取模板项目组失败，请联系系统管理员。", type: "error" });
+          _this.$message({
+            message: "获取模板项目组失败，请联系系统管理员。",
+            type: "error"
+          });
         else {
           _this.tplGroupTreeList = res;
         }
@@ -192,7 +213,8 @@ export default {
             type: "error"
           });
         else {
-          if (paramKeyObj.paramKey === "category") _this.categoryParamList = res;
+          if (paramKeyObj.paramKey === "category")
+            _this.categoryParamList = res;
           else if (paramKeyObj.paramKey === "built-in-role")
             _this.builtinRoleParamList = res;
         }
@@ -224,21 +246,21 @@ export default {
       Object.assign(this.tplProjectObj, row);
       this.dlgTplProjectEditVis = true;
     },
-    openEditTplStage(node, data){
+    openEditTplStage(node, data) {
       this.tplStageObj.id = data.id;
       this.tplStageObj.stageName = data.label;
       this.tplStageObj.tplId = parseInt(data.data.desc);
       this.tplStageObj.parentId = data.parentId;
-      this.stageParentIds = getNodePath(this.tplStageTreeList,data.parentId);
+      this.stageParentIds = getNodePath(this.tplStageTreeList, data.parentId);
       this.dlgTplStageEditVis = true;
     },
-    openEditTplGroup(node, data){
+    openEditTplGroup(node, data) {
       this.tplGroupObj.id = data.id;
       this.tplGroupObj.groupName = data.label;
       this.tplGroupObj.groupRole = data.data.groupRole;
       this.tplGroupObj.tplId = parseInt(data.data.desc);
       this.tplGroupObj.parentId = data.parentId;
-      this.groupParentIds = getNodePath(this.tplGroupTreeList,data.parentId);
+      this.groupParentIds = getNodePath(this.tplGroupTreeList, data.parentId);
       this.dlgTplGroupEditVis = true;
     },
     updateTplProject() {
@@ -249,7 +271,10 @@ export default {
           UPDATE_TPL_PROJECT(_this.tplProjectObj).then(data => {
             _this.logining = false;
             if (data == "") {
-              _this.$message({ message: "更新项目模板失败，请联系系统管理员。", type: "error" });
+              _this.$message({
+                message: "更新项目模板失败，请联系系统管理员。",
+                type: "error"
+              });
             } else {
               _this.selectTplProjectList();
               _this.dlgTplProjectEditVis = false;
@@ -260,20 +285,26 @@ export default {
         }
       });
     },
-    updateTplStage(){
+    updateTplStage() {
       var _this = this;
       this.$refs.tplStageForm.validate(valid => {
         if (valid) {
           // 检查parentId是否等于自身的id
           if (_this.tplStageObj.id === _this.tplStageObj.parentId) {
-            _this.$message({ message: "不能将自身设置为上级。", type: "error" });
+            _this.$message({
+              message: "不能将自身设置为上级。",
+              type: "error"
+            });
             return;
           }
           _this.logining = true;
           UPDATE_TPL_STAGE(_this.tplStageObj).then(data => {
             _this.logining = false;
             if (data == "") {
-              _this.$message({ message: "更新项目阶段失败，请联系系统管理员。", type: "error" });
+              _this.$message({
+                message: "更新项目阶段失败，请联系系统管理员。",
+                type: "error"
+              });
             } else {
               _this.selectTplStageTreeList(_this.selectTplProject.id);
               _this.dlgTplStageEditVis = false;
@@ -282,20 +313,26 @@ export default {
         }
       });
     },
-    updateTplGroup(){
+    updateTplGroup() {
       var _this = this;
       this.$refs.tplGroupForm.validate(valid => {
         if (valid) {
           // 检查parentId是否等于自身的id
           if (_this.tplGroupObj.id === _this.tplGroupObj.parentId) {
-            _this.$message({ message: "不能将自身设置为上级。", type: "error" });
+            _this.$message({
+              message: "不能将自身设置为上级。",
+              type: "error"
+            });
             return;
           }
           _this.logining = true;
           UPDATE_TPL_GROUP(_this.tplGroupObj).then(data => {
             _this.logining = false;
             if (data == "") {
-              _this.$message({ message: "更新项目组失败，请联系系统管理员。", type: "error" });
+              _this.$message({
+                message: "更新项目组失败，请联系系统管理员。",
+                type: "error"
+              });
             } else {
               _this.selectTplGroupTreeList(_this.selectTplProject.id);
               _this.dlgTplGroupEditVis = false;
@@ -317,7 +354,7 @@ export default {
           });
         });
     },
-    delTplStage(node, data){
+    delTplStage(node, data) {
       var _this = this;
       _this
         .$confirm("确认删除该记录吗?", "提示", {
@@ -330,7 +367,7 @@ export default {
           });
         });
     },
-    delTplGroup(node, data){
+    delTplGroup(node, data) {
       var _this = this;
       _this
         .$confirm("确认删除该记录吗?", "提示", {
@@ -350,12 +387,12 @@ export default {
       this.selectTplStageTreeList(data.id);
       this.selectTplGroupTreeList(data.id);
     },
-    onStageParentChange(value){
+    onStageParentChange(value) {
       if (value.length != 0) {
         this.tplStageObj.parentId = value[value.length - 1];
       } else this.tplStageObj.parentId = 0;
     },
-    onGroupParentChange(value){
+    onGroupParentChange(value) {
       if (value.length != 0) {
         this.tplGroupObj.parentId = value[value.length - 1];
       } else this.tplGroupObj.parentId = 0;
@@ -409,11 +446,17 @@ export default {
           </span>
         </span>
       );
+    },
+    fmtTplCat(row, column, cellValue) {
+      for (var catParam of this.categoryParamList) {
+        if (catParam.paramValue === cellValue) return catParam.paramDesc;
+      }
     }
   },
   mounted() {
     this.selectTplProjectList();
     this.selectParamValueList({ paramKey: "built-in-role" });
+    this.selectParamValueList({ paramKey: "category" });
   }
 };
 </script>
