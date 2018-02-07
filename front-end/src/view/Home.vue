@@ -601,11 +601,12 @@ export default {
         color: #fff;
       }
     }
-    // .logo-width {
-    //   width: 230px;
-    // }
+    .logo-width {
+      width: 640px;
+    }
     .logo-collapse-width {
       width: 65px;
+      border-right-style: solid;
     }
     .tools {
       padding: 0px 23px;
