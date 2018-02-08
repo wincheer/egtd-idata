@@ -78,7 +78,24 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   
-  <select id="selectMessageList" parameterType="com.idata.gtd.entity.Message" resultMap="BaseResultMap">
+  <select id="totalMessages" parameterType="java.util.Map" resultType="java.lang.Integer">
+  	select count(*) from message
+  	where 1 = 1
+  	<trim prefix=" and (" suffix=")" suffixOverrides="and">
+    	<if test="from != null">`from` = #{from,jdbcType=INTEGER} and </if>
+		<if test="to != null">`to` = #{to,jdbcType=INTEGER} and </if>
+		<if test="toScope != null">to_scope = #{toScope,jdbcType=VARCHAR} and </if>
+		<if test="title != null">title = #{title,jdbcType=VARCHAR} and </if>
+		<if test="body != null">body = #{body,jdbcType=VARCHAR} and </if>
+		<if test="type != null">type = #{type,jdbcType=VARCHAR} and </if>
+		<if test="relationId != null">relation_id = #{relationId,jdbcType=INTEGER} and </if>
+		<if test="time != null">time = #{time,jdbcType=TIMESTAMP} and </if>
+		<if test="isRead != null">is_read = #{isRead,jdbcType=INTEGER} and </if>
+		<if test="isExec != null">is_exec = #{isExec,jdbcType=INTEGER} and </if>
+		<if test="note != null">note = #{note,jdbcType=VARCHAR} and </if>
+	</trim>
+  </select>
+  <select id="selectMessagePageList" parameterType="java.util.Map" resultMap="BaseResultMap">
     select *
     from message where 1=1 
     <trim prefix=" and (" suffix=")" suffixOverrides="and">
@@ -93,8 +110,8 @@
 		<if test="isRead != null">is_read = #{isRead,jdbcType=INTEGER} and </if>
 		<if test="isExec != null">is_exec = #{isExec,jdbcType=INTEGER} and </if>
 		<if test="note != null">note = #{note,jdbcType=VARCHAR} and </if>
-	</trim>
-	ORDER BY time DESC
+	</trim> ORDER BY time DESC
+	limit #{start},#{pageSize}
   </select>
 
 </mapper>

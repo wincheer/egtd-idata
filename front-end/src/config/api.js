@@ -83,7 +83,7 @@ export const SELECT_TASK_STATE_COUNT_LIST = (params) => { return axios.post(`${b
 // 消息
 export const UPDATE_MESSAGE = (params) => { return axios.post(`${base}/updateMessage`, params).then(res => res.data); };
 export const DELETE_MESSAGE = (params) => { return axios.post(`${base}/deleteMessage`, params).then(res => res.data); };
-export const SELECT_MESSAGE_LIST = (params) => { return axios.post(`${base}/selectMessageList`,params).then(res => res.data); };
+export const SELECT_MESSAGE_PAGE_LIST = (params) => { return axios.post(`${base}/selectMessagePageList`,params).then(res => res.data); };
 
 // 文档附件
 export const SELECT_DOCUMENT_LIST = (params) => { return axios.post(`${base}/selectDocumentList`,params).then(res => res.data); };

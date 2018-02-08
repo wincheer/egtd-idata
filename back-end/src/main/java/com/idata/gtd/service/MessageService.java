@@ -2,6 +2,7 @@ package com.idata.gtd.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.idata.gtd.common.Utils;
 import com.idata.gtd.dao.MessageMapper;
 import com.idata.gtd.dao.ProjectTaskMapper;
 import com.idata.gtd.dao.TaskCheckMapper;
@@ -33,11 +35,11 @@ public class MessageService {
 	@Autowired
 	private TaskService taskService;
 
-	public List<Message> selectMessageList(Message msg) {
-
-		logger.info("查询消息");
-		return msgDao.selectMessageList(msg);
-	}
+//	public List<Message> selectMessageList(Message msg) {
+//
+//		logger.info("查询消息");
+//		return msgDao.selectMessageList(msg);
+//	}
 
 	public int insertMessage(Message msg) {
 
@@ -159,6 +161,30 @@ public class MessageService {
 	public int deleteMessage(Integer msgId) {
 
 		return msgDao.deleteMessageByPK(msgId);
+	}
+
+	public int totalMessages(Map<String, Object> queryParam) {
+		
+		@SuppressWarnings("unchecked")
+		Map<String, Object> params = (Map<String, Object>) queryParam.get("filter");
+		return msgDao.totalMessages(params);
+	}
+
+	public List<Message> selectMessagePageList(Map<String, Object> queryParam) {
+		
+		int pageNo = (Integer) queryParam.get("pageNo");
+		int pageSize = (Integer) queryParam.get("pageSize");
+		int start = (pageNo - 1) * pageSize;
+
+		@SuppressWarnings("unchecked")
+		Map<String, Object> params = (Map<String, Object>) queryParam.get("filter");
+		logger.info(params.toString());
+		params.put("start", start);
+		params.put("pageSize", pageSize);
+
+		return msgDao.selectMessagePageList(Utils.cleanMap(params));
+		
+		//return null;
 	}
 
 }

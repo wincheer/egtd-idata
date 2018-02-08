@@ -111,6 +111,7 @@
                 </template>
               </el-table-column>
             </el-table>
+            <el-pagination layout="prev, pager, next"  :page-size="pageSize" :total="total" @current-change="pageChange" style="float:right;"/>
           </el-tab-pane>
         </el-tabs>
         <div slot="footer">
@@ -245,7 +246,7 @@
 import avatar from "@/assets/logo.png";
 import {
   UPDATE_EMPLOYEE,
-  SELECT_MESSAGE_LIST,
+  SELECT_MESSAGE_PAGE_LIST, 
   UPDATE_MESSAGE,
   DELETE_MESSAGE,
   SELECT_PROJECT_STAGE_LIST,
@@ -285,7 +286,9 @@ export default {
       dlgTitle: "",
       latestMsgList: [],
       historyMsgList: [],
-      historyMsgList: [],
+      total: 0, //分页 - 记录总数
+      pageNo: 1, //分页 - 当前页面
+      pageSize: 5, //分页 - 每页记录数
       projectStageList: [],
       project: {},
       task: {},
@@ -369,35 +372,44 @@ export default {
     },
     selectMyMessageList() {
       var _this = this;
-      SELECT_MESSAGE_LIST({
-        to: this.$store.state.loginUser.id,
-        isExec: 0
-      }).then(res => {
+      let params = {
+        pageNo: 1,
+        pageSize: 100000, //一个大的整数，其实就是说不分页
+        filter: {to: _this.$store.state.loginUser.id,isExec: 0}
+      };
+      SELECT_MESSAGE_PAGE_LIST(params).then(res => {
         if (res === "") {
           _this.$message({
             message: "获取消息列表失败，请联系系统管理员。",
             type: "error"
           });
         } else {
-          _this.latestMsgList = res;
+          _this.latestMsgList = res.rows;
         }
       });
     },
     selectHistoryMessageList() {
       var _this = this;
-      SELECT_MESSAGE_LIST({
-        to: this.$store.state.loginUser.id,
-        isExec: 1
-      }).then(res => {
+      let params = {
+        pageNo: _this.pageNo,
+        pageSize: _this.pageSize,
+        filter: {to: _this.$store.state.loginUser.id,isExec: 1}
+      };
+      SELECT_MESSAGE_PAGE_LIST(params).then(res => {
         if (res === "") {
           _this.$message({
             message: "获取消息列表失败，请联系系统管理员。",
             type: "error"
           });
         } else {
-          _this.historyMsgList = res;
+          _this.total = res.total;
+          _this.historyMsgList = res.rows;
         }
       });
+    },
+    pageChange(pageNo) {
+      this.pageNo = pageNo;
+      this.selectHistoryMessageList();
     },
     selectProjectStageList(projectId) {
       var _this = this;

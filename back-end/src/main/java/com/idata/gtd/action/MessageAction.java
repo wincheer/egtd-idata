@@ -1,6 +1,8 @@
 package com.idata.gtd.action;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,13 +30,20 @@ public class MessageAction {
 	private final static Logger logger = LoggerFactory.getLogger(MessageAction.class);
 	@Autowired
 	private MessageService msgService;
+	
+	@RequestMapping(value = "/selectMessagePageList", method = RequestMethod.POST)
+	public Map<String, Object> selectMessagePageList(@RequestBody Map<String, Object> queryParam) {
 
-	@RequestMapping(value = "/selectMessageList", method = RequestMethod.POST)
-	public List<Message> selectMessageList(@RequestBody Message msg) {
+		logger.info("分页查询消息");
+		
+		int total = msgService.totalMessages(queryParam);
+		List<Message> rows = msgService.selectMessagePageList(queryParam);
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put("total", total);
+		result.put("rows", rows);
 
-		logger.info("查询消息");
-		List<Message> msgList = msgService.selectMessageList(msg);
-		return msgList;
+		return result;
 	}
 
 	@RequestMapping(value = "/updateMessage", method = RequestMethod.POST)
