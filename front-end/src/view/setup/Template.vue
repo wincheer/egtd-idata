@@ -41,7 +41,7 @@
       </el-col>
     </el-row>
     <!--编辑窗口-->
-    <el-dialog :title="tplProjectObj.id==''?'增加项目阶段':'编辑项目阶段'" :visible.sync="dlgTplProjectEditVis" width="30%">
+    <el-dialog :title="tplProjectObj.id==''?'增加项目模板':'编辑项目模板'" :visible.sync="dlgTplProjectEditVis" width="350px">
       <el-form :model="tplProjectObj" :rules="tplProjectObjRules" ref="tplProjectForm" label-width="80px">
         <el-form-item label="模板名称" prop="tplName">
           <el-input type="text" v-model="tplProjectObj.tplName"></el-input>
