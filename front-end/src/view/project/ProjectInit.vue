@@ -46,15 +46,15 @@
       </el-table-column>
     </el-table>
     <!-- 编辑框 -->
-    <el-dialog :title="projectObj.id==''?'新建项目':'编辑项目'" :visible.sync="dlgProjectEditVis" width="40%" :close-on-click-modal="false">
+    <el-dialog :title="projectObj.id==''?'新建项目':'编辑项目'" :visible.sync="dlgProjectEditVis" width="500px" :close-on-click-modal="false">
       <el-form :model="projectObj" :rules="projectObjRules" ref="projectForm" label-width="80px">
         <el-row>
-          <el-col :span="15">
+          <el-col :span="13">
             <el-form-item label="项目名称" prop="projectName">
               <el-input type="text" v-model="projectObj.projectName" />
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="11">
             <el-form-item label="类别" prop="category">
               <el-select v-model="projectObj.category" placeholder="请选择">
                 <el-option v-for="item in categoryParamList" :key="item.id" :label="item.paramDesc" :value="item.paramValue" />
@@ -66,12 +66,12 @@
           <el-input type="textarea" v-model="projectObj.projectDesc"></el-input>
         </el-form-item>
         <el-row>
-          <el-col :span="12">
+          <el-col :span="14">
             <el-form-item label="项目金额" prop="amount">
-              <el-input-number type="text" v-model="projectObj.amount" /> 万元
+              <el-input-number type="text" v-model="projectObj.amount" style="width:140px"/> 万元
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="10">
             <el-form-item label="关键项目" prop="isKey">
               <el-switch v-model="projectObj.isKey" active-text="是" inactive-text="否" :active-value="1" :inactive-value="0"></el-switch>
             </el-form-item>
@@ -80,7 +80,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="项目经理" prop="actorStaffId">
-              <el-select v-model="projectObj.actorStaffId" placeholder="请选择甲方项目经理">
+              <el-select v-model="projectObj.actorStaffId" placeholder="甲方项目经理" style="width:140px">
                 <el-option v-for="item in allDepEmpList" :key="item.id" :label="item.empName" :value="item.id" />
               </el-select>
             </el-form-item>
@@ -92,17 +92,17 @@
           </el-col>
         </el-row>
         <el-form-item label="立项时间" prop="createDate">
-          <el-date-picker type="date" clearable placeholder="立项时间" v-model="projectObj.createDate"/>
+          <el-date-picker type="date" clearable placeholder="立项时间" v-model="projectObj.createDate" style="width:140px"/>
         </el-form-item>
         <el-row >
           <el-col :span="12">
             <el-form-item label="启动日期" prop="startDate">
-              <el-date-picker type="date" clearable placeholder="启动日期" v-model="projectObj.startDate"/>
+              <el-date-picker type="date" clearable placeholder="启动日期" v-model="projectObj.startDate" style="width:140px"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="结束日期" prop="endDate">
-              <el-date-picker type="date" clearable placeholder="结束日期" v-model="projectObj.endDate"/>
+              <el-date-picker type="date" clearable placeholder="结束日期" v-model="projectObj.endDate" style="width:140px"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -1115,7 +1115,7 @@ export default {
     this.selectDepTreeList(); //业主的所有部门
     this.selectTplProjectList(); // 项目模板
 
-    //this.authCheck("btnCreateProject"); //检查组件权限
+    //this.authCheck("btnCreateProject"); //检查组件权限    //this.authCheck("btnCreateProject"); //检查组件权限
 
     console.log("发布 my-event事件");
     this.$bus.$emit('my-event', { msg:"Hello,From Project Init" }) // 消息发布
