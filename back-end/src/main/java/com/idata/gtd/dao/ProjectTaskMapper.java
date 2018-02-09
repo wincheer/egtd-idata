@@ -27,4 +27,8 @@ public interface ProjectTaskMapper {
 	List<ProjectTask> selectTaskList(ProjectTask record);
 
 	List<Map<String, Object>> selectTaskStateCount4Chart(ProjectTask task);  //项目状态数量，用来绘制统计图表
+
+	int totalTasks(Map<String, Object> params);
+
+	List<ProjectTask> selectTaskPageList(Map<String, Object> params);
 }

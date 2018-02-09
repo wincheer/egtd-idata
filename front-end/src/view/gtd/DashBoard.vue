@@ -9,43 +9,45 @@
       </el-tab-pane>
       <el-tab-pane label="我承接的任务" name="first">
         <el-table :data="myTaskListIn" stripe>
-        <el-table-column prop="text" label="任务"></el-table-column>
-        <el-table-column prop="start_date" label="开始时间" sortable :formatter="fmtDate"></el-table-column>
-        <el-table-column prop="end_date" label="结束时间" sortable :formatter="fmtDate"></el-table-column>
-        <el-table-column prop="priority" label="优先级" sortable :formatter="fmtPriority"></el-table-column>
-        <el-table-column prop="progress" label="进度" sortable>
-          <template slot-scope="scope">
-            <el-progress :status="scope.row.state==3?'success':''" :text-inside="true" :stroke-width="18" :percentage="scope.row.progress * 100" />
-          </template>
-        </el-table-column>
-        <el-table-column prop="projectId" label="所属项目" sortable :formatter="fmtProject"></el-table-column>
-        <el-table-column prop="assignStaffId" label="任务发布人" sortable :formatter="fmtEmployee"></el-table-column>
-        <el-table-column label="操作">
-          <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="viewTask(scope.row)">详情</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+          <el-table-column prop="text" label="任务"></el-table-column>
+          <el-table-column prop="start_date" label="开始时间" sortable :formatter="fmtDate"></el-table-column>
+          <el-table-column prop="end_date" label="结束时间" sortable :formatter="fmtDate"></el-table-column>
+          <el-table-column prop="priority" label="优先级" sortable :formatter="fmtPriority"></el-table-column>
+          <el-table-column prop="progress" label="进度" sortable>
+            <template slot-scope="scope">
+              <el-progress :status="scope.row.state==3?'success':''" :text-inside="true" :stroke-width="18" :percentage="scope.row.progress * 100" />
+            </template>
+          </el-table-column>
+          <el-table-column prop="projectId" label="所属项目" sortable :formatter="fmtProject"></el-table-column>
+          <el-table-column prop="assignStaffId" label="任务发布人" sortable :formatter="fmtEmployee"></el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button type="primary" size="mini" @click="viewTask(scope.row)">详情</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-pagination layout="prev, pager, next"  :page-size="pageSize" :total="total_in" @current-change="pageChangeIn" style="float:right;"/>
       </el-tab-pane>
       <el-tab-pane label="我分配的任务" name="second">
         <el-table :data="myTaskListOut" stripe>
-        <el-table-column prop="text" label="任务"></el-table-column>
-        <el-table-column prop="start_date" label="开始时间" sortable :formatter="fmtDate"></el-table-column>
-        <el-table-column prop="end_date" label="结束时间" sortable :formatter="fmtDate"></el-table-column>
-        <el-table-column prop="priority" label="优先级" sortable :formatter="fmtPriority"></el-table-column>
-        <el-table-column prop="progress" label="进度" sortable>
-          <template slot-scope="scope">
-            <el-progress :text-inside="true" :stroke-width="18" :percentage="scope.row.progress * 100" />
-          </template>
-        </el-table-column>
-        <el-table-column prop="projectId" label="所属项目" sortable :formatter="fmtProject"></el-table-column>
-        <el-table-column prop="actorStaffId" label="任务承接者" sortable :formatter="fmtEmployee"></el-table-column>
-        <el-table-column label="操作">
-          <template slot-scope="scope">
-             <el-button type="primary" size="mini" @click="viewTask(scope.row)">详情</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+          <el-table-column prop="text" label="任务"></el-table-column>
+          <el-table-column prop="start_date" label="开始时间" sortable :formatter="fmtDate"></el-table-column>
+          <el-table-column prop="end_date" label="结束时间" sortable :formatter="fmtDate"></el-table-column>
+          <el-table-column prop="priority" label="优先级" sortable :formatter="fmtPriority"></el-table-column>
+          <el-table-column prop="progress" label="进度" sortable>
+            <template slot-scope="scope">
+              <el-progress :text-inside="true" :stroke-width="18" :percentage="scope.row.progress * 100" />
+            </template>
+          </el-table-column>
+          <el-table-column prop="projectId" label="所属项目" sortable :formatter="fmtProject"></el-table-column>
+          <el-table-column prop="actorStaffId" label="任务承接者" sortable :formatter="fmtEmployee"></el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button type="primary" size="mini" @click="viewTask(scope.row)">详情</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-pagination layout="prev, pager, next"  :page-size="pageSize" :total="total_out" @current-change="pageChangeOut" style="float:right;"/>
       </el-tab-pane>
     </el-tabs>
     <!--任务编辑对话框-->
@@ -57,8 +59,7 @@
 import TaskEditForm from "@/component/TaskEditForm.vue";
 import SimpleChart from "@/component/SimpleChart.vue";
 import {
-  SELECT_MY_TASK_LIST_IN,
-  SELECT_MY_TASK_LIST_OUT,
+  SELECT_TASK_PAGE_LIST,
   SELECT_EMPLOYEE_LIST,
   SELECT_PROJECT_LIST,
   UPDATE_PROJECT_TASK,
@@ -80,6 +81,13 @@ export default {
       myTaskList: [],
       myTaskListIn: [],
       myTaskListOut: [],
+
+      total_in: 0, //分页 - 记录总数
+      total_out: 0, //分页 - 记录总数
+      pageNo_in: 1, //分页 - 当前页面
+      pageNo_out: 1, //分页 - 当前页面
+      pageSize: 7, //分页 - 每页记录数
+
       actionInfo:"申请确认"
     };
   },
@@ -173,18 +181,41 @@ export default {
       });
     },
     selectMyTaskListIn() {
-      SELECT_MY_TASK_LIST_IN({ id: this.$store.state.loginUser.id }).then(
+      var _this = this;
+      let params = {
+        pageNo: _this.pageNo_in,
+        pageSize: _this.pageSize,
+        filter: {actor_staff_id: this.$store.state.loginUser.id}
+      };
+      SELECT_TASK_PAGE_LIST(params).then(
         res => {
-          this.myTaskListIn = res;
+          //this.myTaskListIn = res;
+          _this.total_in = res.total;
+          _this.myTaskListIn = res.rows;
         }
       );
     },
     selectMyTaskListOut() {
-      SELECT_MY_TASK_LIST_OUT({ id: this.$store.state.loginUser.id }).then(
+      var _this = this;
+      let params = {
+        pageNo: _this.pageNo_out,
+        pageSize: _this.pageSize,
+        filter: {assign_staff_id: this.$store.state.loginUser.id}
+      };
+      SELECT_TASK_PAGE_LIST(params).then(
         res => {
-          this.myTaskListOut = res;
+         _this.total_out = res.total;
+         this.myTaskListOut = res.rows;
         }
       );
+    },
+    pageChangeIn(pageNo) {
+      this.pageNo_in = pageNo;
+      this.selectMyTaskListIn();
+    },
+    pageChangeOut(pageNo) {
+      this.pageNo_out = pageNo;
+      this.selectMyTaskListOut();
     },
     viewTask(task){
       this.selectedTask = task;

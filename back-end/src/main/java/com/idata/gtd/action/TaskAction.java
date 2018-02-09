@@ -2,6 +2,7 @@ package com.idata.gtd.action;
 
 import java.lang.reflect.Type;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,10 +43,17 @@ public class TaskAction {
 	@Autowired
 	private TaskService taskService;
 
-	@RequestMapping(value = "/selectTaskList", method = RequestMethod.POST)
-	public List<ProjectTask> selectTaskList(@RequestBody ProjectTask data) {
+	@RequestMapping(value = "/selectTaskPageList", method = RequestMethod.POST)
+	public Map<String, Object> selectTaskPageList(@RequestBody Map<String, Object> queryParam) {
 
-		return taskService.selectTaskList(data);
+		int total = taskService.totalTasks(queryParam);
+		List<ProjectTask> rows = taskService.selectTaskPageList(queryParam);
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put("total", total);
+		result.put("rows", rows);
+
+		return result;
 	}
 	
 	@RequestMapping(value = "/selectProjectTask", method = RequestMethod.POST)

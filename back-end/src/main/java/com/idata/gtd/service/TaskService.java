@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.idata.gtd.common.DocCat;
+import com.idata.gtd.common.Utils;
 import com.idata.gtd.dao.ProjectTaskMapper;
 import com.idata.gtd.dao.TaskCheckMapper;
 import com.idata.gtd.entity.Document;
@@ -207,6 +208,28 @@ public class TaskService {
 	public List<Map<String, Object>> selectTaskStateCount4Chart(ProjectTask task) {
 
 		return taskDao.selectTaskStateCount4Chart(task); 
+	}
+
+	public int totalTasks(Map<String, Object> queryParam) {
+		
+		@SuppressWarnings("unchecked")
+		Map<String, Object> params = (Map<String, Object>) queryParam.get("filter");
+		return taskDao.totalTasks(Utils.cleanMap(params));
+	}
+
+	public List<ProjectTask> selectTaskPageList(Map<String, Object> queryParam) {
+		
+		int pageNo = (Integer) queryParam.get("pageNo");
+		int pageSize = (Integer) queryParam.get("pageSize");
+		int start = (pageNo - 1) * pageSize;
+
+		@SuppressWarnings("unchecked")
+		Map<String, Object> params = (Map<String, Object>) queryParam.get("filter");
+
+		params.put("start", start);
+		params.put("pageSize", pageSize);
+
+		return taskDao.selectTaskPageList(Utils.cleanMap(params));
 	}
 
 }

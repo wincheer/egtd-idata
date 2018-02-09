@@ -114,16 +114,16 @@
     </el-dialog>
     <!--合同-->
     <!--dlgXXlist-->
-    <el-dialog title="维护项目合同" :visible.sync="dlgProjectContractListVis" width="40%" :close-on-click-modal="false">
+    <el-dialog title="维护项目合同" :visible.sync="dlgProjectContractListVis" width="600px" :close-on-click-modal="false">
        <el-card>
         <div slot="header" class="clearfix">
           <span>项目合同</span>
           <el-button @click="openAddProjectContract" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加合同</el-button>
         </div>
-        <el-table :data="projectContractList" highlight-current-row >
-          <el-table-column label="合同" prop="contractName"></el-table-column>
-          <el-table-column label="供应商" prop="vendorId" :formatter="fmtVendor"></el-table-column>
-          <el-table-column label="操作">
+        <el-table :data="projectContractList" highlight-current-row>
+          <el-table-column label="合同" prop="contractName" width="240px"></el-table-column>
+          <el-table-column label="供应商" prop="vendorId" :formatter="fmtVendor" width="100px"></el-table-column>
+          <el-table-column label="操作" width="160px">
             <template slot-scope="scope">
               <el-button size="mini" type="primary" @click="openEditProjectContract(scope.row)" >编辑</el-button>
               <el-button size="mini" type="danger" @click="delProjectContract(scope.row)" >删除</el-button>
@@ -133,13 +133,13 @@
       </el-card>
     </el-dialog>
     <!--dlgXXEdit-->
-    <el-dialog :title="projectContractObj.id==''?'增加项目合同':'编辑项目合同'" :visible.sync="dlgProjectContractEditVis" width="25%" :close-on-click-modal="false">
-      <el-form :model="projectContractObj" :rules="projectContractObjRules" ref="projectContractForm" label-width="100px">
+    <el-dialog :title="projectContractObj.id==''?'增加项目合同':'编辑项目合同'" :visible.sync="dlgProjectContractEditVis" width="350px" :close-on-click-modal="false">
+      <el-form :model="projectContractObj" :rules="projectContractObjRules" ref="projectContractForm" label-width="100px" size="mini">
         <el-form-item label="合同名称" prop="contractName">
-          <el-input type="text" v-model="projectContractObj.contractName"></el-input>
+          <el-input type="text" v-model="projectContractObj.contractName" style="width:200px"></el-input>
         </el-form-item>
         <el-form-item label="相关供应商" prop="vendorId">
-          <el-select v-model="projectContractObj.vendorId" placeholder="请选择">
+          <el-select v-model="projectContractObj.vendorId" placeholder="请选择" style="width:150px">
             <el-option v-for="item in vendorList" :key="item.id" :label="item.vendorName" :value="item.id" />
           </el-select>
         </el-form-item>
@@ -225,7 +225,7 @@
       </el-form>
     </el-dialog>
     <!--项目阶段-->
-    <el-dialog title="分解项目阶段" :visible.sync="dlgProjectStageListVis" width="35%" :close-on-click-modal="false">
+    <el-dialog title="分解项目阶段" :visible.sync="dlgProjectStageListVis" width="620px" :close-on-click-modal="false">
       <el-card>
         <div slot="header" class="clearfix">
           <span>项目阶段</span>
@@ -245,19 +245,19 @@
         </el-table>
       </el-card>
     </el-dialog>
-    <el-dialog :title="projectStageObj.id==''?'增加项目阶段':'编辑项目阶段'" :visible.sync="dlgProjectStageEditVis" width="23%" :close-on-click-modal="false">
-      <el-form :model="projectStageObj" :rules="projectStageObjRules" ref="projectStageForm" label-width="100px">
+    <el-dialog :title="projectStageObj.id==''?'增加项目阶段':'编辑项目阶段'" :visible.sync="dlgProjectStageEditVis" width="300px" :close-on-click-modal="false">
+      <el-form :model="projectStageObj" :rules="projectStageObjRules" ref="projectStageForm" label-width="80px" size="mini">
         <el-form-item label="阶段名称" prop="text">
-          <el-input type="text" v-model="projectStageObj.text" />
+          <el-input type="text" v-model="projectStageObj.text" style="width:135px"/>
         </el-form-item>
         <el-form-item label="启动日期" prop="start_date">
-          <el-date-picker type="date" clearable placeholder="启动日期" v-model="projectStageObj.start_date"/>
+          <el-date-picker type="date" clearable placeholder="启动日期" v-model="projectStageObj.start_date" style="width:135px"/>
         </el-form-item>
         <el-form-item label="结束日期" prop="end_date">
-          <el-date-picker type="date" clearable placeholder="结束日期" v-model="projectStageObj.end_date"/>
+          <el-date-picker type="date" clearable placeholder="结束日期" v-model="projectStageObj.end_date" style="width:135px"/>
         </el-form-item>
         <el-form-item label="负责人" prop="category">
-          <el-select v-model="projectStageObj.actorStaffId" placeholder="请选择" clearable>
+          <el-select v-model="projectStageObj.actorStaffId" placeholder="请选择" clearable style="width:135px">
             <el-option v-for="item in ownerProjectEmpList" :key="item.id" :label="item.empName" :value="item.id" />
           </el-select>
         </el-form-item>
