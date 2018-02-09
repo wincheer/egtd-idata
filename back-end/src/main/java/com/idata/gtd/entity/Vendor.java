@@ -7,7 +7,7 @@ public class Vendor {
 	private String vendorFullName;
 	private String contactName;
 	private String contactMobile;
-	private String vendorCategory;
+	private String vendorCategory; //供应商类别：监理supervisor，其它供应商builder
 
 	public Integer getId() {
 		return id;

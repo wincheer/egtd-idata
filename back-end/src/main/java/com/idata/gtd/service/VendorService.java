@@ -64,7 +64,6 @@ public class VendorService {
 
 	public int insertVendorEmp(Employee vendorEmp) {
 		
-		vendorEmp.setCode("s");
 		vendorEmp.setPassword("123456");
 		return empDao.insertEmployee(vendorEmp);
 	}

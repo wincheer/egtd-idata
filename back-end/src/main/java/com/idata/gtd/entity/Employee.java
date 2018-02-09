@@ -4,7 +4,7 @@ public class Employee {
 
     private Integer id;
     private Integer orgId;
-    private String code;
+    private String code; //甲方o，监理m，供应商s。特殊的，超级用户是o0
     private String empName;
     private String empGender;
     private String empMobile;

@@ -5,7 +5,7 @@
         <el-card>
           <div slot="header" class="clearfix">
             <span>项目模板</span>
-            <el-button @click="openAddTplProject" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加项目阶段</el-button>
+            <el-button @click="openAddTplProject" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加项目模板</el-button>
           </div>
           <el-table :data="tplProjectList" highlight-current-row @current-change="onTplProjectChange">
             <el-table-column label="模板名称" prop="tplName"></el-table-column>

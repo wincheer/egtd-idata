@@ -105,7 +105,7 @@
   <select id="selectVendorEmployeeList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select *
     from employee
-    where left(code,1) ='s' and org_id = #{vendorId,jdbcType=INTEGER}
+    where left(code,1) !='o' and org_id = #{vendorId,jdbcType=INTEGER}
   </select>
   
   <select id="selectVendorEmployeeListByProject" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -116,7 +116,7 @@
 	LEFT JOIN project_contract ON employee.org_id = project_contract.vendor_id
 	LEFT JOIN project ON project_contract.project_id = project.id
 	WHERE
-		left(employee.code,1) ='s' and project.id = #{projectId,jdbcType=INTEGER}
+		left(employee.code,1) !='o' and project.id = #{projectId,jdbcType=INTEGER}
   </select>
   
   <select id="selectProjectEmployeeList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -140,7 +140,7 @@
 		employee.`code` != 'o0'
 	AND (
 		(
-			LEFT (employee.`code`, 1) = 's'
+			LEFT (employee.`code`, 1) != 'o'
 			AND project_contract.project_id = #{projectId,jdbcType=INTEGER}
 		)
 		OR LEFT (employee.`code`, 1) = 'o'
