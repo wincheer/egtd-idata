@@ -21,9 +21,9 @@ public class VendorAction {
 	private VendorService vendorService;
 
 	@RequestMapping(value = "/selectVendorList", method = RequestMethod.POST)
-	public List<Vendor> selectVendorList() {
+	public List<Vendor> selectVendorList(@RequestBody Vendor vendor) {
 
-		return vendorService.selectVendorList();
+		return vendorService.selectVendorList(vendor);
 	};
 
 	@RequestMapping(value = "/updateVendor", method = RequestMethod.POST)

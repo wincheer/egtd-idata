@@ -7,6 +7,7 @@ public class Vendor {
 	private String vendorFullName;
 	private String contactName;
 	private String contactMobile;
+	private String vendorCategory;
 
 	public Integer getId() {
 		return id;
@@ -46,5 +47,13 @@ public class Vendor {
 
 	public void setContactMobile(String contactMobile) {
 		this.contactMobile = contactMobile;
+	}
+
+	public String getVendorCategory() {
+		return vendorCategory;
+	}
+
+	public void setVendorCategory(String vendorCategory) {
+		this.vendorCategory = vendorCategory;
 	}
 }

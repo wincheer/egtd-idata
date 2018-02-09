@@ -8,6 +8,7 @@
     <result column="vendor_full_name" jdbcType="VARCHAR" property="vendorFullName" />
     <result column="contact_name" jdbcType="VARCHAR" property="contactName" />
     <result column="contact_mobile" jdbcType="VARCHAR" property="contactMobile" />
+    <result column="vendor_category" jdbcType="VARCHAR" property="vendorCategory" />
   </resultMap>
 
   <select id="selectVendorByPK" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -29,6 +30,7 @@
       <if test="vendorFullName != null">vendor_full_name,</if>
       <if test="contactName != null">contact_name,</if>
       <if test="contactMobile != null">contact_mobile,</if>
+      <if test="vendorCategory != null">vendor_category,</if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">#{id,jdbcType=INTEGER},</if>
@@ -36,6 +38,7 @@
       <if test="vendorFullName != null">#{vendorFullName,jdbcType=VARCHAR},</if>
       <if test="contactName != null">#{contactName,jdbcType=VARCHAR},</if>
       <if test="contactMobile != null">#{contactMobile,jdbcType=VARCHAR},</if>
+      <if test="vendorCategory != null">#{vendorCategory,jdbcType=VARCHAR},</if>
     </trim>
   </insert>
   
@@ -46,13 +49,21 @@
       <if test="vendorFullName != null">vendor_full_name = #{vendorFullName,jdbcType=VARCHAR},</if>
       <if test="contactName != null">contact_name = #{contactName,jdbcType=VARCHAR},</if>
       <if test="contactMobile != null">contact_mobile = #{contactMobile,jdbcType=VARCHAR},</if>
+      <if test="vendorCategory != null">vendor_category = #{vendorCategory,jdbcType=VARCHAR},</if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
   
-  <select id="selectVendorList" resultMap="BaseResultMap">
+  <select id="selectVendorList" parameterType="com.idata.gtd.entity.Vendor" resultMap="BaseResultMap">
     select * 
-    from vendor
+    from vendor where 1=1
+    <trim prefix=" and (" suffix=")" suffixOverrides="and">
+    	<if test="vendorName != null">vendor_name = #{vendorName,jdbcType=VARCHAR} and </if>
+		<if test="vendorFullName != null">vendor_full_name = #{vendorFullName,jdbcType=VARCHAR} and </if>
+		<if test="contactName != null">contact_name = #{contactName,jdbcType=VARCHAR} and </if>
+		<if test="contactMobile != null">contact_mobile = #{contactMobile,jdbcType=VARCHAR} and </if>
+		<if test="vendorCategory != null">vendor_category = #{vendorCategory,jdbcType=VARCHAR} and </if>
+	</trim>
   </select>
   
   <select id="selectVendorListByProject" parameterType="java.lang.Integer" resultMap="BaseResultMap">

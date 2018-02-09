@@ -30,9 +30,9 @@ public class VendorService {
 	@Autowired
 	private EmployeeMapper empDao;
 
-	public List<Vendor> selectVendorList() {
+	public List<Vendor> selectVendorList(Vendor vendor) {
 
-		List<Vendor> vendorList = vendorDao.selectVendorList();
+		List<Vendor> vendorList = vendorDao.selectVendorList(vendor);
 		logger.info("查询供应商列表...");
 
 		return vendorList;

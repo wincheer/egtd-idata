@@ -2,7 +2,7 @@
   <section>
     <el-tabs type="border-card" v-model="activeName" style="margin-top: 20px;">
       <el-tab-pane name="first">
-        <span slot="label"><i class="el-icon-service"></i>建设单位</span>
+        <span slot="label"><i class="el-icon-goods"></i>建设单位</span>
         <el-row :gutter="20">
           <el-col :span="8">
             <el-card>
@@ -37,16 +37,19 @@
           </el-col>
         </el-row>
       </el-tab-pane>
+      <el-tab-pane name="third">
+        <span slot="label"><i class="el-icon-view"></i> 监理单位</span>
+      </el-tab-pane>
       <el-tab-pane name="second">
-        <span slot="label"><i class="el-icon-menu"></i> 服务单位</span>
+        <span slot="label"><i class="el-icon-menu"></i> 承建设单位</span>
         <el-row :gutter="20">
           <el-col :span="10">
             <el-card>
               <div slot="header" class="clearfix">
-                <span>服务单位</span>
-                <el-button @click="openAddVendor" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加供应商</el-button>
+                <span>承建设单位</span>
+                <el-button @click="openAddVendor" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加承建设单位</el-button>
               </div>
-              <el-table :data="vendorList" highlight-current-row @current-change="onVendorChange">
+              <el-table :data="builderList" highlight-current-row @current-change="onVendorChange">
                 <el-table-column label="名称" prop="vendorName" ></el-table-column>
                 <!-- <el-table-column label="全称" prop="vendorFullName"></el-table-column> -->
                 <el-table-column label="联系人" prop="contactName" ></el-table-column>
@@ -63,8 +66,8 @@
           <el-col :span="14">
             <el-card>
               <div slot="header" class="clearfix">
-                <span>供应商员工</span>
-                <el-button @click="openAddVendorEmp" :disabled="vendorEmpObj.orgId==''" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加供应商员工</el-button>
+                <span>承建设单位员工</span>
+                <el-button @click="openAddVendorEmp" :disabled="vendorEmpObj.orgId==''" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加承建设单位员工</el-button>
               </div>
               <el-table :data="vendorEmpList">
                 <el-table-column label="姓名" prop="empName" ></el-table-column>
@@ -129,10 +132,10 @@
         </el-form-item>
       </el-form>
     </el-dialog>
-    <el-dialog :title="vendorObj.id==''?'增加供应商':'编辑供应商'" :visible.sync="dlgVendorEditVis" width="30%">
+    <el-dialog :title="vendorObj.id==''?'增加承建设单位':'编辑承建设单位'" :visible.sync="dlgVendorEditVis" width="30%">
       <el-form :model="vendorObj" :rules="vendorObjRules" ref="vendorForm" label-width="80px">
         <el-form-item label="名称" prop="vendorName">
-          <el-input type="text" v-model="vendorObj.vendorName" placeholder="供应商公司名称"></el-input>
+          <el-input type="text" v-model="vendorObj.vendorName" placeholder="承建设单位公司名称"></el-input>
         </el-form-item>
         <el-form-item label="全称" prop="vendorFullName">
           <el-input type="text" v-model="vendorObj.vendorFullName"></el-input>
@@ -149,7 +152,7 @@
         </el-form-item>
       </el-form>
     </el-dialog>
-    <el-dialog :title="vendorEmpObj.id==''?'增加供应商员工':'编辑供应商员工'" :visible.sync="dlgVendorEmpEditVis" width="30%">
+    <el-dialog :title="vendorEmpObj.id==''?'增加承建设单位员工':'编辑承建设单位员工'" :visible.sync="dlgVendorEmpEditVis" width="30%">
       <el-form :model="vendorEmpObj" :rules="vendorEmpObjRules" ref="vendorEmpForm" label-width="80px">
         <el-form-item label="姓名" prop="empName">
           <el-input type="text" v-model="vendorEmpObj.empName"></el-input>
@@ -201,7 +204,7 @@ export default {
       activeName: "first",
       depTreeList: [],
       depEmpList: [],
-      vendorList: [],
+      builderList: [], //承建设单位
       vendorEmpList: [],
       dlgDepEditVis: false,
       dlgDepEmpEditVis: false,
@@ -247,7 +250,7 @@ export default {
         contactMobile:""
       },
       vendorObjRules: {
-        vendorName: [{ required: true, message: "请输入供应商名称", trigger: "blur" }],
+        vendorName: [{ required: true, message: "请输入承建设单位名称", trigger: "blur" }],
         contactName: [{ required: true, message: "请输入联系人姓名", trigger: "blur" }],
         contactMobile: [{ required: true, message: "请输入联系电话(手机)", trigger: "blur" },{ min: 8, max: 11, message: '电话号码长度为8-11个字符', trigger: 'blur' }]
       },
@@ -291,11 +294,11 @@ export default {
     },
     selectVendorList(){
       var _this = this;
-      SELECT_VENDOR_LIST().then(res => {
+      SELECT_VENDOR_LIST({vendorCategory:'builder'}).then(res => {
         if (!Array.isArray(res))
-          _this.$message({ message: "获取供应商失败，请联系系统管理员。", type: "error" });
+          _this.$message({ message: "获取承建设单位失败，请联系系统管理员。", type: "error" });
         else {
-          _this.vendorList = res;
+          _this.builderList = res;
         }
       });
     },
@@ -303,7 +306,7 @@ export default {
       var _this = this;
       SELECT_VENDOR_EMP_LIST({ id: orgId }).then(res => {
         if (!Array.isArray(res))
-          _this.$message({ message: "获取供应商员工失败，请联系系统管理员。", type: "error" });
+          _this.$message({ message: "获取承建设单位员工失败，请联系系统管理员。", type: "error" });
         else {
           _this.vendorEmpList = res;
         }
@@ -357,7 +360,7 @@ export default {
           UPDATE_VENDOR(_this.vendorObj).then(data => {
             _this.logining = false;
             if (data == "") {
-              _this.$message({ message: "更新供应商失败，请联系系统管理员。", type: "error" });
+              _this.$message({ message: "更新承建设单位失败，请联系系统管理员。", type: "error" });
             } else {
               _this.selectVendorList();
               _this.dlgVendorEditVis = false;
@@ -474,7 +477,7 @@ export default {
         }).then(() => {
           DELETE_VENDOR({ id: row.id }).then(res => {
             _this.$message({ message: "删除成功", type: "success" });
-            _this.selectVendorList(row.orgId);
+            _this.selectVendorList();
             _this.vendorEmpList = [];
           });
         });
@@ -496,7 +499,7 @@ export default {
       this.depEmpObj.orgId = data.id;
     },
     onVendorChange(data) {
-      // 查询当前供应商的员工
+      // 查询当前承建设单位的员工
       this.selectVendorEmpList(data.id);
       this.vendorEmpObj.orgId = data.id;
     },
