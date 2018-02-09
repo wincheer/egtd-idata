@@ -75,7 +75,7 @@
         </div>
       </el-dialog>
       <!--消息中心-->
-      <el-dialog title="消息中心" :visible.sync="dlgMsgListVis" width="30%">
+      <el-dialog title="消息中心" :visible.sync="dlgMsgListVis" width="550px">
         <el-tabs v-model="avtiveMsgTab" type="card">
           <el-tab-pane label="新消息" name="latest">
             <el-table :data="latestMsgList" stripe :show-header="false" highlight-current-row @current-change="rowChange">

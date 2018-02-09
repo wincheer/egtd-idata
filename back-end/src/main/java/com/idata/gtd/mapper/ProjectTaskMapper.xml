@@ -134,9 +134,14 @@
     where parent !=0 and actor_staff_id = #{empId,jdbcType=INTEGER} OR assign_staff_id = #{empId,jdbcType=INTEGER}
   </select>
   <select id="selectMyTaskListIn" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select * 
-    from project_task
-    where parent !=0 and actor_staff_id = #{empId,jdbcType=INTEGER}
+    SELECT
+		project_task.*
+	FROM
+		project_task
+	LEFT JOIN message ON message.relation_id = project_task.id
+	WHERE
+		project_task.parent !=0 AND message.is_exec = 1
+	AND project_task.actor_staff_id = #{empId,jdbcType=INTEGER}
   </select>
   <select id="selectMyTaskListOut" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select * 
