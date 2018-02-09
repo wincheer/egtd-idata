@@ -1,33 +1,33 @@
 <template>
-  <el-dialog :title="'任务：'+task.text" :visible.sync="isShow" width="40%" :close-on-click-modal="false" :before-close="closeTaskForm">
-    <el-form :model="task" :rules="taskObjRules" ref="taskForm" label-width="80px" label-position="right"> 
+  <el-dialog :title="'任务：'+task.text" :visible.sync="isShow" width="480px" :close-on-click-modal="false" :before-close="closeTaskForm">
+    <el-form :model="task" :rules="taskObjRules" ref="taskForm" label-width="80px" label-position="right" size="mini"> 
         <el-row :gutter="10">
-            <el-col :span="12">
+            <el-col :span="11">
             <el-form-item label="任务名称" prop="text">
-                <el-input v-model="task.text" placeholder="新任务" :disabled="whoami.indexOf('asigner')==-1"></el-input>
+                <el-input v-model="task.text" placeholder="新任务" :disabled="whoami.indexOf('asigner')==-1" style="width:120px"></el-input>
             </el-form-item>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="13">
             <el-form-item label="计划工时" prop="planWorkload">
-                <el-input-number v-model="task.planWorkload" :disabled="whoami.indexOf('asigner')==-1" :min="0" :max="1000" style="width:160px"></el-input-number> 小时
+                <el-input-number v-model="task.planWorkload" :disabled="whoami.indexOf('asigner')==-1" :min="0" :max="1000" style="width:120px"></el-input-number> 小时
             </el-form-item>
             </el-col>
         </el-row>
         <el-form-item label="任务描述"  style="margin-right: 10px;" prop="taskDesc">
             <el-input v-model="task.taskDesc" :disabled="whoami.indexOf('asigner')==-1" placeholder="填写任务要求" type="textarea"></el-input>
             <el-upload ref="uploadStandard" action="any" :disabled="whoami.indexOf('asigner')==-1" :http-request="updateTaskWithFile" :on-preview="downloadFile" :on-remove="onFileRemove" :auto-upload="false" :file-list="taskStandardFileList">
-            <el-button slot="trigger" :disabled="whoami.indexOf('asigner')==-1" size="mini">任务要求附件 ...</el-button>
+            <el-button slot="trigger" :disabled="whoami.indexOf('asigner')==-1" >任务要求附件 ...</el-button>
             </el-upload>
         </el-form-item>
         <el-row :gutter="10">
             <el-col :span="12">
             <el-form-item label="开始日期" prop="start_date">
-                <el-date-picker v-model="task.start_date" :disabled="whoami.indexOf('asigner')==-1" placeholder="选择开始日期"></el-date-picker>
+                <el-date-picker v-model="task.start_date" :disabled="whoami.indexOf('asigner')==-1" placeholder="选择开始日期" style="width:135px"></el-date-picker>
             </el-form-item>
             </el-col>
             <el-col :span="12">
             <el-form-item label="结束日期" prop="end_date">
-                <el-date-picker v-model="task.end_date" :disabled="whoami.indexOf('asigner')==-1" placeholder="选择结束日期"></el-date-picker>
+                <el-date-picker v-model="task.end_date" :disabled="whoami.indexOf('asigner')==-1" placeholder="选择结束日期" style="width:135px"></el-date-picker>
             </el-form-item>
             </el-col>
         </el-row>
@@ -62,11 +62,15 @@
             <el-button slot="trigger" :disabled="whoami.indexOf('actor')==-1" size="mini">任务结果附件 ...</el-button>
             </el-upload>
         </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="uploadFile">保存</el-button>
+          <el-button @click="closeTaskForm">取消</el-button>
+        </el-form-item>
     </el-form>
-    <div slot="footer" class="dialog-footer">
-    <el-button @click="closeTaskForm">取消</el-button>
-    <el-button type="primary" @click="uploadFile">保存</el-button>
-    </div>
+    <!-- <div slot="footer" class="dialog-footer">
+      <el-button @click="closeTaskForm">取消</el-button>
+      <el-button type="primary" @click="uploadFile">保存</el-button>
+    </div> -->
   </el-dialog>
 </template>
 

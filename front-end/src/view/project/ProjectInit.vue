@@ -47,7 +47,7 @@
     </el-table>
     <!-- 编辑框 -->
     <el-dialog :title="projectObj.id==''?'新建项目':'编辑项目'" :visible.sync="dlgProjectEditVis" width="500px" :close-on-click-modal="false">
-      <el-form :model="projectObj" :rules="projectObjRules" ref="projectForm" label-width="80px">
+      <el-form :model="projectObj" :rules="projectObjRules" ref="projectForm" label-width="80px" size="mini">
         <el-row>
           <el-col :span="13">
             <el-form-item label="项目名称" prop="projectName">
