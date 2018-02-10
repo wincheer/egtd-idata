@@ -788,6 +788,7 @@ export default {
                 _this.dlgProjectContractEditVis = false;
                 _this.selectProjectContractList(_this.selectedProject.id);
                 _this.selectProjectStaffList(_this.selectedProject.id);
+                _this.selectEmployeeGroup(_this.selectedProject.id);
               }
             }
           );
@@ -896,6 +897,7 @@ export default {
             _this.$message({ message: "删除成功", type: "success" });
             _this.selectProjectContractList(row.projectId);
             _this.selectProjectStaffList(row.id);
+            _this.selectEmployeeGroup(_this.selectedProject.id);
           });
         });
     },

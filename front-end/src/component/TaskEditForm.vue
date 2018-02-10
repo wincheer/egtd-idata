@@ -273,7 +273,7 @@ export default {
     },
     taskMode() {
       if (this.$props.task.id) return "update";
-      else return "update";
+      else return "create";
     }
   },
   mounted() {},

@@ -185,11 +185,10 @@ export default {
       let params = {
         pageNo: _this.pageNo_in,
         pageSize: _this.pageSize,
-        filter: {actor_staff_id: this.$store.state.loginUser.id}
+        filter: {actorStaffId: this.$store.state.loginUser.id}
       };
       SELECT_TASK_PAGE_LIST(params).then(
         res => {
-          //this.myTaskListIn = res;
           _this.total_in = res.total;
           _this.myTaskListIn = res.rows;
         }
@@ -200,7 +199,7 @@ export default {
       let params = {
         pageNo: _this.pageNo_out,
         pageSize: _this.pageSize,
-        filter: {assign_staff_id: this.$store.state.loginUser.id}
+        filter: {assignStaffId: this.$store.state.loginUser.id}
       };
       SELECT_TASK_PAGE_LIST(params).then(
         res => {

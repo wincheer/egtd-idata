@@ -171,8 +171,8 @@
           </el-tab-pane>
         </el-tabs>
         <div slot="footer">
-          <el-button @click="execMessage(3)" size="mini" type="success" icon="el-icon-check">同意</el-button>
-          <el-button @click="refuseMessage(2)" size="mini" type="primary" icon="el-icon-close">拒绝</el-button>
+          <el-button :disabled="selectedMsg.isRead===1" @click="execMessage(3)" size="mini" type="success" icon="el-icon-check">同意</el-button>
+          <el-button :disabled="selectedMsg.isRead===1" @click="refuseMessage(2)" size="mini" type="primary" icon="el-icon-close">拒绝</el-button>
           <el-button @click.native="dlgAuditProjecyVis = false" size="mini" >关闭</el-button>
         </div>
       </el-dialog>
@@ -490,6 +490,7 @@ export default {
       }
     },
     viewDetail(row) {
+      this.selectedMsg = row;
       if (row.type === "audit") {
         this.dlgTitle = "审批项目计划";
         this.selectProjectStageList(row.relationId);
@@ -512,6 +513,7 @@ export default {
           DELETE_MESSAGE({ id: row.id }).then(res => {
             _this.$message({ message: "删除成功", type: "success" });
             _this.selectHistoryMessageList();
+            _this.selectMyMessageList();
           });
         });
     },
@@ -524,6 +526,7 @@ export default {
         if (this.selectedMsg.type === "audit") _this.dlgAuditProjecyVis = false;
         else _this.dlgConfirmTaskVis = false;
         _this.selectHistoryMessageList();
+        _this.selectMyMessageList();
       });
     },
     refuseMessage(exec) {
