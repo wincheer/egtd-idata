@@ -9,7 +9,7 @@
 <script>
 import Scheduler from "@/component/Scheduler.vue";
 import TaskEditForm from "@/component/TaskEditForm.vue";
-import { SELECT_TASK_LIST } from "@/config/api";
+import { SELECT_TASK_PAGE_LIST } from "@/config/api";
 import { formatDate } from "@/util/date.js";
 export default {
   components: { Scheduler, TaskEditForm },
@@ -34,13 +34,18 @@ export default {
     },
     selectMyTaskList() {
       var _this = this;
-      SELECT_TASK_LIST({ actorStaffId: this.$store.state.loginUser.id }).then(
+      let params = {
+        pageNo: 1,
+        pageSize: 100000,
+        filter: {actorStaffId: this.$store.state.loginUser.id}
+      };
+      SELECT_TASK_PAGE_LIST(params).then(
         res => {
-          for (var i = 0; i < res.length; i++) {
-            res[i].start_date = _this.fmtDate(res[i].start_date);
-            res[i].end_date = _this.fmtDate(res[i].end_date);
+          for (var i = 0; i < res.rows.length; i++) {
+            res.rows[i].start_date = _this.fmtDate(res.rows[i].start_date);
+            res.rows[i].end_date = _this.fmtDate(res.rows[i].end_date);
           }
-          _this.events = res;
+          _this.events = res.rows;
         }
       );
     }

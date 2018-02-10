@@ -228,12 +228,12 @@
         </el-tabs>
         <div slot="footer">
           <el-button-group v-if="selectedMsg && selectedMsg.type!=='normal'">
-            <el-button @click="execMessage(3)" size="mini" type="success" icon="el-icon-check">确认完成</el-button>
-            <el-button @click="refuseMessage(4)" size="mini" type="danger" icon="el-icon-close">拒绝</el-button>
+            <el-button :disabled="selectedMsg.isRead===1" @click="execMessage(3)" size="mini" type="success" icon="el-icon-check">确认完成</el-button>
+            <el-button :disabled="selectedMsg.isRead===1" @click="refuseMessage(4)" size="mini" type="danger" icon="el-icon-close">拒绝</el-button>
             <el-select size="mini" style="width:120px" v-model="nextChecker" clearable value-key="id">
               <el-option v-for="item in projectEmployeeList" :key="item.id" :label="item.empName" :value="item" />
             </el-select>
-            <el-button @click="forwardTask(2)" size="mini" type="primary" icon="el-icon-share" :disabled="nextChecker===''">再确认</el-button>
+            <el-button  @click="forwardTask(2)" size="mini" type="primary" icon="el-icon-share" :disabled="selectedMsg.isRead===1 || nextChecker===''">再确认</el-button>
           </el-button-group>
           <el-button @click.native="dlgConfirmTaskVis = false" size="mini" >关闭</el-button>
         </div>
