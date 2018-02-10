@@ -67,10 +67,6 @@
           <el-button @click="closeTaskForm">取消</el-button>
         </el-form-item>
     </el-form>
-    <!-- <div slot="footer" class="dialog-footer">
-      <el-button @click="closeTaskForm">取消</el-button>
-      <el-button type="primary" @click="uploadFile">保存</el-button>
-    </div> -->
   </el-dialog>
 </template>
 
@@ -141,7 +137,6 @@ export default {
       });
     },
     downloadFile(file) {
-      //console.log("Hello,Baby");
       let link = document.createElement("a");
       link.href = base + "/download?docId=" + file.id;
       link.target = "_BLANK";

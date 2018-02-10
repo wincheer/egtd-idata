@@ -95,7 +95,7 @@
             </el-table>
           </el-tab-pane>
           <el-tab-pane label="历史消息" name="history">
-            <el-table :data="historyMsgList" stripe :show-header="false" highlight-current-row @current-change="rowChange">
+            <el-table :data="historyMsgList" stripe :show-header="false" highlight-current-row>
               <el-table-column type="expand">
                 <template slot-scope="props">
                   <span>{{ props.row.body }}</span>

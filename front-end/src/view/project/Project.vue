@@ -39,7 +39,7 @@ export default {
   methods: {
     closeTaskForm() {
       this.taskFormVis = false;
-      //this.selectMyTaskList();
+      this.selectTaskList(this.selectedProject);
     },
     selectMyProjectList(empCode) {
       var _this = this;
@@ -103,7 +103,8 @@ export default {
         start_date: new Date(),
         projectId: this.selectedProject.id,
         parent: this.selectedTask.id, //隐藏字段
-        assignStaffId: this.$store.state.loginUser.id
+        assignStaffId: this.$store.state.loginUser.id,
+        priority:60
       };
       this.taskFormVis = true;
     }
