@@ -94,7 +94,7 @@
 </template>
 
 <script>
-import VendorList from "@/view/setup/pagelet/VendorList.vue";
+import VendorList from "@/view/setup/_pagelet/VendorList.vue";
 import { 
   SELECT_DEP_TREE_LIST, 
   UPDATE_DEP, 
