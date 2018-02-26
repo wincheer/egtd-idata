@@ -5,7 +5,7 @@
 <script>
 import "dhtmlx-gantt";
 import "dhtmlx-gantt/codebase/locale/locale_cn.js";
-
+import { SELECT_EMPLOYEE_LIST} from "@/config/api";
 export default {
   name: "gantt",
   props: {
@@ -16,6 +16,11 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      projectStaffList: []
+    };
+  },
   methods: {
     myFunc: function(task) {
       if (task.priority == 1)
@@ -25,9 +30,21 @@ export default {
           "</div>"
         );
       return task.text;
+    },
+    formatEmp: function(task) {
+      for (var i = 0; i < this.projectStaffList.length; i++) {
+        if (this.projectStaffList[i].id === task.actorStaffId)
+          return this.projectStaffList[i].empName;
+      }
+      return task.actorStaffId;
     }
   },
   mounted() {
+    var _this = this;
+    SELECT_EMPLOYEE_LIST().then(res => {
+      _this.projectStaffList = res;
+    });
+
     gantt.attachEvent("onTaskSelected", id => {
       let task = gantt.getTask(id);
       this.$emit("task-selected", task);
@@ -128,11 +145,17 @@ export default {
       {
         name: "text",
         label: "任务名称",
-        width: "240",
+        width: "120",
         resize: true,
         tree: true,
-        width: "*",
         template: this.myFunc
+      },
+      {
+        name: "actorStaffId",
+        label: "接收人",
+        width: "60",
+        resize: true,
+        template: this.formatEmp
       },
       {
         name: "start_date",
