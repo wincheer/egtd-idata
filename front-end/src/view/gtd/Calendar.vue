@@ -7,8 +7,8 @@
 </template>
 
 <script>
-import Scheduler from "@/component/Scheduler.vue";
-import TaskEditForm from "@/component/TaskEditForm.vue";
+import Scheduler from "@/view/gtd/_pagelet/Scheduler.vue";
+import TaskEditForm from "@/view/_pagelet/TaskEditForm.vue";
 import { SELECT_TASK_PAGE_LIST } from "@/config/api";
 import { formatDate } from "@/util/date.js";
 export default {

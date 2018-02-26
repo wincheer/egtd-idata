@@ -56,8 +56,8 @@
 </template>
 
 <script>
-import TaskEditForm from "@/component/TaskEditForm.vue";
-import SimpleChart from "@/component/SimpleChart.vue";
+import TaskEditForm from "@/view/_pagelet/TaskEditForm.vue";
+import SimpleChart from "@/view/gtd/_pagelet/SimpleChart.vue";
 import {
   SELECT_TASK_PAGE_LIST,
   SELECT_EMPLOYEE_LIST,

@@ -16,8 +16,8 @@
 </template>
 
 <script>
-import Gantt from "@/component/Gantt.vue";
-import TaskEditForm from "@/component/TaskEditForm.vue";
+import Gantt from "@/view/project/_pagelet/Gantt.vue";
+import TaskEditForm from "@/view/_pagelet/TaskEditForm.vue";
 import { SELECT_MY_PROJECT_LIST, SELECT_PROJECT_TASK_LIST } from "@/config/api";
 import { formatDate } from "@/util/date.js";
 import base from "@/config/remote";
