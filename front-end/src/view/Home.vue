@@ -69,8 +69,6 @@ import avatar from "@/assets/logo.png";
 import ChangePwd from "@/view/_pagelet/ChangePwd.vue";
 import MessageCenter from "@/view/_pagelet/MessageCenter.vue";
 import { SELECT_MESSAGE_PAGE_LIST } from "@/config/api";
-import { formatDate } from "@/util/date.js";
-import base from "@/config/remote";
 export default {
   components: { ChangePwd, MessageCenter },
   data() {
