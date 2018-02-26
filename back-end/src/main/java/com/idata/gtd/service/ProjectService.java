@@ -94,13 +94,13 @@ public class ProjectService {
 	public int deleteProject(Integer projectId) {
 
 		projectDao.deleteProjectByPK(projectId);
-		//TODO 同时删除当前项目下的相关内容
-		//项目合同、项目组、项目组成员、项目任务
-//		groupDao.deleteProjectGroups(projectId);
-//		staffDao.deleteStaffs(projectId);
-//		taskDao.deleteProjectTasks(projectId);
-//		contractDao.deleteProjectContracts(projectId);
-//		documentService.deleteDocuments(projectId);
+		// TODO 同时删除当前项目下的相关内容
+		// 项目合同、项目组、项目组成员、项目任务
+		// groupDao.deleteProjectGroups(projectId);
+		// staffDao.deleteStaffs(projectId);
+		// taskDao.deleteProjectTasks(projectId);
+		// contractDao.deleteProjectContracts(projectId);
+		// documentService.deleteDocuments(projectId);
 
 		return 0;
 	}
@@ -374,6 +374,11 @@ public class ProjectService {
 				traverseTree(_node, projectId, objName, empId);
 			}
 		}
+	}
+
+	public List<Employee> selectProjectLeaderList(Integer ProjectId) {
+
+		return empDao.selectProjectLeaderList(ProjectId);
 	}
 
 }

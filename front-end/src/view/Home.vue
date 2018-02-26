@@ -171,8 +171,8 @@
           </el-tab-pane>
         </el-tabs>
         <div slot="footer">
-          <el-button :disabled="selectedMsg.isRead===1" @click="execMessage(3)" size="mini" type="success" icon="el-icon-check">同意</el-button>
-          <el-button :disabled="selectedMsg.isRead===1" @click="refuseMessage(2)" size="mini" type="primary" icon="el-icon-close">拒绝</el-button>
+          <el-button :disabled="selectedMsg.isExec===1" @click="execMessage(3)" size="mini" type="success" icon="el-icon-check">同意</el-button>
+          <el-button :disabled="selectedMsg.isExec===1" @click="refuseMessage(2)" size="mini" type="primary" icon="el-icon-close">拒绝</el-button>
           <el-button @click.native="dlgAuditProjecyVis = false" size="mini" >关闭</el-button>
         </div>
       </el-dialog>

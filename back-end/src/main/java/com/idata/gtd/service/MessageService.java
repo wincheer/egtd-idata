@@ -45,7 +45,7 @@ public class MessageService {
 
 		msg.setTime(new Date());
 		if (msg.getType().equals("audit")) { // 提醒审核的消息
-			msg.setTo(projectService.selectProjectLeader(msg.getRelationId()).getId());
+			//msg.setTo(projectService.selectProjectLeader(msg.getRelationId()).getId());
 			// 同时更新项目的审批状态状态为 "wait"
 			Project project = new Project();
 			project.setId(msg.getRelationId());

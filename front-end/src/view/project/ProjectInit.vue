@@ -28,9 +28,9 @@
       <el-table-column prop="actorStaffId" label="项目经理" :formatter="fmtEmp"></el-table-column>
       <el-table-column prop="startDate" label="启动时间" :formatter="fmtDate"></el-table-column>
       <el-table-column prop="endDate" label="结束时间" :formatter="fmtDate"></el-table-column>
-      <el-table-column label="操作" width="250">
+      <el-table-column label="操作" width="260">
         <template slot-scope="scope">
-          <el-dropdown  trigger="click">
+          <el-dropdown trigger="click">
             <el-button size="mini" type="primary" :disabled="scope.row.ownerId !== $store.state.loginUser.id">编辑<i class="el-icon-arrow-down el-icon--right"></i></el-button>
             <el-dropdown-menu slot="dropdown">
               <!-- <el-dropdown-item @click.native="openEditProject(scope.row)">项目</el-dropdown-item> -->
@@ -40,8 +40,13 @@
             </el-dropdown-menu>
           </el-dropdown>
           <el-button size="mini" type="danger" @click="delProject(scope.row)" :disabled="scope.row.ownerId !== $store.state.loginUser.id">删除</el-button>
-          <!-- <el-button size="mini" type="warning" @click="applyAudit(scope.row)" :disabled="(scope.row.ownerId !== $store.state.loginUser.id) || scope.row.auditState==='wait' || scope.row.auditState==='ready'">申请审批</el-button> -->
-          <el-button size="mini" type="warning" @click="applyAudit(scope.row)" v-if="projectReadyStatus === 'success' && (scope.row.ownerId === $store.state.loginUser.id) && scope.row.auditState==='init'">申请审批</el-button>
+          <!-- <el-button size="mini" type="warning" @click="applyAudit(scope.row)" v-if="projectReadyStatus === 'success' && (scope.row.ownerId === $store.state.loginUser.id) && scope.row.auditState==='init'">申请审批</el-button> -->
+          <el-dropdown trigger="click" @command="applyAudit" v-if="projectReadyStatus === 'success' && (scope.row.ownerId === $store.state.loginUser.id) && scope.row.auditState==='init'">
+            <el-button size="mini" type="warning" >申请审批<i class="el-icon-arrow-down el-icon--right"></i></el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item v-for="item in projectLeaders" :key="item.id" :command="item.id">{{item.empName}}</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </template>
       </el-table-column>
     </el-table>
@@ -300,7 +305,8 @@ import {
   SELECT_DEP_TREE_LIST,
   UPDATE_MESSAGE,
   SELECT_TPL_PROJECT_LIST,
-  CREATE_PROJECT_FROM_TPL
+  CREATE_PROJECT_FROM_TPL,
+  SELECT_PROJECT_LEADER_LIST
 } from "@/config/api";
 import { formatDate } from "@/util/date.js";
 import { getNodePath, getNode } from "@/util/treeUtil.js";
@@ -433,7 +439,8 @@ export default {
       vendorList: [],
       projectVendorList: [],
       ownerProjectEmpList: [],
-      tplList: []
+      tplList: [],
+      projectLeders:[]
     };
   },
   methods: {
@@ -519,6 +526,19 @@ export default {
           });
         else {
           _this.projectList = res;
+        }
+      });
+    },
+    selectProjectLeaderList(projectId) {
+      var _this = this;
+      SELECT_PROJECT_LEADER_LIST({id:projectId}).then(res => {
+        if (!Array.isArray(res))
+          _this.$message({
+            message: "获取项目领导，请联系系统管理员。",
+            type: "error"
+          });
+        else {
+          _this.projectLeaders = res;
         }
       });
     },
@@ -938,6 +958,7 @@ export default {
         //填充项目相关的供应商
         this.selectEmployeeGroup(row.id);
         this.selectProjectStaffList(row.id);
+        this.selectProjectLeaderList(row.id);
       } else this.selectedProject = {};
 
       this.$refs.projectTable.setCurrentRow(row);
@@ -1032,20 +1053,20 @@ export default {
       //return denied;
       conmponent.disabled = denied;
     },
-    applyAudit(row) {
+    applyAudit(leaderId) {
       var _this = this;
       var params = {
         from: this.$store.state.loginUser.id,
-        to: 0, //后台确定
+        to: leaderId, //后台确定
         toScope: "actor",
         title: "项目计划审批",
         body:
           this.$store.state.loginUser.empName +
           "已完成项目 【" +
-          row.projectName +
+          this.selectedProject.projectName +
           "】的项目计划，请您进行审批",
         type: "audit",
-        relationId: row.id
+        relationId: this.selectedProject.id
       };
       UPDATE_MESSAGE(params).then(data => {
         if (data === "") {

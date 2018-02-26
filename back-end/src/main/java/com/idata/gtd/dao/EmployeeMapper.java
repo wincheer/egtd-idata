@@ -45,5 +45,7 @@ public interface EmployeeMapper {
 
 	List<Map<String,Object>> selectMyRoles(Integer empId);
 
-	Employee selectProjectLeader(Integer projectId);    
+	Employee selectProjectLeader(Integer projectId);
+
+	List<Employee> selectProjectLeaderList(Integer projectId);    
 }

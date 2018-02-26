@@ -78,9 +78,9 @@ public class ProjectAction {
 		Integer tplId = (Integer) data.get("tplId");
 		Integer empId = (Integer) data.get("empId");
 		String ProjectName = data.get("projectName") == null ? "未命名项目" : data.get("projectName").toString();
-		return projectService.createProjectFromTpl(tplId,ProjectName,empId);
+		return projectService.createProjectFromTpl(tplId, ProjectName, empId);
 	};
-	
+
 	////////
 
 	@RequestMapping(value = "/selectProjectContractList", method = RequestMethod.POST)
@@ -236,6 +236,14 @@ public class ProjectAction {
 
 		List<Project> myProjectList = projectService.selectMyProjectList(data.getCode());
 		return myProjectList;
+	}
+
+	// 项目中已经分配的人员
+	@RequestMapping(value = "/selectProjectLeaderList", method = RequestMethod.POST)
+	public List<Employee> selectProjectLeaderList(@RequestBody Project data) throws Exception {
+
+		List<Employee> staffList = projectService.selectProjectLeaderList(data.getId());
+		return staffList;
 	}
 
 }
