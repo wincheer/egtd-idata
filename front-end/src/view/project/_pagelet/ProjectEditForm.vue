@@ -1,40 +1,40 @@
 <template>
   <section>
-    <el-dialog :title="project.id?'编辑项目':'新建项目'" :visible.sync="isShow" width="550px" :close-on-click-modal="false" :before-close="closeDialog">
-      <el-form :model="project" :rules="projectObjRules" ref="projectForm" label-width="80px" size="mini">
+    <el-dialog :title="projectObj.id?'编辑项目':'新建项目'" :visible.sync="isShow" width="550px" :close-on-click-modal="false" :before-close="closeDialog">
+      <el-form :model="projectObj" :rules="projectObjRules" ref="projectForm" label-width="80px" size="mini">
         <el-row>
           <el-col :span="13">
             <el-form-item label="项目名称" prop="projectName">
-              <el-input type="text" v-model="project.projectName" />
+              <el-input type="text" v-model="projectObj.projectName" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="类别" prop="category">
-              <el-select v-model="project.category" placeholder="请选择">
+              <el-select v-model="projectObj.category" placeholder="请选择">
                 <el-option v-for="item in categoryParamList" :key="item.id" :label="item.paramDesc" :value="item.paramValue" />
               </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-form-item label="项目描述" prop="projectDesc">
-          <el-input type="textarea" v-model="project.projectDesc"></el-input>
+          <el-input type="textarea" v-model="projectObj.projectDesc"></el-input>
         </el-form-item>
         <el-row>
           <el-col :span="14">
             <el-form-item label="项目金额" prop="amount">
-              <el-input-number type="text" v-model="project.amount" style="width:140px"/> 万元
+              <el-input-number type="text" v-model="projectObj.amount" style="width:140px"/> 万元
             </el-form-item>
           </el-col>
           <el-col :span="10">
             <el-form-item label="关键项目" prop="isKey">
-              <el-switch v-model="project.isKey" active-text="是" inactive-text="否" :active-value="1" :inactive-value="0"></el-switch>
+              <el-switch v-model="projectObj.isKey" active-text="是" inactive-text="否" :active-value="1" :inactive-value="0"></el-switch>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="项目经理" prop="actorStaffId">
-              <el-select v-model="project.actorStaffId" placeholder="甲方项目经理" style="width:140px">
+              <el-select v-model="projectObj.actorStaffId" placeholder="甲方项目经理" style="width:140px">
                 <el-option v-for="item in allDepEmpList" :key="item.id" :label="item.empName" :value="item.id" />
               </el-select>
             </el-form-item>
@@ -46,17 +46,17 @@
           </el-col>
         </el-row>
         <el-form-item label="立项时间" prop="createDate">
-          <el-date-picker type="date" clearable placeholder="立项时间" v-model="project.createDate" style="width:140px"/>
+          <el-date-picker type="date" clearable placeholder="立项时间" v-model="projectObj.createDate" style="width:140px"/>
         </el-form-item>
         <el-row >
           <el-col :span="12">
             <el-form-item label="启动日期" prop="startDate">
-              <el-date-picker type="date" clearable placeholder="启动日期" v-model="project.startDate" style="width:140px"/>
+              <el-date-picker type="date" clearable placeholder="启动日期" v-model="projectObj.startDate" style="width:140px"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="结束日期" prop="endDate">
-              <el-date-picker type="date" clearable placeholder="结束日期" v-model="project.endDate" style="width:140px"/>
+              <el-date-picker type="date" clearable placeholder="结束日期" v-model="projectObj.endDate" style="width:140px"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -89,6 +89,7 @@ export default {
       allDepEmpList: [],
       depTreeList: [],
       depIds: [],
+      projectObj:{},
       projectObjRules: {
         projectName: [
           { required: true, message: "请输入项目名称", trigger: "blur" }
@@ -136,8 +137,8 @@ export default {
       var _this = this;
       this.$refs.projectForm.validate(valid => {
         if (valid) {
-          _this.$props.project.ownerId = _this.$store.state.loginUser.id;
-          UPDATE_PROJECT(_this.$props.project).then(data => {
+          _this.projectObj.ownerId = _this.$store.state.loginUser.id;
+          UPDATE_PROJECT(_this.projectObj).then(data => {
             _this.closeDialog();
             _this.$emit("updateSuccess");
           });
@@ -148,6 +149,7 @@ export default {
   watch: {
     project: {
       handler: function() {
+        this.projectObj = Object.assign({},this.$props.project);
         this.depIds = getNodePath(this.depTreeList, this.$props.project.depId);
       }
     }

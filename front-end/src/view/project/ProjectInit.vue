@@ -40,8 +40,7 @@
             </el-dropdown-menu>
           </el-dropdown>
           <el-button size="mini" type="danger" @click="delProject(scope.row)" :disabled="scope.row.ownerId !== $store.state.loginUser.id">删除</el-button>
-          <!-- <el-button size="mini" type="warning" @click="applyAudit(scope.row)" v-if="projectReadyStatus === 'success' && (scope.row.ownerId === $store.state.loginUser.id) && scope.row.auditState==='init'">申请审批</el-button> -->
-          <el-dropdown trigger="click" @command="applyAudit" v-if="projectReadyStatus === 'success' && (scope.row.ownerId === $store.state.loginUser.id) && scope.row.auditState==='init'">
+          <el-dropdown trigger="click" @command="applyAudit" v-if="projectReadyStatus === 'success' && (scope.row.id === selectedProject.id) && (scope.row.ownerId === $store.state.loginUser.id) && scope.row.auditState==='init'">
             <el-button size="mini" type="warning" >申请审批<i class="el-icon-arrow-down el-icon--right"></i></el-button>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item v-for="item in projectLeaders" :key="item.id" :command="item.id">{{item.empName}}</el-dropdown-item>
