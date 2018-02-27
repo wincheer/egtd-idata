@@ -15,7 +15,7 @@
         <el-button @click.native="closeDialog">取消</el-button>
         <el-button type="primary" @click="updatePwd">提交</el-button>
     </div>
-    </el-dialog>
+  </el-dialog>
 </template>
 
 <script>

@@ -50,382 +50,52 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- 编辑框 -->
-    <el-dialog :title="projectObj.id==''?'新建项目':'编辑项目'" :visible.sync="dlgProjectEditVis" width="500px" :close-on-click-modal="false">
-      <el-form :model="projectObj" :rules="projectObjRules" ref="projectForm" label-width="80px" size="mini">
-        <el-row>
-          <el-col :span="13">
-            <el-form-item label="项目名称" prop="projectName">
-              <el-input type="text" v-model="projectObj.projectName" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="类别" prop="category">
-              <el-select v-model="projectObj.category" placeholder="请选择">
-                <el-option v-for="item in categoryParamList" :key="item.id" :label="item.paramDesc" :value="item.paramValue" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-form-item label="项目描述" prop="projectDesc">
-          <el-input type="textarea" v-model="projectObj.projectDesc"></el-input>
-        </el-form-item>
-        <el-row>
-          <el-col :span="14">
-            <el-form-item label="项目金额" prop="amount">
-              <el-input-number type="text" v-model="projectObj.amount" style="width:140px"/> 万元
-            </el-form-item>
-          </el-col>
-          <el-col :span="10">
-            <el-form-item label="关键项目" prop="isKey">
-              <el-switch v-model="projectObj.isKey" active-text="是" inactive-text="否" :active-value="1" :inactive-value="0"></el-switch>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="项目经理" prop="actorStaffId">
-              <el-select v-model="projectObj.actorStaffId" placeholder="甲方项目经理" style="width:140px">
-                <el-option v-for="item in allDepEmpList" :key="item.id" :label="item.empName" :value="item.id" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="所属部门" prop="depId">
-              <el-cascader :options="depTreeList" :props="{value:'id'}" v-model="depIds" @change="onDepChange" change-on-select clearable style="width:100%" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-form-item label="立项时间" prop="createDate">
-          <el-date-picker type="date" clearable placeholder="立项时间" v-model="projectObj.createDate" style="width:140px"/>
-        </el-form-item>
-        <el-row >
-          <el-col :span="12">
-            <el-form-item label="启动日期" prop="startDate">
-              <el-date-picker type="date" clearable placeholder="启动日期" v-model="projectObj.startDate" style="width:140px"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="结束日期" prop="endDate">
-              <el-date-picker type="date" clearable placeholder="结束日期" v-model="projectObj.endDate" style="width:140px"/>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-form-item>
-          <el-button type="primary" @click="updateProject">保存</el-button>
-          <el-button @click="dlgProjectEditVis = false">取消</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
-    <!--合同-->
-    <!--dlgXXlist-->
-    <el-dialog title="维护项目合同" :visible.sync="dlgProjectContractListVis" width="600px" :close-on-click-modal="false">
-       <el-card>
-        <div slot="header" class="clearfix">
-          <span>项目合同</span>
-          <el-button @click="openAddProjectContract" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加合同</el-button>
-        </div>
-        <el-table :data="projectContractList" highlight-current-row>
-          <el-table-column label="合同" prop="contractName" width="240px"></el-table-column>
-          <el-table-column label="供应商" prop="vendorId" :formatter="fmtVendor" width="100px"></el-table-column>
-          <el-table-column label="操作" width="160px">
-            <template slot-scope="scope">
-              <el-button size="mini" type="primary" @click="openEditProjectContract(scope.row)" >编辑</el-button>
-              <el-button size="mini" type="danger" @click="delProjectContract(scope.row)" >删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-card>
-    </el-dialog>
-    <!--dlgXXEdit-->
-    <el-dialog :title="projectContractObj.id==''?'增加项目合同':'编辑项目合同'" :visible.sync="dlgProjectContractEditVis" width="350px" :close-on-click-modal="false">
-      <el-form :model="projectContractObj" :rules="projectContractObjRules" ref="projectContractForm" label-width="100px" size="mini">
-        <el-form-item label="合同名称" prop="contractName">
-          <el-input type="text" v-model="projectContractObj.contractName" style="width:200px"></el-input>
-        </el-form-item>
-        <el-form-item label="相关供应商" prop="vendorId">
-          <el-select v-model="projectContractObj.vendorId" placeholder="请选择" style="width:150px">
-            <el-option v-for="item in vendorList" :key="item.id" :label="item.vendorName" :value="item.id" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="附件" >
-          <el-upload 
-            ref="upload" 
-            action="any"
-            :http-request="updateProjectContract"
-            :on-change="onFileChange"
-            :on-remove="onFileRemove"
-            :auto-upload="false" 
-            :file-list="contractFileList">
-            <el-button slot="trigger" size="mini">选取合同 ...</el-button>
-          </el-upload>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="uploadFile">保存</el-button>
-          <el-button @click="dlgProjectContractEditVis = false">取消</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
+    <!-- 项目编辑框 -->
+    <project-edit-form :project="projectObj" :isShow="dlgProjectEditVis" @close="dlgProjectEditVis=false" @updateSuccess="selectProjectList"/>
+    <!--项目合同-->
+    <project-contract :projectId="selectedProject.id" :isShow="dlgProjectContractListVis" @close="dlgProjectContractListVis=false"/>
     <!--项目组-->
-    <el-dialog title="配置项目组" :visible.sync="dlgProjectGroupListVis" width="40%" :close-on-click-modal="false">
-      <el-row :gutter="10">
-        <el-col :span="12">
-          <el-card>
-            <div slot="header" class="clearfix">
-              <span>项目组</span>
-              <el-button @click="openAddProjectGroup" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加项目组</el-button>
-            </div>
-            <el-tree :data="projectGroupTreeList" @node-click="onProjectGroupChange" :render-content="renderContent" highlight-current :expand-on-click-node="false" default-expand-all></el-tree>
-          </el-card>
-        </el-col>
-        <el-col :span="12">
-          <el-card>
-            <div slot="header" class="clearfix">
-              <span>项目组成员</span>
-              <el-button @click="openAddProjectStaff" :disabled="projectGroupObj.id == ''" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">维护项目组成员</el-button>
-            </div>
-            <el-table :data="groupStaffList">
-              <el-table-column label="姓名" prop="empName"></el-table-column>
-              <el-table-column label="电话" prop="empMobile"></el-table-column>
-            </el-table>
-          </el-card>
-        </el-col>
-      </el-row>
-    </el-dialog>
-    <el-dialog :title="projectGroupObj.id==''?'增加项目组':'编辑项目组'" :visible.sync="dlgProjectGroupEditVis" width="25%" :close-on-click-modal="false">
-      <el-form :model="projectGroupObj" :rules="projectGroupObjRules" ref="projectGroupForm" label-width="100px">
-        <el-form-item label="上级项目组" prop="parentId">
-          <el-cascader :options="projectGroupTreeList" :props="{value:'id'}" v-model="parentGroupIds" @change="onParentGroupChange" change-on-select clearable style="width:100%" />
-        </el-form-item>
-        <el-form-item label="项目组名称" prop="groupName">
-          <el-input type="text" v-model="projectGroupObj.groupName"></el-input>
-        </el-form-item>
-        <el-form-item label="角色" prop="groupRole">
-          <el-select v-model="projectGroupObj.groupRole" placeholder="请选择">
-            <el-option v-for="item in builtinRoleParamList" :key="item.id" :label="item.paramDesc" :value="item.paramValue" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="项目组描述" prop="vendorId">
-           <el-input type="text" v-model="projectGroupObj.groupDesc"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="updateProjectGroup">保存</el-button>
-          <el-button @click="dlgProjectGroupEditVis = false">取消</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
-    <el-dialog title="维护项目组成员" :visible.sync="dlgProjectStaffEditVis" width="20%" :close-on-click-modal="false">
-      <el-form :model="projectStaffObj" ref="projectStaffObjForm" label-width="80px">
-        <el-form-item label="机构员工">
-            <el-select v-model="selectedProjectStaffs" value-key="id" filterable multiple clearable placeholder="请选择">
-              <el-option-group v-for="group in availableEmployeeGroup" :key="group.branch" :label="group.branch">
-                <el-option v-for="item in group.employeeList" :key="item.id" :label="item.empName" :value="item"></el-option>
-              </el-option-group>
-            </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="updateProjectStaffs">保存</el-button>
-          <el-button @click="dlgProjectStaffEditVis = false">取消</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
+    <project-group :projectId="selectedProject.id" :isShow="dlgProjectGroupListVis"  @close="dlgProjectGroupListVis=false"/>
     <!--项目阶段-->
-    <el-dialog title="分解项目阶段" :visible.sync="dlgProjectStageListVis" width="620px" :close-on-click-modal="false">
-      <el-card>
-        <div slot="header" class="clearfix">
-          <span>项目阶段</span>
-          <el-button @click="openAddProjectStage" icon="el-icon-circle-plus" style="float: right; padding: 3px 0" type="text">增加项目阶段</el-button>
-        </div>
-        <el-table :data="projectStageList" highlight-current-row >
-          <el-table-column label="阶段" prop="text"></el-table-column>
-          <el-table-column label="负责人" prop="actorStaffId" :formatter="fmtEmp"></el-table-column>
-          <el-table-column label="开始日期" prop="start_date" :formatter="fmtDate"></el-table-column>
-          <el-table-column label="结束日期" prop="end_date" :formatter="fmtDate"></el-table-column>
-          <el-table-column label="操作" width="160">
-            <template slot-scope="scope">
-              <el-button size="mini" type="primary" @click="openEditProjectStage(scope.row)" >编辑</el-button>
-              <el-button size="mini" type="danger" @click="delProjectStage(scope.row)" >删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-card>
-    </el-dialog>
-    <el-dialog :title="projectStageObj.id==''?'增加项目阶段':'编辑项目阶段'" :visible.sync="dlgProjectStageEditVis" width="300px" :close-on-click-modal="false">
-      <el-form :model="projectStageObj" :rules="projectStageObjRules" ref="projectStageForm" label-width="80px" size="mini">
-        <el-form-item label="阶段名称" prop="text">
-          <el-input type="text" v-model="projectStageObj.text" style="width:135px"/>
-        </el-form-item>
-        <el-form-item label="启动日期" prop="start_date">
-          <el-date-picker type="date" clearable placeholder="启动日期" v-model="projectStageObj.start_date" style="width:135px"/>
-        </el-form-item>
-        <el-form-item label="结束日期" prop="end_date">
-          <el-date-picker type="date" clearable placeholder="结束日期" v-model="projectStageObj.end_date" style="width:135px"/>
-        </el-form-item>
-        <el-form-item label="负责人" prop="category">
-          <el-select v-model="projectStageObj.actorStaffId" placeholder="请选择" clearable style="width:135px">
-            <el-option v-for="item in ownerProjectEmpList" :key="item.id" :label="item.empName" :value="item.id" />
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="updateProjectStage">保存</el-button>
-          <el-button @click="dlgProjectStageEditVis = false">取消</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
+    <project-stage :projectId="selectedProject.id" :isShow="dlgProjectStageListVis"  @close="dlgProjectStageListVis=false"/>
   </section>
 </template>
 
 <script>
 import {
   SELECT_ALL_DEP_EMP_LIST,
-  SELECT_VENDOR_LIST,
-  SELECT_VENDOR_EMP_LIST,
-  SELECT_PARAM_VALUE_LIST,
   SELECT_PROJECT_LIST,
-  UPDATE_PROJECT,
   DELETE_PROJECT,
-  SELECT_PROJECT_CONTRACT_LIST,
-  UPDATE_PROJECT_CONTRACT,
-  UPDATE_PROJECT_CONTRACT_NO_FILE,
-  DELETE_PROJECT_CONTRACT,
-  SELECT_PROJECT_GROUP_TREE_LIST,
-  UPDATE_PROJECT_GROUP,
-  DELETE_PROJECT_GROUP,
-  SELECT_PROJECT_STAGE_LIST,
-  UPDATE_PROJECT_STAGE,
-  DELETE_PROJECT_STAGE,
-  SELECT_DOCUMENT_LIST,
-  UPDATE_DOCUMENT,
-  DELETE_DOCUMENT,
-  SELECT_GROUP_EMP_LIST,
-  SELECT_AVAILABLE_GROUP_PROJECT_EMPLOYEE_LIST,
-  UPDATE_PROJECT_STAFFS,
-  SELECT_PROJECT_EMPLOYEE_LIST,
   SELECT_OWNER_PROJECT_EMPLOYEE_LIST,
   SELECT_DEP_TREE_LIST,
   UPDATE_MESSAGE,
   SELECT_TPL_PROJECT_LIST,
   CREATE_PROJECT_FROM_TPL,
-  SELECT_PROJECT_LEADER_LIST
+  SELECT_PROJECT_LEADER_LIST,
+  SELECT_PROJECT_CONTRACT_LIST,
+  SELECT_PROJECT_GROUP_TREE_LIST,
+  SELECT_PROJECT_STAGE_LIST
 } from "@/config/api";
+import ProjectEditForm from "@/view/project/_pagelet/ProjectEditForm.vue";
+import ProjectContract from "@/view/project/_pagelet/ProjectContract.vue";
+import ProjectGroup from "@/view/project/_pagelet/ProjectGroup.vue";
+import ProjectStage from "@/view/project/_pagelet/ProjectStage.vue";
 import { formatDate } from "@/util/date.js";
 import { getNodePath, getNode } from "@/util/treeUtil.js";
 export default {
-  props: {},
+  components: { ProjectEditForm, ProjectContract, ProjectGroup, ProjectStage },
   data() {
     return {
-      // projectStatus:'',
-      // projectContractStatus:'',
-      // projectGroupStatus:'',
-      // projectStageStatus:'',
       allDepEmpList: [],
       depTreeList: [],
-      depIds: [],
-      projectObj: {
-        id: "",
-        projectName: "",
-        projectDesc: "",
-        category: "",
-        isKey: 0,
-        isForzen: 0,
-        createDate: "",
-        startDate: "",
-        endDate: "",
-        actorStaffId: "",
-        icon: "",
-        amount: "",
-        ownerId:""
-      },
-      projectObjRules: {
-        projectName: [
-          { required: true, message: "请输入项目名称", trigger: "blur" }
-        ],
-        actorStaffId: [
-          { required: true, message: "请选择项目经理", trigger: "blur" }
-        ],
-        startDate: [
-          { required: true, message: "请输入项目开始时间", trigger: "blur" }
-        ],
-        endDate: [
-          { required: true, message: "请输入项目结束时间", trigger: "blur" }
-        ]
-      },
-      projectContractObj: {
-        id: 0,
-        projectId: "",
-        vendorId: "",
-        contractName: ""
-      },
-      projectContractObjRules: {
-        vendorId: [
-          {
-            required: true,
-            message: "请选择合同相关的供应商",
-            trigger: "blur,change"
-          }
-        ],
-        contractName: [
-          { required: true, message: "请输入合同名称", trigger: "blur" }
-        ]
-      },
-      contractFileList: [],
-      selectedFile: null,
-      projectGroupObj: {
-        id: "",
-        projectId: "",
-        groupName: "",
-        groupRole: "",
-        groupDesc: "",
-        parentId: ""
-      },
-      projectGroupObjRules: {
-        groupName: [
-          { required: true, message: "请输入项目组名称", trigger: "blur" }
-        ]
-      },
-      parentGroupIds: [],
-      projectStaffObj: {
-        id: "",
-        isVendor: 0,
-        groupId: "",
-        empId: "",
-        staffName: "",
-        staffEmail: "",
-        staffMobile: "",
-        password: ""
-      },
-      availableEmployeeGroup: [],
-      selectedProjectStaffs: [],
-
-      projectStageObj: {
-        id: "",
-        projectId: "",
-        text: "",
-        start_date: "",
-        end_date: "",
-        actorStaffId: ""
-      },
-      projectStageObjRules: {
-        text: [
-          { required: true, message: "请输入项目阶段名称", trigger: "blur" }
-        ],
-        start_date: [
-          { required: true, message: "请输入启动时间", trigger: "blur" }
-        ],
-        end_date: [
-          { required: true, message: "请输入结束时间", trigger: "blur" }
-        ]
-      },
-
+      projectObj: {},
       selectedProject: {},
-
       projectList: [],
       projectContractList: [],
       projectGroupTreeList: [],
       projectStaffList: [],
       groupStaffList: [],
       projectStageList: [],
-
       dlgProjectEditVis: false,
       dlgProjectContractEditVis: false,
       dlgProjectContractListVis: false,
@@ -434,13 +104,8 @@ export default {
       dlgProjectStaffEditVis: false,
       dlgProjectStageListVis: false,
       dlgProjectStageEditVis: false,
-      categoryParamList: [],
-      builtinRoleParamList: [],
-      vendorList: [],
-      projectVendorList: [],
-      ownerProjectEmpList: [],
       tplList: [],
-      projectLeders:[]
+      projectLeaders: []
     };
   },
   methods: {
@@ -457,11 +122,6 @@ export default {
         }
       });
     },
-    onDepChange(value) {
-      if (value.length != 0) {
-        this.projectObj.depId = value[value.length - 1];
-      } else this.depObj.parentId = 0;
-    },
     selectAllDepEmpList() {
       var _this = this;
       SELECT_ALL_DEP_EMP_LIST({}).then(res => {
@@ -472,34 +132,6 @@ export default {
           });
         else {
           _this.allDepEmpList = res;
-        }
-      });
-    },
-    selectParamValueList(paramKeyObj) {
-      var _this = this;
-      SELECT_PARAM_VALUE_LIST(paramKeyObj).then(res => {
-        if (!Array.isArray(res))
-          _this.$message({
-            message: "获取参数列表失败，请联系系统管理员。",
-            type: "error"
-          });
-        else {
-          if (paramKeyObj.paramKey == "category") _this.categoryParamList = res;
-          else if (paramKeyObj.paramKey == "built-in-role")
-            _this.builtinRoleParamList = res;
-        }
-      });
-    },
-    selectVendorList(projectId) {
-      var _this = this;
-      SELECT_VENDOR_LIST({ projectId: projectId }).then(res => {
-        if (!Array.isArray(res))
-          _this.$message({
-            message: "获取供应商失败，请联系系统管理员。",
-            type: "error"
-          });
-        else {
-          _this.vendorList = res;
         }
       });
     },
@@ -531,7 +163,7 @@ export default {
     },
     selectProjectLeaderList(projectId) {
       var _this = this;
-      SELECT_PROJECT_LEADER_LIST({id:projectId}).then(res => {
+      SELECT_PROJECT_LEADER_LIST({ id: projectId }).then(res => {
         if (!Array.isArray(res))
           _this.$message({
             message: "获取项目领导，请联系系统管理员。",
@@ -552,17 +184,6 @@ export default {
           });
         else {
           _this.projectContractList = res;
-          _this.projectVendorList.length = 0;
-          for (var i = 0; i < _this.vendorList.length; i++) {
-            var _vendor = _this.vendorList[i];
-            for (var j = 0; j < _this.projectContractList.length; j++) {
-              var _contract = _this.projectContractList[j];
-              if (_vendor.id == _contract.vendorId) {
-                if (_this.projectVendorList.indexOf(_vendor) == -1)
-                  _this.projectVendorList.push(_vendor);
-              } else break;
-            }
-          }
         }
       });
     },
@@ -592,49 +213,6 @@ export default {
         }
       });
     },
-    selectDocumentList(projectContractId) {
-      var _this = this;
-      SELECT_DOCUMENT_LIST({
-        belongTo: "contract",
-        sourceId: projectContractId
-      }).then(res => {
-        if (!Array.isArray(res))
-          _this.$message({
-            message: "获取项目文档文件失败，请联系系统管理员。",
-            type: "error"
-          });
-        else {
-          _this.contractFileList = res;
-        }
-      });
-    },
-    selectGroupStaffList(projectGroupId) {
-      var _this = this;
-      SELECT_GROUP_EMP_LIST({ groupId: projectGroupId }).then(res => {
-        if (!Array.isArray(res))
-          _this.$message({
-            message: "获取项目组成员失败，请联系系统管理员。",
-            type: "error"
-          });
-        else {
-          _this.groupStaffList = res;
-          _this.selectedProjectStaffs = res;
-        }
-      });
-    },
-    selectProjectStaffList(projectId) {
-      var _this = this;
-      SELECT_PROJECT_EMPLOYEE_LIST({ id: projectId }).then(res => {
-        if (!Array.isArray(res))
-          _this.$message({
-            message: "获取项目组成员失败，请联系系统管理员。",
-            type: "error"
-          });
-        else {
-          _this.projectStaffList = res;
-        }
-      });
-    },
     selectOwnerProjectEmpList(projectId) {
       var _this = this;
       SELECT_OWNER_PROJECT_EMPLOYEE_LIST({ id: projectId }).then(res => {
@@ -649,249 +227,21 @@ export default {
       });
     },
     openAddProject() {
-      let btn = this.$refs.btnCreateProject;
+      this.projectObj = {};
       this.dlgProjectEditVis = true;
     },
     openEditProject(row) {
       this.projectObj = Object.assign(row);
-      this.depIds = getNodePath(this.depTreeList, row.depId); //级联选项的数据
       this.dlgProjectEditVis = true;
     },
-
     openProjectContractList(row) {
       this.dlgProjectContractListVis = true;
     },
-    openAddProjectContract() {
-      this.projectContractObj = Object.assign({
-        id: 0,
-        projectId: this.selectedProject.id,
-        vendorId: "",
-        contractName: ""
-      });
-      this.contractFileList = [];
-
-      this.dlgProjectContractEditVis = true;
-    },
-    openEditProjectContract(row) {
-      this.projectContractObj = Object.assign(row);
-      //查询当前合同的文档
-      this.selectDocumentList(row.id);
-      this.dlgProjectContractEditVis = true;
-    },
-    openAddProjectGroup() {
-      this.projectGroupObj = Object.assign({
-        id: "",
-        projectId: this.selectedProject.id,
-        groupName: "",
-        groupRole: "",
-        groupDesc: "",
-        parentId: 0
-      });
-      this.parentGroupIds = [];
-      this.dlgProjectGroupEditVis = true;
-    },
-    openEditProjectGroup(node, data) {
-      this.projectGroupObj = {
-        id: data.id,
-        projectId: this.selectedProject.id,
-        groupName: data.label,
-        groupRole: data.data.groupRole,
-        groupDesc: data.data.groupDesc,
-        parentId: data.parentId
-      };
-      this.parentGroupIds = getNodePath(
-        this.projectGroupTreeList,
-        data.parentId
-      );
-      this.dlgProjectGroupEditVis = true;
-    },
-    openAddProjectStaff() {
-      this.dlgProjectStaffEditVis = true;
-    },
-    openEditProjectStage(row) {
-      this.projectStageObj = Object.assign(row);
-      this.selectOwnerProjectEmpList(this.selectedProject.id);
-      this.dlgProjectStageEditVis = true;
-    },
-    openAddProjectStage() {
-      this.projectStageObj = Object.assign({
-        id: "",
-        projectId: this.selectedProject.id,
-        text: "",
-        start_date: "",
-        end_date: "",
-        actorStaffId: ""
-      });
-      this.selectOwnerProjectEmpList(this.selectedProject.id);
-      this.dlgProjectStageEditVis = true;
-    },
     openProjectGroupList(row) {
-      //this.projectGroupObj = row;
       this.dlgProjectGroupListVis = true;
     },
     openProjectStageList(row) {
-      //this.projectStageObj = row;
       this.dlgProjectStageListVis = true;
-    },
-    updateProject() {
-      var _this = this;
-      this.$refs.projectForm.validate(valid => {
-        if (valid) {
-          _this.projectObj.ownerId = _this.$store.state.loginUser.id
-          UPDATE_PROJECT(_this.projectObj).then(data => {
-            if (data === "") {
-              _this.$message({
-                message: "更新项目失败，请联系系统管理员。",
-                type: "error"
-              });
-            } else {
-              _this.dlgProjectEditVis = false;
-              _this.selectProjectList();
-              _this.projectObj.id = data;
-              _this.selectedProject = _this.projectObj;
-            }
-          });
-        }
-      });
-    },
-    /**上传文件，同时包含表单内容 */
-    uploadFile() {
-      var _uploadFiles = this.$refs.upload.uploadFiles;
-      if (_uploadFiles.length == 0) this.updateProjectContractNoFile();
-      else {
-        for (var i = 0; i < _uploadFiles.length; i++) {
-          var _uploadFile = _uploadFiles[i];
-          if (_uploadFile.status != "success") {
-            this.$refs.upload.submit();
-            return;
-          }
-        }
-        this.updateProjectContractNoFile();
-      }
-    },
-    updateProjectContract(item) {
-      var _this = this;
-      this.$refs.projectContractForm.validate(valid => {
-        if (valid) {
-          var formData = new FormData();
-          for (var key in _this.projectContractObj) {
-            formData.append(key, _this.projectContractObj[key]);
-          }
-          formData.append("file", item.file);
-          UPDATE_PROJECT_CONTRACT(formData).then(data => {
-            if (data !== 0)
-              _this.$message({
-                message: "更新项目合同失败，请联系系统管理员。",
-                type: "error"
-              });
-            else {
-              _this.dlgProjectContractEditVis = false;
-              _this.selectProjectContractList(_this.selectedProject.id);
-              _this.selectProjectStaffList(_this.selectedProject.id);
-            }
-          });
-        }
-      });
-    },
-    updateProjectContractNoFile() {
-      var _this = this;
-      this.$refs.projectContractForm.validate(valid => {
-        if (valid) {
-          UPDATE_PROJECT_CONTRACT_NO_FILE(_this.projectContractObj).then(
-            data => {
-              if (data == "")
-                _this.$message({
-                  message: "更新项目合同失败，请联系系统管理员。",
-                  type: "error"
-                });
-              else {
-                _this.dlgProjectContractEditVis = false;
-                _this.selectProjectContractList(_this.selectedProject.id);
-                _this.selectProjectStaffList(_this.selectedProject.id);
-                _this.selectEmployeeGroup(_this.selectedProject.id);
-              }
-            }
-          );
-        }
-      });
-    },
-    updateProjectGroup() {
-      var _this = this;
-      this.$refs.projectGroupForm.validate(valid => {
-        if (valid) {
-          UPDATE_PROJECT_GROUP(_this.projectGroupObj).then(data => {
-            if (data == "") {
-              _this.$message({
-                message: "更新项目组失败，请联系系统管理员。",
-                type: "error"
-              });
-            } else {
-              _this.dlgProjectGroupEditVis = false;
-              _this.selectProjectGroupTreeList(_this.selectedProject.id);
-              _this.projectGroupObj.id = data;
-            }
-          });
-        }
-      });
-    },
-    updateProjectStage() {
-      var _this = this;
-      this.$refs.projectStageForm.validate(valid => {
-        if (valid) {
-          UPDATE_PROJECT_STAGE(_this.projectStageObj).then(data => {
-            if (data === "") {
-              _this.$message({
-                message: "更新项目阶段失败，请联系系统管理员。",
-                type: "error"
-              });
-            } else {
-              _this.dlgProjectStageEditVis = false;
-              _this.selectProjectStageList(_this.selectedProject.id);
-              _this.projectStageObj.id = data;
-            }
-          });
-        }
-      });
-    },
-    updateProjectStaffs() {
-      var _this = this;
-      for (var i = 0; i < this.selectedProjectStaffs.length; i++) {
-        this.selectedProjectStaffs[i].groupId = this.projectGroupObj.id;
-      }
-      var params = {
-        groupId: this.projectGroupObj.id,
-        staffList: this.selectedProjectStaffs
-      };
-      UPDATE_PROJECT_STAFFS(params).then(data => {
-        if (data === "") {
-          _this.$message({
-            message: "更新项目组成员失败，请联系系统管理员。",
-            type: "error"
-          });
-        } else {
-          _this.selectGroupStaffList(_this.projectGroupObj.id);
-          _this.dlgProjectStaffEditVis = false;
-        }
-      });
-    },
-    onFileChange(file, fileList) {
-      if (fileList.length != 0) {
-        //this.projectContractObj.contractName = fileList[0].name;
-        this.selectedFile = file;
-      } else {
-        //this.projectContractObj.contractName = "";
-        this.selectedFile = null;
-      }
-    },
-    onFileRemove(file, fileList) {
-      var _this = this;
-      if (file.status == "success") {
-        DELETE_DOCUMENT({ id: file.id }).then(res => {
-          _this.$message({ message: "删除成功", type: "success" });
-          _this.selectDocumentList(file.sourceId);
-        });
-      }
-      this.selectedFile = null;
     },
     delProject(row) {
       var _this = this;
@@ -906,48 +256,6 @@ export default {
           });
         });
     },
-    delProjectContract(row) {
-      var _this = this;
-      _this
-        .$confirm("确认删除该记录吗?", "提示", {
-          type: "warning"
-        })
-        .then(() => {
-          DELETE_PROJECT_CONTRACT({ id: row.id }).then(res => {
-            _this.$message({ message: "删除成功", type: "success" });
-            _this.selectProjectContractList(row.projectId);
-            _this.selectProjectStaffList(row.id);
-            _this.selectEmployeeGroup(_this.selectedProject.id);
-          });
-        });
-    },
-
-    delProjectGroup(node, data) {
-      var _this = this;
-      _this
-        .$confirm("确认删除该记录吗?", "提示", {
-          type: "warning"
-        })
-        .then(() => {
-          DELETE_PROJECT_GROUP({ id: data.id }).then(res => {
-            _this.$message({ message: "删除成功", type: "success" });
-            _this.selectProjectGroupTreeList(_this.selectedProject.id);
-          });
-        });
-    },
-    delProjectStage(row) {
-      var _this = this;
-      _this
-        .$confirm("确认删除该记录吗?", "提示", {
-          type: "warning"
-        })
-        .then(() => {
-          DELETE_PROJECT_STAGE({ id: row.id }).then(res => {
-            _this.$message({ message: "删除成功", type: "success" });
-            _this.selectProjectStageList(row.projectId);
-          });
-        });
-    },
     onProjectChange(row) {
       if (row) {
         this.selectedProject = row;
@@ -956,67 +264,16 @@ export default {
         this.selectProjectGroupTreeList(row.id);
         this.selectProjectStageList(row.id);
         //填充项目相关的供应商
-        this.selectEmployeeGroup(row.id);
-        this.selectProjectStaffList(row.id);
+        //this.selectEmployeeGroup(row.id);
         this.selectProjectLeaderList(row.id);
       } else this.selectedProject = {};
 
       this.$refs.projectTable.setCurrentRow(row);
     },
-    selectEmployeeGroup(projectId) {
-      var _this = this;
-      SELECT_AVAILABLE_GROUP_PROJECT_EMPLOYEE_LIST({ id: projectId }).then(
-        res => {
-          _this.availableEmployeeGroup = res;
-        }
-      );
-    },
-    onProjectGroupChange(data) {
-      // 查询当前项目组的员工
-      this.selectGroupStaffList(data.id);
-      //填充
-      this.projectGroupObj.id = data.id;
-    },
-    onParentGroupChange(value) {
-      if (value.length != 0) {
-        this.projectGroupObj.parentId = value[value.length - 1];
-      } else this.depObj.parentId = 0;
-    },
-    renderContent(h, { node, data, store }) {
-      return (
-        <span style="flex: 1; display: flex; align-items: center; justify-content: space-between; font-size: 14px; padding-right: 8px;">
-          <span>
-            <span>{node.label}</span>
-          </span>
-          <span>
-            <el-button
-              style="font-size: 12px;"
-              type="text"
-              on-click={() => this.openEditProjectGroup(node, data)}
-            >
-              编辑
-            </el-button>
-            <el-button
-              style="font-size: 12px;"
-              type="text"
-              on-click={() => this.delProjectGroup(node, data)}
-            >
-              删除
-            </el-button>
-          </span>
-        </span>
-      );
-    },
+
     fmtDate(row, column, cellValue) {
       if (cellValue == null) return "";
       else return formatDate(new Date(cellValue), "yyyy-MM-dd");
-    },
-    fmtVendor(row, column, cellValue) {
-      for (var i = 0; i < this.vendorList.length; i++) {
-        if (this.vendorList[i].id === cellValue) {
-          return this.vendorList[i].vendorName;
-        }
-      }
     },
     fmtEmp(row, column, cellValue) {
       for (var i = 0; i < this.allDepEmpList.length; i++) {
@@ -1090,9 +347,17 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消"
       }).then(({ value }) => {
-        var params = { tplId: command, projectName: value,empId:_this.$store.state.loginUser.id };
+        var params = {
+          tplId: command,
+          projectName: value,
+          empId: _this.$store.state.loginUser.id
+        };
         CREATE_PROJECT_FROM_TPL(params).then(res => {
-          _this.$notify({title: '创建项目成功', message: '项目根据模板创建成功，请自行维护项目属性和组成员',type: "success"});
+          _this.$notify({
+            title: "创建项目成功",
+            message: "项目根据模板创建成功，请自行维护项目属性和组成员",
+            type: "success"
+          });
           _this.selectProjectList();
         });
       });
@@ -1131,17 +396,9 @@ export default {
   },
   mounted() {
     this.selectProjectList();
-    this.selectParamValueList({ paramKey: "category" });
-    this.selectParamValueList({ paramKey: "built-in-role" });
-    this.selectVendorList();
     this.selectAllDepEmpList(); //业主的所有员工
     this.selectDepTreeList(); //业主的所有部门
     this.selectTplProjectList(); // 项目模板
-
-    //this.authCheck("btnCreateProject"); //检查组件权限    //this.authCheck("btnCreateProject"); //检查组件权限
-
-    console.log("发布 my-event事件");
-    this.$bus.$emit('my-event', { msg:"Hello,From Project Init" }) // 消息发布
   }
 };
 </script>
