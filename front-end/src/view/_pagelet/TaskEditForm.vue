@@ -41,14 +41,14 @@
             </el-col>
             <el-col :span="12">
             <el-form-item label="接收人"  prop="actorStaffId">
-                <el-select v-model="task.actorStaffId" clearable placeholder="请选择"  :disabled="whoami=='actor'">
+                <el-select v-model="task.actorStaffId" clearable placeholder="请选择"  :disabled="whoami.indexOf('asigner')==-1">
                 <el-option v-for="item in projectStaffList" :key="item.id" :label="item.empName" :value="item.id" />
                 </el-select>
             </el-form-item>
             </el-col>
         </el-row>
         <el-form-item label="优先级" prop="priority">
-            <el-radio-group v-model="task.priority"  :disabled="whoami=='actor'">
+            <el-radio-group v-model="task.priority" :disabled="whoami.indexOf('asigner')==-1">
             <el-radio-button label="100">最高</el-radio-button>
             <el-radio-button label="80">较高</el-radio-button>
             <el-radio-button label="60">普通</el-radio-button>

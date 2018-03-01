@@ -5,7 +5,7 @@
           <el-option v-for="item in myProjectList" :key="item.id" :label="item.projectName" :value="item"></el-option>
         </el-select>
         <el-button icon="el-icon-edit" type="primary" plain @click="openTaskEdit" :disabled="caniOpen || selectedTask.parent==0"> 编辑任务</el-button>
-        <el-button icon="el-icon-share" type="primary" plain @click="openTaskAdd" :disabled="caniOpen">分配子任务</el-button>
+        <el-button icon="el-icon-share" type="primary" plain @click="openTaskAdd" :disabled="caniAssign">分配子任务</el-button>
       </el-row>
       <el-row>
         <gantt :tasks="tasks" @task-selected="onSelectTask"></gantt>
@@ -104,18 +104,18 @@ export default {
         projectId: this.selectedProject.id,
         parent: this.selectedTask.id, //隐藏字段
         assignStaffId: this.$store.state.loginUser.id,
-        priority:60
+        priority: 60
       };
       this.taskFormVis = true;
     }
   },
   computed: {
     caniOpen() {
-      //我可以打开吗 - 除了常规员工外，领导(r01)、项目经理、项目助理、监理也可以查看
+      //我可以打开吗 - 除了常规员工外，领导(r01)、项目经理(r02)、项目助理(r03)、监理(r04)也可以查看
       var isSpecial = false;
       var allMyRoles = this.$store.state.myRoles;
       for (var _role of allMyRoles) {
-        if (_role.projectId === this.selectedProject.id) {
+        if (_role.project_id === this.selectedProject.id) {
           if (
             _role.group_role === "R01" ||
             _role.group_role === "R02" ||
@@ -131,6 +131,11 @@ export default {
         this.selectedTask.assignStaffId === this.$store.state.loginUser.id ||
         this.selectedTask.actorStaffId === this.$store.state.loginUser.id ||
         isSpecial
+      );
+    },
+    caniAssign() {
+      return !(
+        this.selectedTask.actorStaffId === this.$store.state.loginUser.id
       );
     },
     handleMyEvent(msg) {
