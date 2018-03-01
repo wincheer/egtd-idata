@@ -97,8 +97,8 @@
           </el-tab-pane>
         </el-tabs>
         <div slot="footer">
-          <el-button :disabled="selectedMsg.isExec===1" @click="execMessage(3)" size="mini" type="success" icon="el-icon-check">同意</el-button>
-          <el-button :disabled="selectedMsg.isExec===1" @click="refuseMessage(2)" size="mini" type="primary" icon="el-icon-close">拒绝</el-button>
+          <el-button :disabled="!selectedMsg||selectedMsg.isExec===1" @click="execMessage(3)" size="mini" type="success" icon="el-icon-check">同意</el-button>
+          <el-button :disabled="!selectedMsg||selectedMsg.isExec===1" @click="refuseMessage(2)" size="mini" type="primary" icon="el-icon-close">拒绝</el-button>
           <el-button @click.native="dlgAuditProjecyVis = false" size="mini" >关闭</el-button>
         </div>
       </el-dialog>
@@ -180,6 +180,7 @@ import {
   SELECT_TASK_CHECK_LIST,
   UPDATE_TASK_CHECK
 } from "@/config/api";
+import { formatDate } from "@/util/date.js";
 export default {
   name: "message-center",
   props: {
@@ -384,7 +385,7 @@ export default {
       params.isExec = exec;
       if (reason) params.note = reason;
       UPDATE_MESSAGE(params).then(res => {
-        if (this.selectedMsg.type === "audit") _this.dlgAuditProjecyVis = false;
+        if (_this.selectedMsg.type === "audit") _this.dlgAuditProjecyVis = false;
         else _this.dlgConfirmTaskVis = false;
         _this.selectHistoryMessageList();
         _this.selectMyMessageList();
@@ -426,8 +427,10 @@ export default {
   watch: {
     isShow: {
       handler: function() {
-        this.selectMyMessageList();
-        this.selectHistoryMessageList();
+        if(this.$props.isShow){
+          this.selectMyMessageList();
+          this.selectHistoryMessageList();
+        }
       }
     }
   }
