@@ -1,19 +1,19 @@
 
-export function getNodePath(treeList,nodeId) {
-    const node = getNode(treeList,nodeId);
+export function getNodePath(treeList, nodeId) {
+    const node = getNode(treeList, nodeId);
     if (!node) return [];
     const path = [node.id];
-    var parent = getNode(treeList,node.parentId);
+    var parent = getNode(treeList, node.parentId);
     while (parent) {
         path.push(parent.id);
-        parent = getNode(treeList,parent.parentId);
+        parent = getNode(treeList, parent.parentId);
     }
     return path.reverse();
 }
 
-export function getNode(treeList,nodeId){
-    const nodes = getObjects(treeList,"id",nodeId);
-    if(nodes.length == 2) return nodes[0]; //自定义的node中包含一个data属性，实际是当前节点的完整的数据。意味着具有同样的ID，所以会取出来2条记录
+export function getNode(treeList, nodeId) {
+    const nodes = getObjects(treeList, "id", nodeId);
+    if (nodes.length == 2) return nodes[0]; //自定义的node中包含一个data属性，实际是当前节点的完整的数据。意味着具有同样的ID，所以会取出来2条记录
 }
 
 //return an array of objects according to key, value, or key and value matching
@@ -64,3 +64,32 @@ function getKeys(obj, val) {
     }
     return objects;
 }
+
+//////////////////////////////////// how to use
+var json = '{"glossary":{"title":"example glossary","GlossDiv":{"title":"S","GlossList":{"GlossEntry":{"ID":"SGML","SortAs":"SGML","GlossTerm":"Standard Generalized Markup Language","Acronym":"SGML","Abbrev":"ISO 8879:1986","GlossDef":{"para":"A meta-markup language, used to create markup languages such as DocBook.","ID":"44","str":"SGML","GlossSeeAlso":["GML","XML"]},"GlossSee":"markup"}}}}}';
+
+var js = JSON.parse(json);
+
+//example of grabbing objects that match some key and value in JSON
+console.log(getObjects(js, 'ID', 'SGML'));
+//returns 1 object where a key names ID has the value SGML
+
+//example of grabbing objects that match some key in JSON
+console.log(getObjects(js, 'ID', ''));
+//returns 2 objects since keys with name ID are found in 2 objects
+
+//example of grabbing obejcts that match some value in JSON
+console.log(getObjects(js, '', 'SGML'));
+//returns 2 object since 2 obects have keys with the value SGML
+
+//example of grabbing objects that match some key in JSON
+console.log(getObjects(js, 'ID', ''));
+//returns 2 objects since keys with name ID are found in 2 objects
+
+//example of grabbing values from any key passed in JSON
+console.log(getValues(js, 'ID'));
+//returns array ["SGML", "44"] 
+
+//example of grabbing keys by searching via values in JSON
+console.log(getKeys(js, 'SGML'));
+//returns array ["ID", "SortAs", "Acronym", "str"] 
