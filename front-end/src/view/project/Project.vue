@@ -128,9 +128,10 @@ export default {
         }
       }
       return !(
-        this.selectedTask.assignStaffId === this.$store.state.loginUser.id ||
-        this.selectedTask.actorStaffId === this.$store.state.loginUser.id ||
-        isSpecial
+        this.selectedTask.id &&
+        (this.selectedTask.assignStaffId === this.$store.state.loginUser.id ||
+          this.selectedTask.actorStaffId === this.$store.state.loginUser.id ||
+          isSpecial)
       );
     },
     caniAssign() {
