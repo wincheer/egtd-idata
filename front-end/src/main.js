@@ -26,7 +26,7 @@ Object.defineProperties(Vue.prototype, {
     }
   }
 })
-// this.$bus.$emit('my-event', { ... pass some event data ... }) --- 发布
+// this.$bus.$emit('my-event', { ... pass some event data ... }) --- 发布 
 // this.$bus.$on('my-event', this.handleMyEvent) --- 监听
 // this.$bus.$off('my-event', this.handleMyEvent) --- 监听结束，在beforeDestroy()或destroyed()中释放订阅
 
