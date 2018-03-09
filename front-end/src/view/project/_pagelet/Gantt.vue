@@ -190,6 +190,7 @@ export default {
     //gantt.config.show_chart = false; 不显示 gantt 图
     gantt.config.root_id = 0;
     gantt.config.open_tree_initially = true; //展开全部
+    gantt.config.date_scale = "%m - %d";
     gantt.init(this.$refs.gantt);
     gantt.parse(this.$props.tasks);
   },

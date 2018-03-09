@@ -21,8 +21,9 @@ let routes = [
         iconCls: 'el-icon-location',
         blackList:[],
         children: [
-            { path: '/dashboard', component: DashBoard, name: '工作台' ,iconCls: 'el-icon-time',blackList:[]},
+            { path: '/dashboard', component: DashBoard, name: '工作台' ,iconCls: 'el-icon-picture-outline',blackList:[]},
             { path: '/calendar', component: Calendar, name: '工作日历' ,iconCls:'el-icon-date',blackList:[]},
+           
         ]
     },
     {
@@ -32,8 +33,8 @@ let routes = [
         iconCls: 'el-icon-view',
         blackList:[],
         children: [
-            { path: '/project-init', component: ProjectInit, name: '项目管理' ,iconCls:'el-icon-refresh',blackList:["R10","R30"]},
-            { path: '/project', component: Project, name: '项目进程' ,iconCls:'el-icon-date',blackList:[]},
+            { path: '/project-init', component: ProjectInit, name: '项目管理' ,iconCls:'el-icon-edit-outline',blackList:["R10","R30"]},
+            { path: '/project', component: Project, name: '项目进程' ,iconCls:'el-icon-time',blackList:[]},
         ]
     },
     {
