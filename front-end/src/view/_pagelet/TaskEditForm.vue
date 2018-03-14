@@ -64,6 +64,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="uploadFile">保存</el-button>
+          <el-button type="danger" @click="delTask" v-if="task.id && task.assignStaffId === this.$store.state.loginUser.id">删除</el-button>
           <el-button @click="closeTaskForm">取消</el-button>
         </el-form-item>
     </el-form>
@@ -75,6 +76,7 @@ import {
   SELECT_TASK_LIST,
   SELECT_DOCUMENT_LIST,
   SELECT_PROJECT_EMPLOYEE_LIST,
+  DELETE_PROJECT_STAGE,
   UPDATE_PROJECT_TASK,
   DELETE_DOCUMENT,
   UPDATE_PROJECT_TASK_WITH_FILE_RESULT,
@@ -243,6 +245,19 @@ export default {
           });
         }
       });
+    },
+    delTask() {
+      var _this = this;
+      _this
+        .$confirm("确认删除该记录吗?", "提示", {
+          type: "warning"
+        })
+        .then(() => {
+          DELETE_PROJECT_STAGE({ id: this.$props.task.id }).then(res => {
+            _this.$message({ message: "删除成功", type: "success" });
+            _this.$emit("close");
+          });
+        });
     },
     selectProjectStaffList(projectId) {
       var _this = this;
