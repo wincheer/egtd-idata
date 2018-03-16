@@ -1,21 +1,76 @@
 <template>
-  <view class="page">
-    <view class="page__hd">
-      <view class="page__title">个人信息</view>
+  <view class="weui-panel">
+      <view class="weui-cells weui-cells_after-title">
+        <view class="weui-cell">
+          <view class="weui-cell__bd userinfo clearfix">
+            <image class="userinfo-avatar" src="{{ userInfo.avatarUrl }}" background-size="cover"/>
+            <view class="userinfo-info">
+              <view class="userinfo-nickname">{{ userInfo.nickName }}</view>
+            </view>
+          </view>
+        </view>
+      </view>
     </view>
-  </view>
 </template>
 
 <script>
 import wepy from 'wepy';
-export default class Me extends wepy.page{
+export default class Me extends wepy.page {
   config = {
     navigationBarTitleText: '个人信息与设置'
   };
+
+  data = {
+    userInfo: {}
+  };
+
+  methods = {};
+
+  getUserInfo() {
+    // 调用登录接口
+    wx.login({
+      success: () => {
+        wx.getUserInfo({
+          success: res => {
+            this.userInfo = res.userInfo;
+            this.$apply();
+          }
+        });
+      }
+    });
+  }
   
+  onReady() {
+    this.getUserInfo();
+  }
 }
 </script>
 
 <style lang="less">
+@userinfoHeight: 100rpx;
+@userinfoSpace: 8rpx;
+.userinfo {
+  padding: 20rpx 0;
+}
 
+.userinfo-avatar {
+  float: left;
+  width: @userinfoHeight;
+  height: @userinfoHeight;
+  border-radius: 50%;
+}
+
+// space + space
+.userinfo-info {
+  float: left;
+  line-height: 1;
+  padding: @userinfoSpace 0;
+  margin-left: 3 * @userinfoSpace;
+}
+
+// text + space + text
+.userinfo-nickname {
+  font-size: (@userinfoHeight - 4 * @userinfoSpace) * (16 / 30);
+  margin-top: 3 * @userinfoSpace;
+}
 </style>
