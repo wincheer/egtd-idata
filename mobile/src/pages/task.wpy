@@ -1,0 +1,14 @@
+<template>
+  <view>任务</view>
+</template>
+
+<script>
+import wepy from 'wepy';
+export default class Task extends wepy.page{
+  
+}
+</script>
+
+<style lang="less">
+
+</style>

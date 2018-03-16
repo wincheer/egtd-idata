@@ -1,0 +1,13 @@
+{
+  "description": "协同GTD的微信小程序版本",
+  "setting": {
+    "urlCheck": true,
+    "es6": false,
+    "postcss": false,
+    "minified": false
+  },
+  "compileType": "miniprogram",
+  "appid": "wx0030fd5d042244dc",
+  "projectname": "egtd4mp",
+  "miniprogramRoot": "./dist"
+}

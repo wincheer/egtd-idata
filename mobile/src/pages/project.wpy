@@ -1,0 +1,14 @@
+<template>
+  <view>项目</view>
+</template>
+
+<script>
+import wepy from 'wepy';
+export default class Project extends wepy.page{
+  
+}
+</script>
+
+<style lang="less">
+
+</style>
