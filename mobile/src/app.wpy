@@ -5,7 +5,13 @@ import 'wepy-async-function';
 
 export default class extends wepy.app {
   config = {
-    pages: ['pages/home', 'pages/project','pages/task','pages/me'],
+    pages: [
+      'pages/home',
+      'pages/login',
+      'pages/project',
+      'pages/task',
+      'pages/me'
+    ],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
@@ -16,16 +22,38 @@ export default class extends wepy.app {
       selectedColor: '#7EC0EE',
       borderStyle: 'white',
       list: [
-        { text: '首页', pagePath: 'pages/home',iconPath:'./assets/images/home.png',selectedIconPath:'./assets/images/home-s.png'},
-        { text: '项目', pagePath: 'pages/project' ,iconPath:'./assets/images/project.png',selectedIconPath:'./assets/images/project-s.png'},
-        { text: '任务', pagePath: 'pages/task' ,iconPath:'./assets/images/task.png',selectedIconPath:'./assets/images/task-s.png'},
-        { text: '我的', pagePath: 'pages/me' ,iconPath:'./assets/images/me.png',selectedIconPath:'./assets/images/me-s.png'}
+        {
+          text: '首页',
+          pagePath: 'pages/home',
+          iconPath: './assets/images/home.png',
+          selectedIconPath: './assets/images/home-s.png'
+        },
+        {
+          text: '项目',
+          pagePath: 'pages/project',
+          iconPath: './assets/images/project.png',
+          selectedIconPath: './assets/images/project-s.png'
+        },
+        {
+          text: '任务',
+          pagePath: 'pages/task',
+          iconPath: './assets/images/task.png',
+          selectedIconPath: './assets/images/task-s.png'
+        },
+        {
+          text: '我的',
+          pagePath: 'pages/me',
+          iconPath: './assets/images/me.png',
+          selectedIconPath: './assets/images/me-s.png'
+        }
       ]
     }
   };
 
   globalData = {
-    userInfo: null
+    userInfo: null, //微信用户信息
+    loginUser: null, //登录用户
+    myRoles: [] //用户角色
   };
 
   constructor() {
@@ -34,34 +62,26 @@ export default class extends wepy.app {
     this.use('promisify');
   }
 
+  //APP生命周期
   onLaunch() {
-    this.testAsync();
+    this.getUserInfo();
+  }
+  onShow() {
+    // Do something when show.
+  }
+  onHide() {
+    // Do something when hide.
   }
 
-  sleep(s) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve('promise resolved');
-      }, s * 1000);
-    });
-  }
-
-  async testAsync() {
-    const data = await this.sleep(3);
-    console.log(data);
-  }
-
-  getUserInfo(cb) {
-    const that = this;
-    if (this.globalData.userInfo) {
-      return this.globalData.userInfo;
+  getUserInfo() {
+    const _this = this;
+    if (!this.globalData.userInfo) {
+      wx.getUserInfo({
+        success(res) {
+          _this.globalData.userInfo = res.userInfo;
+        }
+      });
     }
-    wepy.getUserInfo({
-      success(res) {
-        that.globalData.userInfo = res.userInfo;
-        cb && cb(res.userInfo);
-      }
-    });
   }
 }
 </script>

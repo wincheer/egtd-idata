@@ -25,23 +25,10 @@ export default class Me extends wepy.page {
   };
 
   methods = {};
-
-  getUserInfo() {
-    // 调用登录接口
-    wx.login({
-      success: () => {
-        wx.getUserInfo({
-          success: res => {
-            this.userInfo = res.userInfo;
-            this.$apply();
-          }
-        });
-      }
-    });
-  }
   
   onReady() {
-    this.getUserInfo();
+    this.userInfo = this.$parent.globalData.userInfo;
+    this.$apply()
   }
 }
 </script>
