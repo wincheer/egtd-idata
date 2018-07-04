@@ -246,9 +246,9 @@ body {
 }
 
 .wait {
-  border: 2px solid #78ce9c;
-  color: #78ce9c;
-  background: #3bc574;
+  border: 2px solid #6edab9;
+  color: #6edab9;
+  background: #6edab9;
 }
 .wait .gantt_task_progress {
   background: #518b69;

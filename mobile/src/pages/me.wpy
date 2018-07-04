@@ -1,13 +1,54 @@
 <template>
-  <view class="weui-panel">
-      <view class="weui-cells weui-cells_after-title">
-        <view class="weui-cell">
-          <view class="weui-cell__bd userinfo clearfix">
-            <image class="userinfo-avatar" src="{{ userInfo.avatarUrl }}" background-size="cover"/>
-            <view class="userinfo-info">
-              <view class="userinfo-nickname">{{ userInfo.nickName }}</view>
+  <view class="page">
+    <view class="weui-panel">
+        <view class="weui-cells weui-cells_after-title">
+          <view class="weui-cell">
+            <view class="weui-cell__bd userinfo clearfix">
+              <image class="userinfo-avatar" src="{{ userInfo.avatarUrl }}" background-size="cover"/>
+              <view class="userinfo-info">
+                <view class="userinfo-nickname">{{ userInfo.nickName }}</view>
+              </view>
             </view>
           </view>
+        </view>
+      </view>
+      <view class="page__bd">
+        <view class="weui-cells__title">带说明的列表项</view>
+        <view class="weui-cells weui-cells_after-title">
+            <view class="weui-cell">
+                <view class="weui-cell__bd">标题文字</view>
+                <view class="weui-cell__ft">说明文字</view>
+            </view>
+        </view>
+        
+        <view class="weui-cells__title">带跳转的列表项</view>
+        <view class="weui-cells weui-cells_after-title">
+            <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+                <view class="weui-cell__bd">cell standard</view>
+                <view class="weui-cell__ft weui-cell__ft_in-access">Hello,baby</view>
+            </navigator>
+            <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+                <view class="weui-cell__bd">cell standard</view>
+                <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+            </navigator>
+        </view>
+
+        <view class="weui-cells__title">带图标、说明、跳转的列表项</view>
+        <view class="weui-cells weui-cells_after-title">
+            <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+                <view class="weui-cell__hd">
+                    <image src="../assets/images/task.png" style="margin-right: 5px;vertical-align: middle;width:20px; height: 20px;" />
+                </view>
+                <view class="weui-cell__bd">cell standard</view>
+                <view class="weui-cell__ft weui-cell__ft_in-access">说明文字</view>
+            </navigator>
+            <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+                <view class="weui-cell__hd">
+                    <image src="../assets/images/task-s.png" style="margin-right: 15px;vertical-align: middle;width:20px; height: 20px;" />
+                </view>
+                <view class="weui-cell__bd">cell standard</view>
+                <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+            </navigator>
         </view>
       </view>
     </view>
@@ -26,22 +67,9 @@ export default class Me extends wepy.page {
 
   methods = {};
 
-  getUserInfo() {
-    // 调用登录接口
-    wx.login({
-      success: () => {
-        wx.getUserInfo({
-          success: res => {
-            this.userInfo = res.userInfo;
-            this.$apply();
-          }
-        });
-      }
-    });
-  }
-  
   onReady() {
-    this.getUserInfo();
+    this.userInfo = this.$parent.globalData.userInfo;
+    this.$apply();
   }
 }
 </script>
@@ -72,5 +100,15 @@ export default class Me extends wepy.page {
 .userinfo-nickname {
   font-size: (@userinfoHeight - 4 * @userinfoSpace) * (16 / 30);
   margin-top: 3 * @userinfoSpace;
+}
+
+.placeholder {
+  margin: 5px;
+  padding: 0 10px;
+  text-align: center;
+  background-color: #ebebeb;
+  height: 2.3em;
+  line-height: 2.3em;
+  color: #cfcfcf;
 }
 </style>

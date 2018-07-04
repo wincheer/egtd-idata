@@ -6,23 +6,34 @@
         </el-select>
         <el-button icon="el-icon-edit" type="primary" plain @click="openTaskEdit" :disabled="caniOpen || selectedTask.parent==0"> 编辑任务</el-button>
         <el-button icon="el-icon-share" type="primary" plain @click="openTaskAdd" :disabled="caniAssign">分配子任务</el-button>
+        <el-button icon="el-icon-tickets" type="primary" plain @click="openBatchTaskAdd" :disabled="caniAssign">批量导入子任务</el-button>
+      </el-row>
+      <el-row :gutter="10" type="flex" justify="end">
+        <el-col :span="2"><div class="grid-content bg-todo">未开始</div></el-col>
+        <el-col :span="2"><div class="grid-content bg-doing">进行中</div></el-col>
+        <el-col :span="2"><div class="grid-content bg-done">待确认</div></el-col>
+        <el-col :span="2"><div class="grid-content bg-finish">已完成</div></el-col>
+        <el-col :span="2"><div class="grid-content bg-delay">延期</div></el-col>
       </el-row>
       <el-row>
         <gantt :tasks="tasks" @task-selected="onSelectTask"></gantt>
       </el-row>
       <!--任务编辑对话框-->
       <task-edit-form :task="taskObj" :isShow="taskFormVis" @close="closeTaskForm"></task-edit-form>
+      <!--批量添加子任务编辑对话框-->
+      <batch-task-add-form :parentTask="taskObj" :isShow="batchTaskFormVis" @close="closeBatchTaskForm"></batch-task-add-form>
     </section>
 </template>
 
 <script>
 import Gantt from "@/view/project/_pagelet/Gantt.vue";
 import TaskEditForm from "@/view/_pagelet/TaskEditForm.vue";
+import BatchTaskAddForm from "@/view/project/_pagelet/BatchTaskAddForm.vue";
 import { SELECT_MY_PROJECT_LIST, SELECT_PROJECT_TASK_LIST } from "@/config/api";
 import { formatDate } from "@/util/date.js";
 import base from "@/config/remote";
 export default {
-  components: { Gantt, TaskEditForm },
+  components: { Gantt, TaskEditForm, BatchTaskAddForm },
   data() {
     return {
       tasks: {
@@ -33,12 +44,17 @@ export default {
       myProjectList: [],
       selectedProject: {},
       selectedTask: {},
-      taskFormVis: false
+      taskFormVis: false,
+      batchTaskFormVis: false
     };
   },
   methods: {
     closeTaskForm() {
       this.taskFormVis = false;
+      this.selectTaskList(this.selectedProject);
+    },
+    closeBatchTaskForm() {
+      this.batchTaskFormVis = false;
       this.selectTaskList(this.selectedProject);
     },
     selectMyProjectList(empCode) {
@@ -107,6 +123,16 @@ export default {
         priority: 60
       };
       this.taskFormVis = true;
+    },
+    openBatchTaskAdd() {
+      this.taskObj = {
+        id:this.selectedTask.id,
+        text: this.selectedTask.text,
+        projectId: this.selectedProject.id,
+        assignStaffId: this.$store.state.loginUser.id,
+        priority: 60
+      };
+      this.batchTaskFormVis = true;
     }
   },
   computed: {
@@ -166,4 +192,36 @@ body {
   overflow: hidden;
 }
 @import "~dhtmlx-gantt/codebase/dhtmlxgantt.css";
+.el-row {
+  margin-bottom: 10px;
+}
+.el-col {
+  border-radius: 4px;
+}
+.bg-todo {
+  background: #d8d7d7;
+}
+.bg-doing {
+  background: #67b1f7;
+}
+.bg-done {
+  background: #6edab9;
+}
+.bg-finish {
+  background: #4ed442;
+}
+.bg-delay {
+  background: #eb8465;
+}
+.grid-content {
+  border-radius: 4px;
+  height: 24px;
+  line-height:24px;
+  text-align: center;
+  color:#616060
+}
+.row-bg {
+  padding: 10px 0;
+  background-color: #f9fafc;
+}
 </style>

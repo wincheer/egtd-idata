@@ -34,7 +34,26 @@
 
 <script>
 import wepy from 'wepy';
-export default class Task extends wepy.page {}
+export default class Foo extends wepy.page {
+  data = {};
+  methods = {};
+  //Page生命周期
+  onLoad() {
+    // Do some initialize when page load.
+  };
+  onReady() {
+    // Do something when page ready.
+  };
+  onShow() {
+    // Do something when page show.
+  };
+  onHide() {
+    // Do something when page hide.
+  };
+  onUnload() {
+    // Do something when page close.
+  }
+}
 </script>
 
 <style lang="less">

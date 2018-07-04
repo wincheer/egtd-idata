@@ -57,9 +57,9 @@
             </el-radio-group>
         </el-form-item>
         <el-form-item label="当前进度"  prop="progress" v-show="taskMode==='update'">
-            <el-slider v-model="task.progress" :min="0" :max="1" :step="0.2" :disabled="whoami.indexOf('actor')==-1" show-stops style="margin-left: 5px;"></el-slider>
+            <el-slider v-model="task.progress" :min="0" :max="1" :step="0.01" :disabled="whoami.indexOf('actor')==-1" :format-tooltip="formatTooltip" style="margin-left: 5px;"></el-slider>
             <el-upload ref="uploadResult" action="any" :disabled="whoami.indexOf('actor')==-1" :http-request="updateTaskWithFileResult" :on-preview="downloadFile" :on-remove="onFileRemove" :file-list="taskResultFileList">
-            <el-button slot="trigger" :disabled="whoami.indexOf('actor')==-1" size="mini">任务结果附件 ...</el-button>
+              <el-button slot="trigger" :disabled="whoami.indexOf('actor')==-1" size="mini">任务结果附件 ...</el-button>
             </el-upload>
         </el-form-item>
         <el-form-item>
@@ -113,6 +113,9 @@ export default {
   methods: {
     fmtDate(timestamp) {
       return formatDate(new Date(timestamp), "yyyy-MM-dd hh:mm");
+    },
+    formatTooltip(val) {
+      return parseInt(val * 100) + "%";
     },
     closeTaskForm() {
       this.$emit("close");
@@ -173,7 +176,7 @@ export default {
       var _this = this;
       this.$refs.taskForm.validate(valid => {
         if (valid) {
-          var params = Object.assign({},_this.task);
+          var params = Object.assign({}, _this.task);
           UPDATE_PROJECT_TASK(params).then(data => {
             if (data == "") {
               _this.$message({
@@ -194,12 +197,11 @@ export default {
           var formData = new FormData();
           for (var key in _this.task) {
             if (key.substr(0, 1) !== "$") {
-              if(key==="start_date" || key==="end_date") {
+              if (key === "start_date" || key === "end_date") {
                 var d = new Date(_this.task[key]);
                 var ts = Math.round(d.getTime());
                 formData.append(key, ts);
-              }
-              else formData.append(key, _this.task[key]);
+              } else formData.append(key, _this.task[key]);
             }
           }
           formData.append("file", item.file);
@@ -223,12 +225,11 @@ export default {
           var formData = new FormData();
           for (var key in _this.task) {
             if (key.substr(0, 1) !== "$") {
-              if(key==="start_date" || key==="end_date") {
+              if (key === "start_date" || key === "end_date") {
                 var d = new Date(_this.task[key]);
                 var ts = Math.round(d.getTime());
                 formData.append(key, ts);
-              }
-              else formData.append(key, _this.task[key]);
+              } else formData.append(key, _this.task[key]);
             }
           }
           formData.append("file", item.file);
@@ -290,9 +291,9 @@ export default {
   watch: {
     isShow: {
       handler: function() {
-        if(this.$props.isShow){
+        if (this.$props.isShow) {
           this.selectProjectStaffList(this.$props.task.projectId);
-          if(this.$props.task.id){
+          if (this.$props.task.id) {
             this.selectDocumentList(this.$props.task.id, "2");
             this.selectDocumentList(this.$props.task.id, "3");
           } else {

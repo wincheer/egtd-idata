@@ -1,0 +1,68 @@
+   var validateStartDate = (rule, value, callback) => {
+      if (this.taskObj.id) {
+        // 更新
+        if (value === "") {
+          callback(new Error("请输入开始日期"));
+        } else if (
+          value < this.selectedTaskParent.start_date ||
+          value > this.selectedTaskParent.end_date
+        ) {
+          callback(new Error("超过了上级任务的时间范围内"));
+        } else {
+          callback();
+        }
+      } else {
+        // 分配
+        if (value === "") {
+          callback(new Error("请输入开始日期"));
+        } else if (
+          value < this.selectedTask.start_date ||
+          value > this.selectedTask.end_date
+        ) {
+          callback(new Error("超过了上级任务的时间范围内"));
+        } else {
+          callback();
+        }
+      }
+    };
+    var validateEndDate = (rule, value, callback) => {
+      if (this.taskObj.id) {
+        // 更新
+        if (value === "") {
+          callback(new Error("请输入开始日期"));
+        } else if (
+          value < this.selectedTaskParent.start_date ||
+          value > this.selectedTaskParent.end_date
+        ) {
+          callback(
+            new Error(
+              "开始日期必须在上级任务【" +
+                this.selectedTaskParent.text +
+                "】的时间范围内"
+            )
+          );
+        } else {
+          callback();
+        }
+      } else {
+        // 分配
+        if (value === "") {
+          callback(new Error("请输入开始日期"));
+        } else if (
+          value < this.selectedTask.start_date ||
+          value > this.selectedTask.end_date
+        ) {
+          callback(
+            new Error(
+              "开始日期必须在上级任务【" +
+                this.selectedTask.text +
+                "】的时间范围内"
+            )
+          );
+        } else if (value <= this.taskObj.start_date) {
+          callback(new Error("结束日期不能早于开始日期"));
+        } else {
+          callback();
+        }
+      }
+    };

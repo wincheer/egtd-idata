@@ -81,8 +81,13 @@ export default class Home extends wepy.page {
     });
   }
 
-  onReady() {
-    this.queryFromServer();
+  onLoad() {
+    //检查用户状态
+    var loginUser = wx.getStorageSync('loginUser');
+    if (!loginUser) loginUser = this.$parent.globalData.loginUser;
+
+    if (loginUser) this.queryFromServer();
+    else wx.redirectTo({ url: '/pages/login' }); //重定向到登录页面
   }
 }
 </script>

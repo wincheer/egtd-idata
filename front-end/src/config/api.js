@@ -69,6 +69,7 @@ export const SELECT_PROJECT_LEADER_LIST = (params) => { return axios.post(`${bas
 export const SELECT_PROJECT_TASK = (params) => { return axios.post(`${base}/selectProjectTask`,params).then(res => res.data); };
 export const SELECT_PROJECT_TASK_LIST = (params) => { return axios.post(`${base}/selectProjectTaskList`,params).then(res => res.data); };
 export const UPDATE_PROJECT_TASK = (params) => { return axios.post(`${base}/updateProjectTask`, params).then(res => res.data); };
+export const BATCH_TASK_INSERT = (params) => { return axios.post(`${base}/batchTaskInsert`, params).then(res => res.data); };
 export const UPDATE_PROJECT_TASK_WITH_FILE = (params) => { return axios.post(`${base}/updateProjectTaskWithFile`, params).then(res => res.data); };
 export const UPDATE_PROJECT_TASK_WITH_FILE_RESULT = (params) => { return axios.post(`${base}/updateProjectTaskWithFileResult`, params).then(res => res.data); };
 export const SELECT_MY_TASK_LIST = (params) => { return axios.post(`${base}/selectMyTaskList`,params).then(res => res.data); };
